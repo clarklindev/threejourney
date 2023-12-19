@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import gsap from 'gsap';
 
 //CANVAS
 const canvas = document.querySelector('canvas.webgl')
@@ -34,54 +35,53 @@ renderer.setSize(sizes.width, sizes.height);
 const axesHelper = new THREE.AxesHelper();
 scene.add(axesHelper);
 
-//GROUP
-const group = new THREE.Group();
-group.position.y = 1;
-scene.add(group);
-
-
-const cube1 = new THREE.Mesh(
+const mesh = new THREE.Mesh(
   new THREE.BoxGeometry(1,1,1), 
   new THREE.MeshBasicMaterial({color:0xFF0000})
 );
-group.add(cube1);
-
-const cube2 = new THREE.Mesh(
-  new THREE.BoxGeometry(1,1,1), 
-  new THREE.MeshBasicMaterial({color:0x00FF00})
-);
-cube2.position.x = -2;
-group.add(cube2);
-
-const cube3 = new THREE.Mesh(
-  new THREE.BoxGeometry(1,1,1), 
-  new THREE.MeshBasicMaterial({color:0x0000FF})
-);
-cube3.position.x = 2;
-
-group.add(cube3);
+scene.add(mesh);
 
 //---------------------------------------------------------
-//FUNCTIONS
+// let time = Date.now();  //timestamp from 1 January 1970
+ 
+// using Date()
+// const tick = ()=>{
+//   console.log('tick');
+//   const currentTime = Date.now();
+//   const deltaTime = currentTime - time;
 
-// note you can use Vector3 class for this...
-// mesh.position.x = 0.7;
-// mesh.position.y = -0.6;
-// mesh.position.z = 1;
+//   time = currentTime;
+//   console.log(deltaTime);
 
-// console.log(mesh.position.length()); //CALC: distance between center of scene and object
+//   mesh.rotation.x += 0.001 * deltaTime; //rotate at same speed regardless of framerate
 
-//set()
-// mesh.position.set(0.7, -0.6, 1);
-// mesh.scale.set(2, 0.5, 0.5);
+//   renderer.render(scene, camera);
 
-// console.log(mesh.position.distanceTo(camera.position)); //CALC: distance between camera and mesh
-//mesh.position.normalize(); //takes vector length and reduces its value till its 1.
-// mesh.position.normalize(camera.position);
-
-//rotation()
-// mesh.rotation.y = 1;
-
+//   window.requestAnimationFrame(tick);
+// }
 //---------------------------------------------------------
+//using THREE.Clock
+// const clock = new THREE.Clock();
 
-renderer.render(scene, camera);
+// const tick = () => {
+//   const elapsedTime = clock.getElapsedTime();
+//   mesh.position.x = Math.cos(elapsedTime);
+//   mesh.position.y = Math.sin(elapsedTime);
+
+//   renderer.render(scene, camera);
+
+//   window.requestAnimationFrame(tick); 
+// };
+
+// tick();
+//---------------------------------------------------------
+//using GSAP
+gsap.to(mesh.position, {x:2, duration:1, delay:1});
+gsap.to(mesh.position, {x:0, duration:1, delay:2});
+
+const tick = ()=>{
+  renderer.render(scene, camera);
+  window.requestAnimationFrame(tick);
+}
+
+tick();
