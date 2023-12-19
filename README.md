@@ -38,3 +38,36 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 renderer.render(scene, camera);
 ```
+
+---
+
+## helper functions
+
+### .length()
+
+- distance between center of scene and object
+
+console.log(mesh.position.length());
+
+### distanceTo()
+
+```js
+console.log(mesh.position.distanceTo(camera.position));
+```
+
+### .normalize()
+
+.normalize() without props takes vector length and reduces its value till its 1.
+
+```js
+mesh.position.normalize();
+mesh.position.normalize(camera.position);
+```
+
+### .set()
+
+mesh.position.set(0.7, -0.6, 1);
+
+### AxesHelper
+
+visual axis helper
