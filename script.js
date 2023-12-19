@@ -35,6 +35,25 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
+window.addEventListener("dblclick", () => {
+  const fullscreenElement =
+    document.fullscreenElement | document.webkitFullscreenElement;
+
+  if (!fullscreenElement) {
+    if (canvas.requestFullscreen) {
+      canvas.requestFullscreen();
+    } else if (canvas.webkitRequestFullscreen) {
+      canvas.webkitRequestFullscreen();
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  }
+});
+
 //MESH = geometry + material
 // const geometry = new THREE.BoxGeometry(1,1,1);
 // const material = new THREE.MeshBasicMaterial({color:0xFF0000});
