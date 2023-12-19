@@ -1,10 +1,12 @@
-import * as THREE from 'three';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+import "./style.css";
+
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 // import gsap from 'gsap';
 
 //CANVAS
-const canvas = document.querySelector('canvas.webgl')
+const canvas = document.querySelector("canvas.webgl");
 
 //cursor
 const cursor = {
@@ -12,51 +14,69 @@ const cursor = {
   y: 0,
 };
 
-window.addEventListener('mousemove', (event)=>{
+window.addEventListener("mousemove", (event) => {
   console.log(event.clientX);
   cursor.x = event.clientX / sizes.width - 0.5;
   cursor.y = -(event.clientY / sizes.height - 0.5);
-})
+});
 
+window.addEventListener("resize", () => {
+  //update sizes
+  sizes.width = window.innerWidth;
+  sizes.height = window.innerHeight;
+
+  //update camera
+  camera.aspect = sizes.width / sizes.height;
+  camera.updateProjectionMatrix(); //need to tell three.js to update projection matrix
+
+  //update renderer
+  renderer.setSize(sizes.width, sizes.height);
+  // renderer.setPixelRatio(window.devicePixelRatio); //set same pixel ratio as system
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
 
 //MESH = geometry + material
 // const geometry = new THREE.BoxGeometry(1,1,1);
 // const material = new THREE.MeshBasicMaterial({color:0xFF0000});
 // const mesh = new THREE.Mesh(geometry, material);
 
-//CAMERA 
+//CAMERA
 //1. field of view (degrees) 35-75 vertical vision
 //2. aspect ratio (width / height)
 //3. near - how close camera can see - objects closer than near will not show - nice value to use: 0.1
 //4. far - how far camera can see - objects further than far will not show - nice value to use: 100
 
 const sizes = {
-  width: 800,
-  height: 600
-}
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
+const camera = new THREE.PerspectiveCamera(
+  75,
+  sizes.width / sizes.height,
+  0.1,
+  100
+);
 // const aspectRatio = sizes.width/ sizes.height;
 // const camera = new THREE.OrthographicCamera(
 //   -1 * aspectRatio,
-//   1 * aspectRatio, 
+//   1 * aspectRatio,
 //   1,
-//   -1, 
-//   0.1, 
+//   -1,
+//   0.1,
 //   100
 // ) //left, right, top, bottom, near, far
 
 //SCENE
-const scene = new THREE.Scene()
+const scene = new THREE.Scene();
 // scene.add(mesh);
 scene.add(camera);
 
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
-
 //RENDERER
 const renderer = new THREE.WebGLRenderer({
-  canvas: canvas
+  canvas: canvas,
 });
 renderer.setSize(sizes.width, sizes.height);
 
@@ -65,11 +85,10 @@ const axesHelper = new THREE.AxesHelper();
 scene.add(axesHelper);
 
 const mesh = new THREE.Mesh(
-  new THREE.BoxGeometry(1,1,1), 
-  new THREE.MeshBasicMaterial({color:0xFF0000})
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: 0xff0000 })
 );
 scene.add(mesh);
-
 
 //position camera
 // camera.position.x = 2;
@@ -77,10 +96,9 @@ scene.add(mesh);
 camera.position.z = 2;
 camera.lookAt(mesh.position);
 
-
 //---------------------------------------------------------
 // let time = Date.now();  //timestamp from 1 January 1970
- 
+
 // // using Date()
 // const tick = ()=>{
 //   console.log('tick');
@@ -96,7 +114,7 @@ camera.lookAt(mesh.position);
 
 //   window.requestAnimationFrame(tick);
 // }
-// tick();  
+// tick();
 //---------------------------------------------------------
 //using THREE.Clock
 const clock = new THREE.Clock();
@@ -119,7 +137,7 @@ const tick = () => {
 
   renderer.render(scene, camera);
 
-  window.requestAnimationFrame(tick); 
+  window.requestAnimationFrame(tick);
 };
 
 tick();

@@ -259,3 +259,27 @@ window.addEventListener("mousemove", (event) => {
 ```js
 const controls = new OrbitControls(camera, canvas);
 ```
+
+---
+
+## FULLSCREEN / RESIZE
+
+```css
+html,
+body {
+  overflow: hidden;
+}
+.webgl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  outline: none;
+}
+```
+
+```js
+const sizes = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
+```
