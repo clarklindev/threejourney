@@ -71,3 +71,32 @@ mesh.position.set(0.7, -0.6, 1);
 ### AxesHelper
 
 visual axis helper
+
+---
+
+## Rotation and quaternion
+
+- Rotation is in Euler.
+- Rotation order is important
+- reorder rotation:
+
+- quarternion and rotation are tied - update when one/or other updates.
+
+```js
+mesh.rotation.reorder("YXZ"); //note axes order
+mesh.rotation.y = Math.PI;
+```
+
+Math.PI = is half a rotation
+2x Math.PI = full rotation is 2x pie
+
+## Look at object
+
+```js
+camera.lookAt(new THREE.Vector3(3, 0, 0));
+camera.lookAt(mesh.position);
+```
+
+## create groups
+
+- groups inherit from Object3D

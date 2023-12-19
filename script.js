@@ -52,6 +52,9 @@ console.log(mesh.position.distanceTo(camera.position)); //CALC: distance between
 //mesh.position.normalize(); //takes vector length and reduces its value till its 1.
 mesh.position.normalize(camera.position);
 
+//rotation()
+mesh.rotation.y = 1;
+
 //---------------------------------------------------------
 
 renderer.render(scene, camera);
