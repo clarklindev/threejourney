@@ -204,3 +204,58 @@ const camera = new THREE.PerspectiveCamera(
 
 - 6 props (left, right, top, bottom, near, far)
 - needs aspect ratio (0.1, 100)
+
+```js
+const aspectRatio = sizes.width / sizes.height;
+
+const camera = new THREE.OrthographicCamera(
+  -1 * aspectRatio,
+  1 * aspectRatio,
+  1,
+  -1,
+  0.1,
+  100
+); //left, right, top, bottom, near, far
+```
+
+## Mouse Interaction
+
+- use 0 to 100 instead of screen size (easier to work with)1
+- "-0.5" is to get center point of window
+
+```js
+const cursor = {
+  x: 0,
+  y: 0,
+};
+
+window.addEventListener("mousemove", (event) => {
+  cursor.x = event.clientX / sizes.width - 0.5;
+  cursor.y = -(event.clientY / sizes.height - 0.5);
+});
+```
+
+### Camera Controls
+
+- OrbitalControls (useful) - smooth
+- DragControls - moving objects
+- TransformControls (XYZ)
+
+- DeviceOrientationControls
+- DragControls
+- FirstPersonControls
+- FlyControls
+- PointerLockControls (first-person-shooter - no cursor)
+- TrackballControls (unlimited orbitalControl rotation)
+
+#### OrbitalControls - how to use:
+
+- comment out camera positioning and camera.lookAt
+- OrbitControl is not part of THREE package import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+- OrbitControls takes the camera and an object to put mouse events on. eg canvas
+- controls.enableDamping (acceleration and friction) will smooth out the process.
+- damping needs controls.update() call in tick() before .render() - else the animation just stops when mouse up.
+
+```js
+const controls = new OrbitControls(camera, canvas);
+```

@@ -1,8 +1,23 @@
 import * as THREE from 'three';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+
 // import gsap from 'gsap';
 
 //CANVAS
 const canvas = document.querySelector('canvas.webgl')
+
+//cursor
+const cursor = {
+  x: 0,
+  y: 0,
+};
+
+window.addEventListener('mousemove', (event)=>{
+  console.log(event.clientX);
+  cursor.x = event.clientX / sizes.width - 0.5;
+  cursor.y = -(event.clientY / sizes.height - 0.5);
+})
+
 
 //MESH = geometry + material
 // const geometry = new THREE.BoxGeometry(1,1,1);
@@ -19,22 +34,25 @@ const sizes = {
   width: 800,
   height: 600
 }
-// const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-const aspectRatio = sizes.width/ sizes.height;
-
-const camera = new THREE.OrthographicCamera(
-  -1 * aspectRatio,
-  1 * aspectRatio, 
-  1,
-  -1, 
-  0.1, 
-  100
-) //left, right, top, bottom, near, far
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+// const aspectRatio = sizes.width/ sizes.height;
+// const camera = new THREE.OrthographicCamera(
+//   -1 * aspectRatio,
+//   1 * aspectRatio, 
+//   1,
+//   -1, 
+//   0.1, 
+//   100
+// ) //left, right, top, bottom, near, far
 
 //SCENE
 const scene = new THREE.Scene()
 // scene.add(mesh);
 scene.add(camera);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+
 
 //RENDERER
 const renderer = new THREE.WebGLRenderer({
@@ -54,46 +72,57 @@ scene.add(mesh);
 
 
 //position camera
-camera.position.x = 2;
-camera.position.y = 2;
+// camera.position.x = 2;
+// camera.position.y = 2;
 camera.position.z = 2;
 camera.lookAt(mesh.position);
 
 
 //---------------------------------------------------------
-let time = Date.now();  //timestamp from 1 January 1970
+// let time = Date.now();  //timestamp from 1 January 1970
  
-// using Date()
-const tick = ()=>{
-  console.log('tick');
-  const currentTime = Date.now();
-  const deltaTime = currentTime - time;
+// // using Date()
+// const tick = ()=>{
+//   console.log('tick');
+//   const currentTime = Date.now();
+//   const deltaTime = currentTime - time;
 
-  time = currentTime;
-  console.log(deltaTime);
+//   time = currentTime;
+//   console.log(deltaTime);
 
-  mesh.rotation.x += 0.001 * deltaTime; //rotate at same speed regardless of framerate
-
-  renderer.render(scene, camera);
-
-  window.requestAnimationFrame(tick);
-}
-tick();  
-//---------------------------------------------------------
-//using THREE.Clock
-// const clock = new THREE.Clock();
-
-// const tick = () => {
-//   const elapsedTime = clock.getElapsedTime();
-//   mesh.position.x = Math.cos(elapsedTime);
-//   mesh.position.y = Math.sin(elapsedTime);
+//    mesh.rotation.x += 0.001 * deltaTime; //rotate at same speed regardless of framerate
 
 //   renderer.render(scene, camera);
 
-//   window.requestAnimationFrame(tick); 
-// };
+//   window.requestAnimationFrame(tick);
+// }
+// tick();  
+//---------------------------------------------------------
+//using THREE.Clock
+const clock = new THREE.Clock();
 
-// tick();
+const tick = () => {
+  const elapsedTime = clock.getElapsedTime();
+  // mesh.position.x = Math.cos(elapsedTime);
+  // mesh.position.y = Math.sin(elapsedTime);
+  // camera.position.x = cursor.x * 3;
+  // camera.position.y = cursor.y * 3;
+
+  // camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 3;
+  // camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 3;
+  // camera.position.y = cursor.y * 5;
+
+  // camera.lookAt(mesh.position);
+
+  //update controls
+  controls.update();
+
+  renderer.render(scene, camera);
+
+  window.requestAnimationFrame(tick); 
+};
+
+tick();
 //---------------------------------------------------------
 //using GSAP
 // gsap.to(mesh.position, {x:2, duration:1, delay:1});
