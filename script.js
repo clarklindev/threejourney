@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import gsap from 'gsap';
+// import gsap from 'gsap';
 
 //CANVAS
 const canvas = document.querySelector('canvas.webgl')
@@ -10,15 +10,26 @@ const canvas = document.querySelector('canvas.webgl')
 // const mesh = new THREE.Mesh(geometry, material);
 
 //CAMERA 
-//1. field of view (degrees) 35-75
+//1. field of view (degrees) 35-75 vertical vision
 //2. aspect ratio (width / height)
+//3. near - how close camera can see - objects closer than near will not show - nice value to use: 0.1
+//4. far - how far camera can see - objects further than far will not show - nice value to use: 100
+
 const sizes = {
   width: 800,
   height: 600
 }
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
-//position camera
-camera.position.z = 3;
+// const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+const aspectRatio = sizes.width/ sizes.height;
+
+const camera = new THREE.OrthographicCamera(
+  -1 * aspectRatio,
+  1 * aspectRatio, 
+  1,
+  -1, 
+  0.1, 
+  100
+) //left, right, top, bottom, near, far
 
 //SCENE
 const scene = new THREE.Scene()
@@ -41,24 +52,33 @@ const mesh = new THREE.Mesh(
 );
 scene.add(mesh);
 
+
+//position camera
+camera.position.x = 2;
+camera.position.y = 2;
+camera.position.z = 2;
+camera.lookAt(mesh.position);
+
+
 //---------------------------------------------------------
-// let time = Date.now();  //timestamp from 1 January 1970
+let time = Date.now();  //timestamp from 1 January 1970
  
 // using Date()
-// const tick = ()=>{
-//   console.log('tick');
-//   const currentTime = Date.now();
-//   const deltaTime = currentTime - time;
+const tick = ()=>{
+  console.log('tick');
+  const currentTime = Date.now();
+  const deltaTime = currentTime - time;
 
-//   time = currentTime;
-//   console.log(deltaTime);
+  time = currentTime;
+  console.log(deltaTime);
 
-//   mesh.rotation.x += 0.001 * deltaTime; //rotate at same speed regardless of framerate
+  mesh.rotation.x += 0.001 * deltaTime; //rotate at same speed regardless of framerate
 
-//   renderer.render(scene, camera);
+  renderer.render(scene, camera);
 
-//   window.requestAnimationFrame(tick);
-// }
+  window.requestAnimationFrame(tick);
+}
+tick();  
 //---------------------------------------------------------
 //using THREE.Clock
 // const clock = new THREE.Clock();
@@ -76,12 +96,12 @@ scene.add(mesh);
 // tick();
 //---------------------------------------------------------
 //using GSAP
-gsap.to(mesh.position, {x:2, duration:1, delay:1});
-gsap.to(mesh.position, {x:0, duration:1, delay:2});
+// gsap.to(mesh.position, {x:2, duration:1, delay:1});
+// gsap.to(mesh.position, {x:0, duration:1, delay:2});
 
-const tick = ()=>{
-  renderer.render(scene, camera);
-  window.requestAnimationFrame(tick);
-}
+// const tick = ()=>{
+//   renderer.render(scene, camera);
+//   window.requestAnimationFrame(tick);
+// }
 
-tick();
+// tick();

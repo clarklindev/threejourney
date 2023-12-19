@@ -170,3 +170,37 @@ const tick = () => {
 
 tick();
 ```
+
+---
+
+## Cameras
+
+- Orthographic Camera - render without perspective
+- Perspective camera
+
+- Array Camera (split screen)
+- stereo Camera (render scene from 2 cameras mimicking eyes)
+- Cube Camera (6 cameras - for environment maps)
+
+### Perspective Camera
+
+props:
+
+- 1. field of view (degrees) 35-75 vertical vision
+- 2. aspect ratio (width / height)
+- 3. near - how close camera can see - objects closer than near will not show - nice value to use: 0.1
+- 4. far - how far camera can see - objects further than far will not show - nice value to use: 100
+
+```js
+const camera = new THREE.PerspectiveCamera(
+  75,
+  sizes.width / sizes.height,
+  0.1,
+  100
+);
+```
+
+### Orthographic Camera
+
+- 6 props (left, right, top, bottom, near, far)
+- needs aspect ratio (0.1, 100)
