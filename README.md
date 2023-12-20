@@ -428,3 +428,140 @@ const material = new THREE.MeshBasicMaterial({
 import GUI from "lil-gui";
 const gui = new GUI();
 ```
+
+## Textures
+
+- Textures based on images, covering surface of geometries
+
+1. Color texture (Albedo) - color applied to geometry
+2. Alpha texture - greyscale image - white visible / black invisible / grey - inbetween alpha
+3. height displacement - greyscale image - white, vertices raised / black, vertices sink / perfect grey, still vertex - need subdivision
+4. normal - adds details (light) - dont need subdivision
+5. ambient occlusion - greyscale - faking shadows
+6. metalness - white metalic / black non-metalic - mostly used for reflection
+7. roughness - greyscale - white is rough , black is smooth - mostly for light dissipation
+
+- textures are based on PBR (physically based rendering)
+
+### loading textures
+
+#### image path: getting url of the image
+
+- adding assets to static/ folder, direct access to image as if it is in root directory localhost:3000/
+
+#### loading textures with texture loader (easier):
+
+- single texture loader can load multiple textures
+
+```js
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load("/textures/door/color.jpg");
+```
+
+#### loading textures image (harder method):
+
+```js
+const image = new Image();
+const texture = new THREE.Texture(image); //provide image to texture
+image.onload = () => {
+  texture.needsUpdate = true;
+};
+
+image.src = "/textures/door/color.jpg";
+
+const material = new THREE.MeshBasicMaterial({ map: texture });
+```
+
+## Loading Manager
+
+- gains overall insight of different loaders
+
+```js
+const loadingManager = new THREE.LoadingManager();
+loadingManager.onStart = () => {
+  console.log("onStart");
+};
+
+loadingManager.onLoaded = () => {
+  console.log("onLoaded");
+};
+
+loadingManager.onProgress = () => {
+  console.log("onProgress");
+};
+
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const colorTexture = textureLoader.load("/color.jpg");
+
+const material = new THREE.MeshBasicMaterial({
+  map: colorTexture,
+  // color: 0xff0000,
+  // wireframe: true,
+});
+```
+
+## UV Unwrapping
+
+- BoxBufferGeometry - every vertex also gets a UV coordinate (2d) on a plane.
+- geometry .attributes.uv (float32 buffer attribute)
+
+- can wrap with .repeat (vector2) ie x and y
+- can offset
+- or move the .center point
+
+```js
+//REPEAT
+colorTexture.repeat.x = 2;
+colorTexture.repeat.y = 3;
+
+// colorTexture.wrapS = THREE.RepeatWrapping;
+// colorTexture.wrapT = THREE.RepeatWrapping;
+
+colorTexture.wrapS = THREE.MirroredRepeatWrapping;
+colorTexture.wrapT = THREE.MirroredRepeatWrapping;
+
+//OFFSET
+colorTexture.offset.x = 0.5;
+colorTexture.offset.y = 0.5;
+
+colorTexture.rotation = 1; //radians
+
+colorTexture.rotation = Math.PI; //180 = half rotation
+colorTexture.rotation = 2 * Math.PI; //360 = full rotation
+colorTexture.rotation = Math.PI * 0.25; //1/4 45degree
+
+colorTexture.center.x = 0.5;
+colorTexture.center.y = 0.5;
+```
+
+#### Filtering / mip mapping
+
+- mip mapping is re-creating texture thats exactly half in size.
+- GPU chooses one of the textures (or small versions).
+- texture width and height MUST be power of 2. 512 x 512, 1024 x 1024, 512 x 2048
+- minification filter occurs when the texture is bigger than the surface it covers.
+- minFilter algorithm for minification:
+- when using minFilter - NearestFilter you dont need mip mapping.
+
+1. THREE.NearestFilter
+2. THREE.LinearFilter
+3. THREE.NearestMipmapNearestFilter
+4. THREE.NearestMipmapLinearFilter
+5. THREE.LinearMipmapNearestFilter
+6. THREE.LinearMipmapLinearFilter (default)
+
+```js
+colorTexture.minFilter = THREE.NearestFilter;
+colorTexture.generateMipmaps = false; //when using minFilter - NearestFilter you can turn off mipmaps
+```
+
+- magFilter when texture is too small for area it is covering and pixels are stretched, creates a blurred effect
+- when this happens THREE.NearestFilter will sharpen the texture
+
+compress with TinyPNG to compress images
+
+#### texture websites
+
+- poliigon.com
+- 3dtextures.me
+- arroway-textures.ch

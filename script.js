@@ -3,21 +3,6 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-import gsap from "gsap";
-//import GUI from "lil-gui";
-// const gui = new GUI();
-
-import * as dat from "dat.gui";
-const gui = new dat.GUI({ closed: true, width: 400 });
-// gui.hide(); //hide gui at start, use 'h' to show
-
-const parameters = {
-  color: 0xff0000,
-  spin: () => {
-    gsap.to(mesh.rotation, { y: (mesh.rotation.y + 10) % 20, duration: 1 });
-  },
-};
-
 //CANVAS
 const canvas = document.querySelector("canvas.webgl");
 
@@ -67,8 +52,8 @@ window.addEventListener("dblclick", () => {
 });
 
 //MESH = geometry + material
-// const geometry = new THREE.BoxGeometry(1,1,1);
-// const material = new THREE.MeshBasicMaterial({color:0xFF0000});
+// const geometry = new THREE.BoxGeometry(1, 1, 1);
+// const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 // const mesh = new THREE.Mesh(geometry, material);
 
 //CAMERA
@@ -87,15 +72,6 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-// const aspectRatio = sizes.width/ sizes.height;
-// const camera = new THREE.OrthographicCamera(
-//   -1 * aspectRatio,
-//   1 * aspectRatio,
-//   1,
-//   -1,
-//   0.1,
-//   100
-// ) //left, right, top, bottom, near, far
 
 //SCENE
 const scene = new THREE.Scene();
@@ -111,28 +87,42 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 
+const loadingManager = new THREE.LoadingManager();
+loadingManager.onStart = () => {
+  console.log("onStart");
+};
+
+loadingManager.onLoaded = () => {
+  console.log("onLoaded");
+};
+
+loadingManager.onProgress = () => {
+  console.log("onProgress");
+};
+
+//TEXTURE
+const textureLoader = new THREE.TextureLoader(loadingManager);
+
+const colorTexture = textureLoader.load("/textures/door/color.jpg");
+// const alphaTexture = textureLoader.load("/textures/door/alpha.jpg");
+// const heightTexture = textureLoader.load("/textures/door/height.jpg");
+// const normalTexture = textureLoader.load("/textures/door/normal.jpg");
+// const ambientOcclusionTexture = textureLoader.load(
+//   "/textures/door/ambientOcclusion.jpg"
+// );
+// const metalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
+// const roughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
+
 //AXES HELPER
 const axesHelper = new THREE.AxesHelper();
 scene.add(axesHelper);
 
-const geometry = new THREE.BufferGeometry();
-/**
- * vertices for n random triangles
- *
- * (50 * 3 * 3): 50 triangles, 3 vertices per triangle, 3 components per vertex (x, y, z)
- */
-const count = 50;
-const positionsArray = new Float32Array(count * 3 * 3);
-
-for (let i = 0; i < count * 3 * 3; i++) {
-  positionsArray[i] = (Math.random() - 0.5) * 4;
-}
-const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3); //3 values for each vertex
-geometry.setAttribute("position", positionsAttribute);
+const geometry = new THREE.BoxGeometry(1, 1, 1);
 
 const material = new THREE.MeshBasicMaterial({
-  color: parameters.color,
-  wireframe: true,
+  map: colorTexture,
+  // color: 0xff0000,
+  // wireframe: true,
 });
 
 const mesh = new THREE.Mesh(geometry, material);
@@ -140,67 +130,17 @@ const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 
 //position camera
-// camera.position.x = 2;
-// camera.position.y = 2;
+camera.position.x = 2;
+camera.position.y = 2;
 camera.position.z = 2;
 camera.lookAt(mesh.position);
 
-gui.add(mesh.position, "y", -3, 3, 0.01); //min , max, precision (step)
-gui
-  .add(mesh.position, "y")
-  .min(-3)
-  .max(3)
-  .step(0.03) //using function() min , max, precision (step)
-  .name("name of prop");
-gui.add(mesh, "visible");
-
-gui.add(parameters, "spin");
-
-gui.add(material, "wireframe");
-
-gui.addColor(parameters, "color").onChange(() => {
-  //update material
-  material.color.set(parameters.color);
-});
-
-//---------------------------------------------------------
-// let time = Date.now();  //timestamp from 1 January 1970
-
-// // using Date()
-// const tick = ()=>{
-//   console.log('tick');
-//   const currentTime = Date.now();
-//   const deltaTime = currentTime - time;
-
-//   time = currentTime;
-//   console.log(deltaTime);
-
-//    mesh.rotation.x += 0.001 * deltaTime; //rotate at same speed regardless of framerate
-
-//   renderer.render(scene, camera);
-
-//   window.requestAnimationFrame(tick);
-// }
-// tick();
 //---------------------------------------------------------
 //using THREE.Clock
-const clock = new THREE.Clock();
+// const clock = new THREE.Clock();
 
 const tick = () => {
-  const elapsedTime = clock.getElapsedTime();
-  // mesh.position.x = Math.cos(elapsedTime);
-  // mesh.position.y = Math.sin(elapsedTime);
-  // camera.position.x = cursor.x * 3;
-  // camera.position.y = cursor.y * 3;
-
-  // camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 3;
-  // camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 3;
-  // camera.position.y = cursor.y * 5;
-
-  // camera.lookAt(mesh.position);
-
-  //update controls
-  controls.update();
+  camera.lookAt(mesh.position);
 
   renderer.render(scene, camera);
 
@@ -208,14 +148,3 @@ const tick = () => {
 };
 
 tick();
-//---------------------------------------------------------
-//using GSAP
-// gsap.to(mesh.position, {x:2, duration:1, delay:1});
-// gsap.to(mesh.position, {x:0, duration:1, delay:2});
-
-// const tick = ()=>{
-//   renderer.render(scene, camera);
-//   window.requestAnimationFrame(tick);
-// }
-
-// tick();
