@@ -15,7 +15,6 @@ const cursor = {
 };
 
 window.addEventListener("mousemove", (event) => {
-  console.log(event.clientX);
   cursor.x = event.clientX / sizes.width - 0.5;
   cursor.y = -(event.clientY / sizes.height - 0.5);
 });
