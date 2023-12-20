@@ -3,7 +3,20 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-// import gsap from 'gsap';
+import gsap from "gsap";
+//import GUI from "lil-gui";
+// const gui = new GUI();
+
+import * as dat from "dat.gui";
+const gui = new dat.GUI({ closed: true, width: 400 });
+// gui.hide(); //hide gui at start, use 'h' to show
+
+const parameters = {
+  color: 0xff0000,
+  spin: () => {
+    gsap.to(mesh.rotation, { y: (mesh.rotation.y + 10) % 20, duration: 1 });
+  },
+};
 
 //CANVAS
 const canvas = document.querySelector("canvas.webgl");
@@ -118,7 +131,7 @@ const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3); //3 val
 geometry.setAttribute("position", positionsAttribute);
 
 const material = new THREE.MeshBasicMaterial({
-  color: 0xff0000,
+  color: parameters.color,
   wireframe: true,
 });
 
@@ -131,6 +144,24 @@ scene.add(mesh);
 // camera.position.y = 2;
 camera.position.z = 2;
 camera.lookAt(mesh.position);
+
+gui.add(mesh.position, "y", -3, 3, 0.01); //min , max, precision (step)
+gui
+  .add(mesh.position, "y")
+  .min(-3)
+  .max(3)
+  .step(0.03) //using function() min , max, precision (step)
+  .name("name of prop");
+gui.add(mesh, "visible");
+
+gui.add(parameters, "spin");
+
+gui.add(material, "wireframe");
+
+gui.addColor(parameters, "color").onChange(() => {
+  //update material
+  material.color.set(parameters.color);
+});
 
 //---------------------------------------------------------
 // let time = Date.now();  //timestamp from 1 January 1970
