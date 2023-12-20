@@ -102,10 +102,28 @@ renderer.setSize(sizes.width, sizes.height);
 const axesHelper = new THREE.AxesHelper();
 scene.add(axesHelper);
 
-const mesh = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial({ color: 0xff0000 })
-);
+const geometry = new THREE.BufferGeometry();
+/**
+ * vertices for n random triangles
+ *
+ * (50 * 3 * 3): 50 triangles, 3 vertices per triangle, 3 components per vertex (x, y, z)
+ */
+const count = 50;
+const positionsArray = new Float32Array(count * 3 * 3);
+
+for (let i = 0; i < count * 3 * 3; i++) {
+  positionsArray[i] = (Math.random() - 0.5) * 4;
+}
+const positionsAttribute = new THREE.BufferAttribute(positionsArray, 3); //3 values for each vertex
+geometry.setAttribute("position", positionsAttribute);
+
+const material = new THREE.MeshBasicMaterial({
+  color: 0xff0000,
+  wireframe: true,
+});
+
+const mesh = new THREE.Mesh(geometry, material);
+
 scene.add(mesh);
 
 //position camera
