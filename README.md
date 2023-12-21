@@ -472,9 +472,25 @@ image.src = "/textures/door/color.jpg";
 const material = new THREE.MeshBasicMaterial({ map: texture });
 ```
 
-## Loading Manager
+## Loading Manager / material
+
+- when working with opacity, need to set transparent to true
 
 - gains overall insight of different loaders
+
+//MATERIAL
+
+```js
+const material = new THREE.MeshBasicMaterial({ map: doorColorTexture });
+material.map = doorColorTexture; //alternative method
+material.color.set("purple"); //alternative method
+material.color = new THREE.Color("#00FF00"); //alternative method
+material.wireframe = true;
+material.opacity = 0.3;
+material.transparent = true; //when working with opacity, need to set transparent to true
+material.alphaMap = doorAlphaTexture;
+material.side = THREE.DoubleSide; //THREE.FrontSide, THREE.BackSide, THREE.DoubleSide
+```
 
 ```js
 const loadingManager = new THREE.LoadingManager();
@@ -498,6 +514,18 @@ const material = new THREE.MeshBasicMaterial({
   // color: 0xff0000,
   // wireframe: true,
 });
+
+/* //alternative method BUT to set color after, can do it directly (use set())
+  const material = new THREE.MeshBasicMaterial();
+  material.map = doorColorTexture;
+*/
+material.color.set("#FF00FF");
+
+/*OR provide and instance of Color() class
+ */
+material.color = new THREE.Color("#FF00FF");
+
+//can combine the map and the color
 ```
 
 ## UV Unwrapping

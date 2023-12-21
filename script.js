@@ -70,6 +70,9 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
+camera.position.x = 0;
+camera.position.y = 0;
+camera.position.z = 3;
 
 //SCENE
 const scene = new THREE.Scene();
@@ -109,44 +112,70 @@ loadingManager.onProgress = () => {
 //TEXTURE
 const textureLoader = new THREE.TextureLoader(loadingManager);
 
-const colorTexture = textureLoader.load("/textures/door/color.jpg");
-// const alphaTexture = textureLoader.load("/textures/door/alpha.jpg");
-// const heightTexture = textureLoader.load("/textures/door/height.jpg");
-// const normalTexture = textureLoader.load("/textures/door/normal.jpg");
-// const ambientOcclusionTexture = textureLoader.load("/textures/door/ambientOcclusion.jpg");
-// const metalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
-// const roughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
+const doorColorTexture = textureLoader.load("/textures/door/color.jpg"); //need to set colorSpace (encoded in sRGB)
+const doorAlphaTexture = textureLoader.load("/textures/door/alpha.jpg");
+const doorHeightTexture = textureLoader.load("/textures/door/height.jpg");
+const doorNormalTexture = textureLoader.load("/textures/door/normal.jpg");
+const doorAmbientOcclusionTexture = textureLoader.load(
+  "/textures/door/ambientOcclusion.jpg"
+);
+const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
+const doorRoughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
+
+const matcapTexture = textureLoader.load("/textures/matcaps/1.png"); //need to set colorSpace (encoded in sRGB)
+const gradientTexture = textureLoader.load("/textures/gradients/3.jpg");
+
+doorColorTexture.colorSpace = THREE.SRGBColorSpace;
+matcapTexture.colorSpace = THREE.SRGBColorSpace;
 
 //MATERIAL
-const material = new THREE.MeshBasicMaterial({
-  map: colorTexture,
-  // color: 0xff0000,
-  // wireframe: true,
-});
 
-//GEOMETRY
-const geometry = new THREE.BoxGeometry(1, 1, 1);
+// BASIC MATERIAL
+// const material = new THREE.MeshBasicMaterial({ map: doorColorTexture });
+// material.map = doorColorTexture; //alternative method
+// material.color.set("purple"); //alternative method
+// material.color = new THREE.Color("#00FF00"); //alternative method
+// material.wireframe = true;
+// material.opacity = 0.3;
+// material.transparent = true; //when working with opacity, need to set transparent to true
+// material.alphaMap = doorAlphaTexture;
+// material.side = THREE.FrontSide; //THREE.FrontSide, THREE.BackSide, THREE.DoubleSide
 
-//MESH
-const mesh = new THREE.Mesh(geometry, material);
+//sphere
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
+sphere.position.x = -1.5;
 
-scene.add(mesh);
+//plane
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 100, 100), material);
 
-//position camera
-camera.position.x = 2;
-camera.position.y = 2;
-camera.position.z = 2;
-camera.lookAt(mesh.position);
+//torus
+const torus = new THREE.Mesh(
+  new THREE.TorusGeometry(0.3, 0.2, 16, 32),
+  material
+);
+torus.position.x = 1.5;
+
+scene.add(sphere, plane, torus);
 
 //---------------------------------------------------------
 //using THREE.Clock
-// const clock = new THREE.Clock();
+const clock = new THREE.Clock();
 
 const tick = () => {
-  camera.lookAt(mesh.position);
+  const elapsedTime = clock.getElapsedTime();
 
+  sphere.rotation.y = 0.1 * elapsedTime;
+  plane.rotation.y = 0.1 * elapsedTime;
+  torus.rotation.y = 0.1 * elapsedTime;
+
+  sphere.rotation.x = -0.15 * elapsedTime;
+  plane.rotation.x = -0.15 * elapsedTime;
+  torus.rotation.x = -0.15 * elapsedTime;
+
+  // Render
   renderer.render(scene, camera);
 
+  // Call tick again on the next frame
   window.requestAnimationFrame(tick);
 };
 
