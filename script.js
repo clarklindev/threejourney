@@ -51,10 +51,12 @@ window.addEventListener("dblclick", () => {
   }
 });
 
-//MESH = geometry + material
-// const geometry = new THREE.BoxGeometry(1, 1, 1);
-// const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-// const mesh = new THREE.Mesh(geometry, material);
+const sizes = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
+
+//------------------------------------------------------
 
 //CAMERA
 //1. field of view (degrees) 35-75 vertical vision
@@ -62,10 +64,6 @@ window.addEventListener("dblclick", () => {
 //3. near - how close camera can see - objects closer than near will not show - nice value to use: 0.1
 //4. far - how far camera can see - objects further than far will not show - nice value to use: 100
 
-const sizes = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
 const camera = new THREE.PerspectiveCamera(
   75,
   sizes.width / sizes.height,
@@ -75,8 +73,11 @@ const camera = new THREE.PerspectiveCamera(
 
 //SCENE
 const scene = new THREE.Scene();
-// scene.add(mesh);
 scene.add(camera);
+
+//AXES HELPER
+const axesHelper = new THREE.AxesHelper();
+scene.add(axesHelper);
 
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
@@ -85,6 +86,7 @@ controls.enableDamping = true;
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
 });
+
 renderer.setSize(sizes.width, sizes.height);
 
 const loadingManager = new THREE.LoadingManager();
@@ -100,6 +102,10 @@ loadingManager.onProgress = () => {
   console.log("onProgress");
 };
 
+//-----------------------------------------------------------
+
+//MESH = GEOMETRY + MATERIAL (TEXTURE or color)
+
 //TEXTURE
 const textureLoader = new THREE.TextureLoader(loadingManager);
 
@@ -107,24 +113,21 @@ const colorTexture = textureLoader.load("/textures/door/color.jpg");
 // const alphaTexture = textureLoader.load("/textures/door/alpha.jpg");
 // const heightTexture = textureLoader.load("/textures/door/height.jpg");
 // const normalTexture = textureLoader.load("/textures/door/normal.jpg");
-// const ambientOcclusionTexture = textureLoader.load(
-//   "/textures/door/ambientOcclusion.jpg"
-// );
+// const ambientOcclusionTexture = textureLoader.load("/textures/door/ambientOcclusion.jpg");
 // const metalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
 // const roughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
 
-//AXES HELPER
-const axesHelper = new THREE.AxesHelper();
-scene.add(axesHelper);
-
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-
+//MATERIAL
 const material = new THREE.MeshBasicMaterial({
   map: colorTexture,
   // color: 0xff0000,
   // wireframe: true,
 });
 
+//GEOMETRY
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+//MESH
 const mesh = new THREE.Mesh(geometry, material);
 
 scene.add(mesh);
