@@ -635,3 +635,9 @@ material.matcap = matcapTexture;
 ```js
 const material = new THREE.MeshDepthMaterial();
 ```
+
+#### MATERIALS - THAT REACT TO LIGHT
+
+##### MESHLAMBERT MATERIAL - MeshLambertMaterial
+
+- reacts to light

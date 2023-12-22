@@ -71,8 +71,8 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 camera.position.x = 0;
-camera.position.y = 0;
-camera.position.z = 3;
+camera.position.y = 3;
+camera.position.z = 1;
 
 //SCENE
 const scene = new THREE.Scene();
@@ -150,7 +150,10 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // material.matcap = matcapTexture;
 
 //MESHDEPTH MATERIAL
-const material = new THREE.MeshDepthMaterial();
+// const material = new THREE.MeshDepthMaterial();
+
+//MESHLAMBERT MATERIAL
+const material = new THREE.MeshLambertMaterial();
 
 //sphere
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
@@ -176,8 +179,8 @@ scene.add(ambientLight);
 
 const pointLight = new THREE.PointLight(0xffffff, 0.5);
 pointLight.position.x = 0;
-pointLight.position.y = 1;
-pointLight.position.z = 0;
+pointLight.position.y = 4;
+pointLight.position.z = 1;
 
 scene.add(pointLight);
 
