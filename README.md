@@ -638,6 +638,24 @@ const material = new THREE.MeshDepthMaterial();
 
 #### MATERIALS - THAT REACT TO LIGHT
 
+```js
+// add lights to scene
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 0.5);
+pointLight.position.x = 0;
+pointLight.position.y = 4;
+pointLight.position.z = 1;
+
+scene.add(pointLight);
+```
+
 ##### MESHLAMBERT MATERIAL - MeshLambertMaterial
 
 - reacts to light
+
+```js
+const material = new THREE.MeshLambertMaterial();
+```
