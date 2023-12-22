@@ -146,8 +146,11 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // material.flatShading = true; //makes things have rigid shape (flat shapes)
 
 //MESHMATCAP MATERIAL
-const material = new THREE.MeshMatcapMaterial();
-material.matcap = matcapTexture;
+// const material = new THREE.MeshMatcapMaterial();
+// material.matcap = matcapTexture;
+
+//MESHDEPTH MATERIAL
+const material = new THREE.MeshDepthMaterial();
 
 //sphere
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
