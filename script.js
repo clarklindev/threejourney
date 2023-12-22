@@ -146,8 +146,11 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // material.flatShading = true; //makes things have rigid shape (flat shapes)
 
 //MESHMATCAP MATERIAL
-const material = new THREE.MeshMatcapMaterial();
-material.matcap = matcapTexture;
+// const material = new THREE.MeshMatcapMaterial();
+// material.matcap = matcapTexture;
+
+//MESHDEPTH MATERIAL
+const material = new THREE.MeshDepthMaterial();
 
 //sphere
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
@@ -164,6 +167,19 @@ const torus = new THREE.Mesh(
 torus.position.x = 1.5;
 
 scene.add(sphere, plane, torus);
+
+//---------------------------------------------------------
+//LIGHTING
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 0.5);
+pointLight.position.x = 0;
+pointLight.position.y = 1;
+pointLight.position.z = 0;
+
+scene.add(pointLight);
 
 //---------------------------------------------------------
 //using THREE.Clock

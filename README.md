@@ -625,3 +625,13 @@ material.flatShading = true; //makes things have rigid shape (flat shapes)
 const material = new THREE.MeshMatcapMaterial();
 material.matcap = matcapTexture;
 ```
+
+#### MATERIALS - MeshDepthMaterial
+
+- zoomed in, objects get lighter, and further it gets darker (think game Limbo)
+- NOTE: added lights DO NOT WORK on meshDepthMaterial
+- you get meterials that DO get affected by lights..
+
+```js
+const material = new THREE.MeshDepthMaterial();
+```
