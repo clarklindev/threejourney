@@ -669,3 +669,19 @@ const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
 material.shininess = 100;
 material.specular = new THREE.Color(0x1188ff); //change color of reflection
 ```
+
+#### MESHTOON MATERIAL - MeshToonMaterial
+
+- cartoonish effect
+- can control the difference between change with gradient using a texture
+- uses a texture gradient
+- because we use NearestFilter, can remove mipmapping
+
+```js
+const gradientTexture = textureLoader.load("/textures/gradients/5.jpg");
+gradientTexture.minFilter = THREE.NearestFilter;
+gradientTexture.magFilter = THREE.NearestFilter;
+gradientTexture.generateMipmaps = false;
+
+const material = new THREE.MeshToonMaterial();
+```

@@ -123,7 +123,10 @@ const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
 const doorRoughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
 
 const matcapTexture = textureLoader.load("/textures/matcaps/8.png"); //need to set colorSpace (encoded in sRGB)
-const gradientTexture = textureLoader.load("/textures/gradients/3.jpg");
+const gradientTexture = textureLoader.load("/textures/gradients/5.jpg");
+gradientTexture.minFilter = THREE.NearestFilter;
+gradientTexture.magFilter = THREE.NearestFilter;
+gradientTexture.generateMipmaps = false;
 
 doorColorTexture.colorSpace = THREE.SRGBColorSpace;
 matcapTexture.colorSpace = THREE.SRGBColorSpace;
@@ -156,9 +159,13 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // const material = new THREE.MeshLambertMaterial();
 
 //MESHPHONG MATERIAL
-const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
-material.shininess = 100;
-material.specular = new THREE.Color(0x1188ff); //change color of reflection
+// const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
+// material.shininess = 100;
+// material.specular = new THREE.Color(0x1188ff); //change color of reflection
+
+//MESHTOON Material
+const material = new THREE.MeshToonMaterial();
+material.gradientMap = gradientTexture;
 
 //sphere
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
@@ -180,7 +187,7 @@ scene.add(sphere, plane, torus);
 //LIGHTING
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
+// scene.add(ambientLight);
 
 const pointLight = new THREE.PointLight(0xffffff, 0.5);
 pointLight.position.x = 0;
