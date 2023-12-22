@@ -2,6 +2,10 @@ import "./style.css";
 
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import * as dat from "dat.gui";
+
+//DEBUG
+const gui = new dat.GUI();
 
 //CANVAS
 const canvas = document.querySelector("canvas.webgl");
@@ -110,6 +114,7 @@ loadingManager.onProgress = () => {
 
 //TEXTURE
 const textureLoader = new THREE.TextureLoader(loadingManager);
+const cubeTextureLoader = new THREE.CubeTextureLoader();
 
 const doorColorTexture = textureLoader.load("/textures/door/color.jpg"); //need to set colorSpace (encoded in sRGB)
 const doorAlphaTexture = textureLoader.load("/textures/door/alpha.jpg");
@@ -129,6 +134,16 @@ gradientTexture.generateMipmaps = false;
 
 doorColorTexture.colorSpace = THREE.SRGBColorSpace;
 matcapTexture.colorSpace = THREE.SRGBColorSpace;
+
+//loads front,back,left, right,top,bottom - order important
+const environmentMapTexture = cubeTextureLoader.load([
+  "/textures/environmentMaps/3/px.jpg",
+  "/textures/environmentMaps/3/nx.jpg",
+  "/textures/environmentMaps/3/py.jpg",
+  "/textures/environmentMaps/3/ny.jpg",
+  "/textures/environmentMaps/3/pz.jpg",
+  "/textures/environmentMaps/3/nz.jpg",
+]);
 
 //MATERIAL
 
@@ -166,14 +181,33 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // const material = new THREE.MeshToonMaterial();
 // material.gradientMap = gradientTexture;
 
-//MESHSTANDARD Material
+//MESHSTANDARD Material / ambient occlusion
 const material = new THREE.MeshStandardMaterial();
-material.metalness = 0.45;
-material.roughness = 0.65;
-material.side = THREE.DoubleSide;
+// material.metalness = 0;
+// material.roughness = 1;
+// material.map = doorColorTexture;
+// material.aoMap = doorAmbientOcclusionTexture;
+// material.aoMapIntensity = 1;
+// material.displacementMap = doorHeightTexture;
+// material.displacementScale = 0.05;
+// material.metalnessMap = doorMetalnessTexture;
+// material.roughnessMap = doorRoughnessTexture;
+// material.normalMap = doorNormalTexture;
+// material.normalScale.set(1.5, 1.5);
+// material.transparent = true;
+// material.alphaMap = doorAlphaTexture;
+
+material.metalness = 0.7;
+material.roughness = 0.2;
+material.envMap = environmentMapTexture;
+
+gui.add(material, "metalness").min(0).max(1).step(0.0001);
+gui.add(material, "roughness").min(0).max(1).step(0.0001);
+gui.add(material, "aoMapIntensity").min(0).max(10).step(0.001);
+gui.add(material, "displacementScale").min(0).max(1).step(0.001);
 
 //sphere
-const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 64, 64), material);
 sphere.position.x = -1.5;
 
 //plane
@@ -181,7 +215,7 @@ const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 100, 100), material);
 
 //torus
 const torus = new THREE.Mesh(
-  new THREE.TorusGeometry(0.3, 0.2, 16, 32),
+  new THREE.TorusGeometry(0.3, 0.2, 64, 128),
   material
 );
 torus.position.x = 1.5;
@@ -191,6 +225,21 @@ plane.castShadow = true;
 torus.castShadow = true;
 plane.receiveShadow = true;
 scene.add(sphere, plane, torus);
+
+sphere.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
+
+plane.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
+
+torus.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
 
 //---------------------------------------------------------
 //LIGHTING

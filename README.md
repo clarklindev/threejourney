@@ -688,10 +688,130 @@ const material = new THREE.MeshToonMaterial();
 
 #### MESHSTANDARD MATERIAL - MeshStandardMaterial
 
+- uses Physically Based Rendering Principals (PBR) - algorithm techniques that mimic real life conditions
 - supports lights - similar to MeshLambert and MeshPhong material
 - BUT its more realistic with parameters like: roughness , metalness
+- also can use aoMap (ambient occlusion map)
 
 ```js
 material.metalness = 0.45;
 material.roughness = 0.65;
+
+//add debug panel props
+gui.add(material, "metalness").min(0).max(1).step(0.0001);
+gui.add(material, "roughness").min(0).max(1).step(0.0001);
 ```
+
+##### MESHSTANDARD MATERIAL - ambient occlusion
+
+- aoMap (ambient ocllusion map) will add shadows where the texture is dark/
+- we must add a second set of UV coordinates named uv2 with same UV as default.
+
+```js
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+
+sphere.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
+
+plane.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
+
+torus.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
+```
+
+##### MESHSTANDARD MATERIAL - displacement map
+
+- displacement is same as texture height
+- requires enough vertices
+- effect too strong causes disfigure
+- remember height map (white = up, black = down, grey = no effect)
+
+```js
+material.displacementMap = doorHeightTexture;
+material.displacementScale = 0.05;
+```
+
+##### MESHSTANDARD MATERIAL - metalness map
+
+note: if you have both metalness and roughness props with metalnessMap and roughnessMap, it combines the values
+
+- can use default values metalness 0, roughness 1
+
+```js
+// material.metalness = 0.45; //comment out
+// material.roughness = 0.65; //comment out
+material.metalness = 0;
+material.roughness = 1;
+material.metalnessMap = doorMetalnessTexture;
+material.roughnessMap = doorRoughnessTexture;
+```
+
+##### MESHSTANDARD - normal map
+
+- adds details without needing subdivisions
+
+```js
+material.normalMap = doorNormalTexture;
+```
+
+##### MESHSTANDARD - alpha map
+
+- you have to set transparent to the material
+
+```js
+material.transparent = true;
+material.alphaMap = doorAlphaTexture;
+```
+
+#### MESHPHYSICAL MATERIAL - MeshPhysicalMaterial
+
+same as MeshStandardMaterial but with a clear coat effect on the surface like a tenpin bowling ball.
+
+#### POINTS MATERIAL
+
+- used to create particles
+
+#### SHADERMATERIALS / RAWSHADERMATERIALS
+
+- when you want to create your own materials
+
+---
+
+### Environment Maps
+
+- image that surrounds scene
+- used for lighting object, reflection, refraction
+- threejs ONLY currently supports cube maps
+- use CubeTextureLoader
+
+- p is positive
+- n is negative
+- resource: HDRIHaven [https://polyhaven.com/](high dynamic range imaging) -downloads .hdr files
+
+```js
+//loads front,back,left, right,top,bottom - order important
+const environmentMapTexture = cubeTextureLoader.load([
+  "/textures/environmentMaps/0/px.jpg",
+  "/textures/environmentMaps/0/nx.jpg",
+  "/textures/environmentMaps/0/py.jpg",
+  "/textures/environmentMaps/0/ny.jpg",
+  "/textures/environmentMaps/0/pz.jpg",
+  "/textures/environmentMaps/0/nz.jpg",
+]);
+
+material.envMap = environmentMapTexture;
+```
+
+#### HDRI-to-CubeMap - HDRI texture to cube teture (convert 1 image to 6)
+
+https://matheowis.github.io/HDRI-to-CubeMap
+
+- save as separate file versions
+- default format downloaded is png
