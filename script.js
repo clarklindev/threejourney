@@ -141,6 +141,10 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // material.alphaMap = doorAlphaTexture;
 // material.side = THREE.FrontSide; //THREE.FrontSide, THREE.BackSide, THREE.DoubleSide
 
+//NORMAL MATERIAL (reflection, lighting, refraction)
+const material = new THREE.MeshNormalMaterial();
+material.flatShading = true; //makes things have rigid shape (flat shapes)
+
 //sphere
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
 sphere.position.x = -1.5;

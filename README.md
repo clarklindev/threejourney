@@ -478,7 +478,7 @@ const material = new THREE.MeshBasicMaterial({ map: texture });
 
 - gains overall insight of different loaders
 
-//MATERIAL
+## MATERIALS
 
 ```js
 const material = new THREE.MeshBasicMaterial({ map: doorColorTexture });
@@ -516,16 +516,17 @@ const material = new THREE.MeshBasicMaterial({
 });
 
 /* //alternative method BUT to set color after, can do it directly (use set())
-  const material = new THREE.MeshBasicMaterial();
-  material.map = doorColorTexture;
+  const material = new THREE.MeshBasicMaterial({ map: doorColorTexture }); 
+  material.map = doorColorTexture; //alternative method
 */
 material.color.set("#FF00FF");
-
-/*OR provide and instance of Color() class
- */
-material.color = new THREE.Color("#FF00FF");
-
-//can combine the map and the color
+// material.color.set("purple"); //alternative method
+material.color = new THREE.Color("#FF00FF"); //alternative method - provide and instance of Color() class
+material.wireframe = true;
+material.opacity = 0.3;
+material.transparent = true; //when working with opacity, need to set transparent to true
+material.alphaMap = doorAlphaTexture;
+material.side = THREE.FrontSide; //THREE.FrontSide, THREE.BackSide, THREE.DoubleSide
 ```
 
 ## UV Unwrapping
@@ -593,3 +594,12 @@ compress with TinyPNG to compress images
 - poliigon.com
 - 3dtextures.me
 - arroway-textures.ch
+
+#### MATERIALS - MeshNormalMAterial - NORMALS
+
+- MeshNormalMAterial
+- normals are information that contains the direction of the outside of the face of geometry.
+- normals used for lighting, reflection, refraction
+- .flatShading = true (creates rigid shape)
+
+#### MATERIALS - MeshMatcapMaterial
