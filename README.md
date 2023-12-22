@@ -659,3 +659,13 @@ scene.add(pointLight);
 ```js
 const material = new THREE.MeshLambertMaterial();
 ```
+
+##### MESHPHONG MATERIAL - MeshPhongMaterial
+
+similar to mesh lambert but its cleaner and has shine
+
+```js
+const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
+material.shininess = 100;
+material.specular = new THREE.Color(0x1188ff); //change color of reflection
+```

@@ -153,7 +153,12 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // const material = new THREE.MeshDepthMaterial();
 
 //MESHLAMBERT MATERIAL
-const material = new THREE.MeshLambertMaterial();
+// const material = new THREE.MeshLambertMaterial();
+
+//MESHPHONG MATERIAL
+const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
+material.shininess = 100;
+material.specular = new THREE.Color(0x1188ff); //change color of reflection
 
 //sphere
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
