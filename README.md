@@ -595,11 +595,33 @@ compress with TinyPNG to compress images
 - 3dtextures.me
 - arroway-textures.ch
 
-#### MATERIALS - MeshNormalMAterial - NORMALS
+#### MATERIALS - MeshBasicMaterial
+
+```js
+const material = new THREE.MeshBasicMaterial({ map: doorColorTexture });
+```
+
+#### MATERIALS - MeshNormalMaterial - NORMALS
 
 - MeshNormalMAterial
 - normals are information that contains the direction of the outside of the face of geometry.
 - normals used for lighting, reflection, refraction
 - .flatShading = true (creates rigid shape)
 
+```js
+const material = new THREE.MeshNormalMaterial();
+material.flatShading = true; //makes things have rigid shape (flat shapes)
+```
+
 #### MATERIALS - MeshMatcapMaterial
+
+- MeshMatcapMaterial
+- takes colors from texture to put on the shapes by using normals relative to camera
+- simulate light without light in scene
+- can create fake shadows by applying material to shape
+- matcap library: https://github.com/nidorx/matcaps
+
+```js
+const material = new THREE.MeshMatcapMaterial();
+material.matcap = matcapTexture;
+```

@@ -122,7 +122,7 @@ const doorAmbientOcclusionTexture = textureLoader.load(
 const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
 const doorRoughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
 
-const matcapTexture = textureLoader.load("/textures/matcaps/1.png"); //need to set colorSpace (encoded in sRGB)
+const matcapTexture = textureLoader.load("/textures/matcaps/8.png"); //need to set colorSpace (encoded in sRGB)
 const gradientTexture = textureLoader.load("/textures/gradients/3.jpg");
 
 doorColorTexture.colorSpace = THREE.SRGBColorSpace;
@@ -142,8 +142,12 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // material.side = THREE.FrontSide; //THREE.FrontSide, THREE.BackSide, THREE.DoubleSide
 
 //NORMAL MATERIAL (reflection, lighting, refraction)
-const material = new THREE.MeshNormalMaterial();
-material.flatShading = true; //makes things have rigid shape (flat shapes)
+// const material = new THREE.MeshNormalMaterial();
+// material.flatShading = true; //makes things have rigid shape (flat shapes)
+
+//MESHMATCAP MATERIAL
+const material = new THREE.MeshMatcapMaterial();
+material.matcap = matcapTexture;
 
 //sphere
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
