@@ -169,6 +169,19 @@ torus.position.x = 1.5;
 scene.add(sphere, plane, torus);
 
 //---------------------------------------------------------
+//LIGHTING
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 0.5);
+pointLight.position.x = 0;
+pointLight.position.y = 1;
+pointLight.position.z = 0;
+
+scene.add(pointLight);
+
+//---------------------------------------------------------
 //using THREE.Clock
 const clock = new THREE.Clock();
 
