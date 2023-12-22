@@ -70,9 +70,9 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.x = 0;
-camera.position.y = 3;
-camera.position.z = 1;
+camera.position.x = 1;
+camera.position.y = 0;
+camera.position.z = 3;
 
 //SCENE
 const scene = new THREE.Scene();
@@ -89,7 +89,6 @@ controls.enableDamping = true;
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
 });
-
 renderer.setSize(sizes.width, sizes.height);
 
 const loadingManager = new THREE.LoadingManager();
@@ -164,8 +163,14 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // material.specular = new THREE.Color(0x1188ff); //change color of reflection
 
 //MESHTOON Material
-const material = new THREE.MeshToonMaterial();
-material.gradientMap = gradientTexture;
+// const material = new THREE.MeshToonMaterial();
+// material.gradientMap = gradientTexture;
+
+//MESHSTANDARD Material
+const material = new THREE.MeshStandardMaterial();
+material.metalness = 0.45;
+material.roughness = 0.65;
+material.side = THREE.DoubleSide;
 
 //sphere
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
@@ -181,19 +186,23 @@ const torus = new THREE.Mesh(
 );
 torus.position.x = 1.5;
 
+sphere.castShadow = true;
+plane.castShadow = true;
+torus.castShadow = true;
+plane.receiveShadow = true;
 scene.add(sphere, plane, torus);
 
 //---------------------------------------------------------
 //LIGHTING
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-// scene.add(ambientLight);
+const ambientLight = new THREE.AmbientLight("#fff", 0.5);
+scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight(0xffffff, 0.5);
-pointLight.position.x = 0;
-pointLight.position.y = 4;
-pointLight.position.z = 1;
-
+const pointLight = new THREE.PointLight("#fff", 0.5);
+pointLight.position.x = 2;
+pointLight.position.y = 3;
+pointLight.position.x = 4;
+// pointLight.position.set(2, 3, 4);
 scene.add(pointLight);
 
 //---------------------------------------------------------

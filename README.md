@@ -685,3 +685,13 @@ gradientTexture.generateMipmaps = false;
 
 const material = new THREE.MeshToonMaterial();
 ```
+
+#### MESHSTANDARD MATERIAL - MeshStandardMaterial
+
+- supports lights - similar to MeshLambert and MeshPhong material
+- BUT its more realistic with parameters like: roughness , metalness
+
+```js
+material.metalness = 0.45;
+material.roughness = 0.65;
+```
