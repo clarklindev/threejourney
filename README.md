@@ -827,6 +827,9 @@ https://matheowis.github.io/HDRI-to-CubeMap
 - drop the font and license into assets folder: static/fonts etc (see what this is for vite)
 - use FontLoader to handle loading: https://threejs.org/docs/#examples/en/loaders/FontLoader
 - FontLoader uses a callback - loaded font received as prop in callback
+- Bounding is the space taken up by the geometry
+- Bounding can be box or sphere (default)
+- bounding is for frustum culling - to render or not to render - eg. if geometry is within scene
 
 ```js
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
@@ -847,6 +850,8 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
     bevelOffset: 0,
     bevelSegments: 5,
   });
+  textGeometry.computeBoundingBox();
+  console.log(textGeometry.boundingBox);
 
   const textMaterial = new THREE.MeshBasicMaterial();
   const text = new THREE.Mesh(textGeometry, textMaterial);
