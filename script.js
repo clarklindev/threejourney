@@ -280,6 +280,8 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
 
   const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
 
+  console.time("donuts");
+
   for (let i = 0; i < 100; i++) {
     const donut = new THREE.Mesh(donutGeometry, material);
 
@@ -296,6 +298,8 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
     donut.scale.set(scale, scale, scale);
     scene.add(donut);
   }
+
+  console.timeEnd("donuts");
 
   const text = new THREE.Mesh(textGeometry, material);
   scene.add(text);
