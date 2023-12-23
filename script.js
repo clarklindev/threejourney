@@ -184,9 +184,9 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // material.gradientMap = gradientTexture;
 
 //MESHSTANDARD Material / ambient occlusion
-// const material = new THREE.MeshStandardMaterial();
+const material = new THREE.MeshStandardMaterial();
 // // material.metalness = 0;
-// // material.roughness = 1;
+material.roughness = 1;
 // // material.map = doorColorTexture;
 // // material.aoMap = doorAmbientOcclusionTexture;
 // // material.aoMapIntensity = 1;
@@ -208,60 +208,60 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // gui.add(material, "aoMapIntensity").min(0).max(10).step(0.001);
 // gui.add(material, "displacementScale").min(0).max(1).step(0.001);
 
-// //sphere
-// const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 64, 64), material);
-// sphere.position.x = -1.5;
+//sphere
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 64, 64), material);
+sphere.position.x = -1.5;
 
-// //plane
-// const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 100, 100), material);
+//plane
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 100, 100), material);
 
-// //torus
-// const torus = new THREE.Mesh(
-//   new THREE.TorusGeometry(0.3, 0.2, 64, 128),
-//   material
-// );
-// torus.position.x = 1.5;
+//torus
+const torus = new THREE.Mesh(
+  new THREE.TorusGeometry(0.3, 0.2, 64, 128),
+  material
+);
+torus.position.x = 1.5;
 
-// sphere.castShadow = true;
-// plane.castShadow = true;
-// torus.castShadow = true;
-// plane.receiveShadow = true;
-// scene.add(sphere, plane, torus);
+sphere.castShadow = true;
+plane.castShadow = true;
+torus.castShadow = true;
+plane.receiveShadow = true;
+scene.add(sphere, plane, torus);
 
-// sphere.geometry.setAttribute(
-//   "uv2",
-//   new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
-// );
+sphere.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
 
-// plane.geometry.setAttribute(
-//   "uv2",
-//   new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
-// );
+plane.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
 
-// torus.geometry.setAttribute(
-//   "uv2",
-//   new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
-// );
+torus.geometry.setAttribute(
+  "uv2",
+  new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
 
 //FONTS
 const fontLoader = new FontLoader();
 
 fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
   console.log("font loaded");
-  const textGeometry = new TextGeometry("helloworld", {
-    font: font,
-    size: 0.5,
-    height: 0.2,
-    curveSegments: 4,
-    bevelEnabled: true,
-    bevelThickness: 0.03,
-    bevelSize: 0.02,
-    bevelOffset: 0,
-    bevelSegments: 3,
-  });
+  // const textGeometry = new TextGeometry("helloworld", {
+  //   font: font,
+  //   size: 0.5,
+  //   height: 0.2,
+  //   curveSegments: 4,
+  //   bevelEnabled: true,
+  //   bevelThickness: 0.03,
+  //   bevelSize: 0.02,
+  //   bevelOffset: 0,
+  //   bevelSegments: 3,
+  // });
 
   // EASY METHOD - centering geometry
-  textGeometry.center();
+  // textGeometry.center();
 
   // //HARD METHOD - centering geometry + and adjust for bevel
   // console.log(textGeometry.boundingBox);
@@ -271,50 +271,50 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
   //   -(textGeometry.boundingBox.max.z - 0.03) * 0.5
   // );
 
-  textGeometry.computeBoundingBox();
-  console.log(textGeometry.boundingBox);
+  // textGeometry.computeBoundingBox();
+  // console.log(textGeometry.boundingBox);
 
   // const textMaterial = new THREE.MeshBasicMaterial();
   // textMaterial.wireframe = true;
-  const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
+  // const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
 
-  const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
+  // const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
 
-  console.time("donuts");
+  // console.time("donuts");
 
-  for (let i = 0; i < 100; i++) {
-    const donut = new THREE.Mesh(donutGeometry, material);
+  // for (let i = 0; i < 100; i++) {
+  //   const donut = new THREE.Mesh(donutGeometry, material);
 
-    donut.position.x = (Math.random() - 0.5) * 10;
-    donut.position.y = (Math.random() - 0.5) * 10;
-    donut.position.z = (Math.random() - 0.5) * 10;
+  //   donut.position.x = (Math.random() - 0.5) * 10;
+  //   donut.position.y = (Math.random() - 0.5) * 10;
+  //   donut.position.z = (Math.random() - 0.5) * 10;
 
-    donut.rotation.x = Math.random() * Math.PI;
-    donut.rotation.y = Math.random() * Math.PI;
-    const scale = Math.random();
-    // donut.scale.x = scale;
-    // donut.scale.y = scale;
-    // donut.scale.z = scale;
-    donut.scale.set(scale, scale, scale);
-    scene.add(donut);
-  }
+  //   donut.rotation.x = Math.random() * Math.PI;
+  //   donut.rotation.y = Math.random() * Math.PI;
+  //   const scale = Math.random();
+  //   // donut.scale.x = scale;
+  //   // donut.scale.y = scale;
+  //   // donut.scale.z = scale;
+  //   donut.scale.set(scale, scale, scale);
+  //   scene.add(donut);
+  // }
 
-  console.timeEnd("donuts");
+  // console.timeEnd("donuts");
 
-  const text = new THREE.Mesh(textGeometry, material);
-  scene.add(text);
+  // const text = new THREE.Mesh(textGeometry, material);
+  // scene.add(text);
 });
 
 //---------------------------------------------------------
 //LIGHTING
 
-const ambientLight = new THREE.AmbientLight("#fff", 0.5);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight("#fff", 0.5);
-pointLight.position.x = 2;
-pointLight.position.y = 3;
-pointLight.position.x = 4;
+const pointLight = new THREE.PointLight(0xffffff, 0.5);
+pointLight.position.x = 0;
+pointLight.position.y = 0;
+pointLight.position.z = 4;
 // pointLight.position.set(2, 3, 4);
 scene.add(pointLight);
 

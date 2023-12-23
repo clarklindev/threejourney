@@ -858,3 +858,7 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
   scene.add(text);
 });
 ```
+
+---
+
+### LIGHTS
