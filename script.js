@@ -313,8 +313,7 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
 //---------------------------------------------------------
 //LIGHTING
 
-// const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-const ambientLight = new THREE.AmbientLight();
+const ambientLight = new THREE.AmbientLight(); //= new THREE.AmbientLight(0xffffff, 0.5)
 ambientLight.color = new THREE.Color(0xffffff);
 ambientLight.intensity = 0.5;
 scene.add(ambientLight);
@@ -329,6 +328,7 @@ scene.add(directionalLight);
 const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x0000ff, 10);
 scene.add(hemisphereLight);
 
+//point Light
 const pointLight = new THREE.PointLight(0xff9000, 0.5, 10, 2); //color, intensity, distance, decay
 pointLight.position.x = 1;
 pointLight.position.y = -0.5;
@@ -336,10 +336,27 @@ pointLight.position.z = 1;
 pointLight.position.set(1, -0.5, 1);
 scene.add(pointLight);
 
+//RectArea Light
 const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1); //color, intensity, width, height
 rectAreaLight.position.set(-1.5, 0, 1.5);
 rectAreaLight.lookAt(new THREE.Vector3());
 scene.add(rectAreaLight);
+
+//SPOTLIGHT - SpotLight
+
+//color : Integer,
+//intensity : Float,
+//distance : Float,
+//angle : Radians,
+//penumbra : Float, //penumbra is edge fade - ie. blurred edges
+//decay : Float
+const spotLight = new THREE.SpotLight(0x78ff00, 1, 6, Math.PI * 0.1, 0.25, 1);
+
+spotLight.position.set(0, 2, 3);
+scene.add(spotLight);
+
+spotLight.target.position.x = -0.75;
+scene.add(spotLight.target);
 
 //---------------------------------------------------------
 //using THREE.Clock
