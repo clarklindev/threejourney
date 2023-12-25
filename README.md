@@ -939,3 +939,51 @@ scene.add(spotLight.target);
 
 - baking light/shadows into texture
 - downside is cannot move the light
+
+### Light Helpers
+
+- provide light helpers to the scene
+- light helper (requires: light instance)
+
+  - HemisphereLightHelper
+  - DirectionalLightHelper
+  - PointLightHelper
+  - RectAreaLightHelper
+  - SpotLightHelper (no size)
+
+- the second parameter is the size of the helper
+- SpotLightHelper - used to need updating to show correctly - seems fixed - no need to add window.requestAnimationFrame to update the helper
+- RectAreaLightHelper - import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js"; because its not part of THREE package
+
+```js
+import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
+
+//HemisphereLightHelper
+const hemisphereLightHelper = new THREE.HemisphereLightHelper(
+  hemisphereLight,
+  0.2
+);
+scene.add(hemisphereLightHelper);
+
+//DirectionalLightHelper
+const directionalLightHelper = new THREE.DirectionalLightHelper(
+  directionalLight,
+  0.2
+);
+scene.add(directionalLightHelper);
+
+//PointLightHelper
+const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.2);
+scene.add(pointLightHelper);
+
+//SpotLightHelper
+const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+scene.add(spotLightHelper);
+// window.requestAnimationFrame(() => {
+//   spotLightHelper.update();
+// });
+
+//RectAreaLightHelper
+const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight);
+scene.add(rectAreaLightHelper);
+```
