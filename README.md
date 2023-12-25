@@ -862,3 +862,44 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
 ---
 
 ### LIGHTS
+
+#### ambient light
+
+- ambient light is uniform lighting that bounces off object - every part of object gets same light
+- universal light that lights up scene from everywhere
+
+```js
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const ambientLight = new THREE.AmbientLight();
+ambientLight.color = new THREE.Color(0xffffff);
+ambientLight.intensity = 0.5;
+scene.add(ambientLight);
+```
+
+#### directional light
+
+- parallel light from same direction
+- you can change light orientation by changing light position
+- light rays point to center of scene
+
+#### hemisphere light
+
+- light source comes from hemispheres (top / bottom)
+
+#### point light
+
+- light from specific point shines in all directions
+- you can control parameters (distance and decay) ie. where light has no more effect
+
+#### rect area light
+
+- react area light is as if there is a rectangle shape light projecting light out (has diffusion) like a photoshoot lighting board
+- only works with MeshStandardMaterial and MeshPhysicalMaterial
+
+```js
+//color, intensity, width, height
+const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1);
+rectAreaLight.position.set(-1.5, 0, 1.5);
+rectAreaLight.lookAt(new THREE.Vector3());
+scene.add(rectAreaLight);
+```

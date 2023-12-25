@@ -77,8 +77,8 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 camera.position.x = 1;
-camera.position.y = 0;
-camera.position.z = 3;
+camera.position.y = 1;
+camera.position.z = 2;
 
 //SCENE
 const scene = new THREE.Scene();
@@ -186,7 +186,7 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 //MESHSTANDARD Material / ambient occlusion
 const material = new THREE.MeshStandardMaterial();
 // // material.metalness = 0;
-material.roughness = 1;
+material.roughness = 0.4;
 // // material.map = doorColorTexture;
 // // material.aoMap = doorAmbientOcclusionTexture;
 // // material.aoMapIntensity = 1;
@@ -212,8 +212,8 @@ material.roughness = 1;
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 64, 64), material);
 sphere.position.x = -1.5;
 
-//plane
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 100, 100), material);
+//cube
+const cube = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.75, 0.75), material);
 
 //torus
 const torus = new THREE.Mesh(
@@ -222,11 +222,16 @@ const torus = new THREE.Mesh(
 );
 torus.position.x = 1.5;
 
+//plane
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+plane.rotation.x = -Math.PI * 0.5;
+plane.position.y = -0.65;
+
 sphere.castShadow = true;
 plane.castShadow = true;
 torus.castShadow = true;
 plane.receiveShadow = true;
-scene.add(sphere, plane, torus);
+scene.add(sphere, cube, plane, torus);
 
 sphere.geometry.setAttribute(
   "uv2",
@@ -308,15 +313,33 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
 //---------------------------------------------------------
 //LIGHTING
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const ambientLight = new THREE.AmbientLight();
+ambientLight.color = new THREE.Color(0xffffff);
+ambientLight.intensity = 0.5;
 scene.add(ambientLight);
+gui.add(ambientLight, "intensity").min(0).max(1).step(0.01);
 
-const pointLight = new THREE.PointLight(0xffffff, 0.5);
-pointLight.position.x = 0;
-pointLight.position.y = 0;
-pointLight.position.z = 4;
-// pointLight.position.set(2, 3, 4);
-scene.add(pointLight);
+//directional light
+const directionalLight = new THREE.DirectionalLight(0x00fffc, 0.3);
+directionalLight.position.set(1, 0.25, 0);
+// scene.add(directionalLight);
+
+//Hemisphere light
+const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x0000ff, 10);
+// scene.add(hemisphereLight);
+
+const pointLight = new THREE.PointLight(0xff9000, 0.5, 10, 2); //color, intensity, distance, decay
+pointLight.position.x = 1;
+pointLight.position.y = -0.5;
+pointLight.position.z = 1;
+// pointLight.position.set(1, -0.5, 1);
+// scene.add(pointLight);
+
+const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1); //color, intensity, width, height
+rectAreaLight.position.set(-1.5, 0, 1.5);
+rectAreaLight.lookAt(new THREE.Vector3());
+//scene.add(rectAreaLight);
 
 //---------------------------------------------------------
 //using THREE.Clock
