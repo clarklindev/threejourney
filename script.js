@@ -333,8 +333,8 @@ const pointLight = new THREE.PointLight(0xff9000, 0.5, 10, 2); //color, intensit
 pointLight.position.x = 1;
 pointLight.position.y = -0.5;
 pointLight.position.z = 1;
-// pointLight.position.set(1, -0.5, 1);
-// scene.add(pointLight);
+pointLight.position.set(1, -0.5, 1);
+scene.add(pointLight);
 
 const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 1, 1); //color, intensity, width, height
 rectAreaLight.position.set(-1.5, 0, 1.5);
