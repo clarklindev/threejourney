@@ -987,3 +987,20 @@ scene.add(spotLightHelper);
 const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight);
 scene.add(rectAreaLightHelper);
 ```
+
+---
+
+### SHADOWS
+
+- default shadow (core shadow) on objects
+- drop shadows - Silhouette of object on the plane
+- shadows have been a challenge for real-time 3d rendering (because they are required at good framerate)
+- there is something called Raytracing - realistic shadows (but it takes a long time to render)
+
+- threejs shadows:
+
+- when doing ONE render:
+- threejs will do a render for each light supporting shadows - these renders simulate what light sees if it was a camera
+- during lights renders - MeshDepthMaterial replaces all MeshMaterials
+- light renders are stored as textures called "shadow maps" (ie. shadow maps are textures of what the light can see)
+- takes snapshot of scene, and notes where objects are on scene and using this as reference in the renders, it is able to create shadows.
