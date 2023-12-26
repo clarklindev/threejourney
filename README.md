@@ -864,9 +864,15 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
 ### LIGHTS
 
 - lights cost a lot in terms of performance - use lights that cost less for hardware
+
   - minimal cost lights are AmbientLight and HemisphereLight
   - moderate cost lights: DirectionalLight, PointLight
   - high cost: SpotLight, RectAreaLight
+
+- only 3 types of lights support shadows
+  1. PointLight
+  2. DirectionalLight
+  3. SpotLight
 
 #### ambient light
 
@@ -883,7 +889,7 @@ scene.add(ambientLight);
 
 #### directional light
 
-- parallel light from same direction
+- parallel light from same direction - light travelling in parallel to each other
 - you can change light orientation by changing light position
 - light rays point to center of scene
 
@@ -992,6 +998,30 @@ scene.add(rectAreaLightHelper);
 
 ### SHADOWS
 
+1. - Enable shadows on renderer
+
+```js
+renderer.shadowMap.enabled = true;
+```
+
+2. - then for each object on the scene, can it cast a shadow with "castShadow", and can it receive a shadow "receiveShadow"
+
+```js
+sphere.castShadow = true;
+plane.receiveShadow = true;
+```
+
+3. activate shadow on the lights
+
+- only 3 types of lights support shadows
+  1. PointLight
+  2. DirectionalLight
+  3. SpotLight
+
+```js
+directionalLight.castShadow = true;
+```
+
 - default shadow (core shadow) on objects
 - drop shadows - Silhouette of object on the plane
 - shadows have been a challenge for real-time 3d rendering (because they are required at good framerate)
@@ -1004,3 +1034,48 @@ scene.add(rectAreaLightHelper);
 - during lights renders - MeshDepthMaterial replaces all MeshMaterials
 - light renders are stored as textures called "shadow maps" (ie. shadow maps are textures of what the light can see)
 - takes snapshot of scene, and notes where objects are on scene and using this as reference in the renders, it is able to create shadows.
+
+#### shadow map quality
+
+- if the quality of the shadow map is too low, you can increase shadow map dimensions (width and height)
+- you can do this on the light itself
+- RADIUS doesnt work with PCFSoftShadowMap
+
+```js
+directionalLight.shadow.mapSize.width = 1024;
+directionalLight.shadow.mapSize.height = 1024;
+```
+
+### Light near/far
+
+- can specify the camera light near/far so render is efficiently optimized.
+- use a light helper
+- add to scene
+- reduce render area - set shadow render area with .shadow.camera.near and .shadow.camera.far
+
+### amplitude
+- render area - size is adjustable by controlling left, right, top, bottom distance of the camera
+- hide camera helper by directionalLightCameraHelper.visible = false;
+
+### blur
+- blur shadow
+```js
+directionalLight.shadow.radius = 10;
+```
+
+```js
+directionalLight.shadow.camera.bottom = 2;
+directionalLight.shadow.camera.left = 2;
+directionalLight.shadow.camera.near = 1;
+directionalLight.shadow.camera.far = 6;
+directionalLight.shadow.camera.near = 1;
+directionalLight.shadow.camera.far = 6;
+
+const directionalLightCameraHelper = new THREE.CameraHelper(
+  directionalLight.shadow.camera
+);
+directionalLightCameraHelper.visible = false;
+scene.add(directionalLightCameraHelper);
+```
+
+
