@@ -334,6 +334,7 @@ directionalLight.position.set(2, 2, -1);
 gui.add(directionalLight, "intensity").min(0).max(1).step(0.001);
 gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001);
 gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001);
+gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001);
 scene.add(directionalLight);
 
 directionalLight.castShadow = true;
@@ -346,7 +347,7 @@ directionalLight.shadow.camera.left = -2;
 directionalLight.shadow.camera.near = 1;
 directionalLight.shadow.camera.far = 6;
 
-directionalLight.shadow.radius = 10; //blur shadow
+// directionalLight.shadow.radius = 10; //blur shadow
 
 
 //light helper
@@ -390,6 +391,22 @@ scene.add(directionalLightCameraHelper);
 
 // spotLight.target.position.x = -0.75;
 // scene.add(spotLight.target);
+
+const spotLight = new THREE.SpotLight(0xFFFFFF, 0.7, 20, Math.PI * 0.3);
+spotLight.castShadow = true;
+spotLight.shadow.mapSize.width = 1024;
+spotLight.shadow.mapSize.height = 1024;
+spotLight.shadow.camera.fov = 30;
+spotLight.shadow.camera.near = 1;
+spotLight.shadow.camera.far = 6;
+
+spotLight.position.set(0,2,2);//move spotlight
+scene.add(spotLight);
+scene.add(spotLight.target);//invisible object to add to scene *target to add for spotlight
+
+const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+spotLightCameraHelper.visible = false;
+scene.add(spotLightCameraHelper);
 
 //---------------------------------------------------------
 //LIGHT HELPERS
