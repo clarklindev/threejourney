@@ -1078,4 +1078,16 @@ directionalLightCameraHelper.visible = false;
 scene.add(directionalLightCameraHelper);
 ```
 
+### shadowmap algorithms:
+
+  - THREE.BasicShadowMap - very performant - lousy quality
+  - THREE.PCFShadowMap - less performant - smooth edges
+  - THREE.PCFSoftShadowMap - less performant - even softer edges (brunos pick) //RADIUS doesnt work with this
+  - THREE.VSMShadowMap - less performant - more constraints - unexpected results
+
+```js
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+```
+
 
