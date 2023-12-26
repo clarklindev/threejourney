@@ -324,12 +324,12 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
 
 const ambientLight = new THREE.AmbientLight(); //= new THREE.AmbientLight(0xffffff, 0.5)
 ambientLight.color = new THREE.Color(0xffffff);
-ambientLight.intensity = 0.5;
+ambientLight.intensity = 0.3;
 scene.add(ambientLight);
 gui.add(ambientLight, "intensity").min(0).max(1).step(0.001);
 
 //directional light
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
 directionalLight.position.set(2, 2, -1);
 gui.add(directionalLight, "intensity").min(0).max(1).step(0.001);
 gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001);
@@ -392,7 +392,7 @@ scene.add(directionalLightCameraHelper);
 // spotLight.target.position.x = -0.75;
 // scene.add(spotLight.target);
 
-const spotLight = new THREE.SpotLight(0xFFFFFF, 0.7, 20, Math.PI * 0.3);
+const spotLight = new THREE.SpotLight(0xFFFFFF, 0.3, 20, Math.PI * 0.3);
 spotLight.castShadow = true;
 spotLight.shadow.mapSize.width = 1024;
 spotLight.shadow.mapSize.height = 1024;
@@ -407,6 +407,22 @@ scene.add(spotLight.target);//invisible object to add to scene *target to add fo
 const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
 spotLightCameraHelper.visible = false;
 scene.add(spotLightCameraHelper);
+
+
+//PointLight shadow
+const pointLight = new THREE.PointLight(0xFFFFFF, 0.3);
+pointLight.castShadow = true;
+pointLight.shadow.mapSize.width = 1024;
+pointLight.shadow.mapSize.height = 1024;
+pointLight.shadow.camera.near = 0.1;
+pointLight.shadow.camera.far = 5;
+
+pointLight.position.set(-1, 1, 0);
+scene.add(pointLight);
+
+const pointLightCameraHelper = new THREE.CameraHelper(pointLight.shadow.camera);
+pointLightCameraHelper.visible = false;
+scene.add(pointLightCameraHelper);
 
 //---------------------------------------------------------
 //LIGHT HELPERS

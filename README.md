@@ -1115,4 +1115,15 @@ scene.add(spotLightCameraHelper);
 
 ```
 
+### pointlight
+- reduce brightness in scene by changing ambient, directional and spotlight intensity.
+- point light uses perspective camera helper and it takes 6 images (top, right, bottom, left) from the point light position
+- the pointLight Helper in scene is looking down because down is probably the last render that threeJS does
+
+```js
+const pointLight = new THREE.PointLight(0xFFFFFF, 0.3);
+pointLight.castShadow = true;
+pointLight.position.set(-1, 1, 0);
+scene.add(pointLight);
+```
 
