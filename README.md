@@ -1117,7 +1117,7 @@ scene.add(spotLightCameraHelper);
 
 ### pointlight
 - reduce brightness in scene by changing ambient, directional and spotlight intensity.
-- point light uses perspective camera helper and it takes 6 images (top, right, bottom, left) from the point light position
+- Threejs - point light uses perspective camera helper and it takes 6 images (top, right, bottom, left, back, and front) from the point light position (ie. 6x renders for each light)
 - the pointLight Helper in scene is looking down because down is probably the last render that threeJS does
 
 ```js
@@ -1127,3 +1127,23 @@ pointLight.position.set(-1, 1, 0);
 scene.add(pointLight);
 ```
 
+### Baking shadows
+- bake shadows into the texture floor
+- first disable all shadows by changing 
+- Instead of MeshStandardMaterial, use a MeshBasicMaterial on the plane material with the bakedShadow
+- moving objects causes a problem because shadow is baked on the plane.
+
+```js
+renderer.shadowMap.enabled = false;
+
+const plane = new THREE.Mesh(
+  new THREE.PlaneGeometry(5,5);
+  new THREE.MeshBasicMaterial({
+    map: bakedShadow
+  })  
+)
+```
+
+### Alternative to baking shadows
+- using an image (diffused circle gradient), simpleShadow.jpg and we move this image when the object moves, and if the object gets further from plane, we make the shadow have more alpha (transparent).
+- simulate a ball bouce by using Math.abs(sin(x))

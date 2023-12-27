@@ -37,8 +37,10 @@ window.addEventListener("resize", () => {
   renderer.setSize(sizes.width, sizes.height);
   // renderer.setPixelRatio(window.devicePixelRatio); //set same pixel ratio as system
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true; //enable shadows
-  // renderer.shadowMap.type = THREE.PCFSoftShadowMap; //SHADOW algorithm
+  // renderer.shadowMap.enabled = true; //enable shadows
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap; //SHADOW algorithm
+  renderer.shadowMap.enabled = false;
+
 });
 
 window.addEventListener("dblclick", () => {
@@ -100,8 +102,9 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.shadowMap.enabled = true; //enable shadows
+// renderer.shadowMap.enabled = true; //enable shadows
 // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled = false;
 
 const loadingManager = new THREE.LoadingManager();
 loadingManager.onStart = () => {
@@ -122,6 +125,12 @@ loadingManager.onProgress = () => {
 
 //TEXTURE
 const textureLoader = new THREE.TextureLoader(loadingManager);
+
+//BAKEDSHADOW
+const bakedShadow = textureLoader.load('/textures/shadow/bakedShadow.jpg');
+//BAKEDSHADOW Alternative
+const simpleShadow = textureLoader.load('/textures/shadow/simpleShadow.jpg');
+
 const cubeTextureLoader = new THREE.CubeTextureLoader();
 
 const doorColorTexture = textureLoader.load("/textures/door/color.jpg"); //need to set colorSpace (encoded in sRGB)
@@ -229,7 +238,15 @@ sphere.castShadow = true;
 // torus.position.x = 1.5;
 
 //plane
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+// const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+
+const plane = new THREE.Mesh(
+  new THREE.PlaneGeometry(5,5), 
+  new THREE.MeshBasicMaterial({
+    map: bakedShadow
+  })
+)
+
 plane.rotation.x = -Math.PI * 0.5;
 plane.position.y = -0.5;
 
@@ -241,6 +258,15 @@ plane.receiveShadow = true;
 // plane.receiveShadow = true;
 // scene.add(sphere, cube, plane, torus);
 scene.add(plane, sphere);
+
+//Shadow alternative
+const sphereShadow = new THREE.Mesh(
+  new THREE.PlaneGeometry(1.5, 1.5),
+  new THREE.MeshBasicMaterial({color:0x000000, transparent:true, alphaMap: simpleShadow})
+)
+sphereShadow.rotation.x = Math.PI * -0.5;
+sphereShadow.position.y = plane.position.y + 0.01;
+scene.add(sphereShadow);
 
 // sphere.geometry.setAttribute(
 //   "uv2",
@@ -460,7 +486,17 @@ const clock = new THREE.Clock();
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
-  sphere.rotation.y = 0.1 * elapsedTime;
+  //update the sphere
+  sphere.position.x = Math.cos(elapsedTime) * 1.5;
+  sphere.position.z = Math.sin(elapsedTime) * 1.5;
+  sphere.position.y = Math.abs(Math.sin(elapsedTime * 3));
+
+  //move shadow
+  sphereShadow.position.x = sphere.position.x;
+  sphereShadow.position.z = sphere.position.z;
+  sphereShadow.material.opacity = (1- sphere.position.y) * 0.3;
+
+  // sphere.rotation.y = 0.1 * elapsedTime;
   // plane.rotation.y = 0.1 * elapsedTime;
   // torus.rotation.y = 0.1 * elapsedTime;
 
