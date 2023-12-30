@@ -18,27 +18,37 @@ const scene = new THREE.Scene();
 // Galaxy
 
 const parameters = {
-  count: 1000,
-  size: 0.02,
+  count: 100000,
+  size: 0.01,
 }
 
+let geometry: THREE.BufferGeometry | null;
+let material: THREE.PointsMaterial | null;
+let points: THREE.Points | null;
+
 const generateGalaxy = () => {
+  // destroy old galaxy
+  if(points !== null){
+    geometry?.dispose(); //free memory for geometry
+    material?.dispose();
+    scene.remove(points); //clearing points from scene
+  }
 
   // GEOMETRY
-  const geometry = new THREE.BufferGeometry();
+  geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(parameters.count * 3); // 3 values per vertex
 
   for (let i =0; i< parameters.count; i++){
     const i3 = i * 3;
 
-    positions[i + 0] = (Math.random() - 0.5) * 3;
-    positions[i + 1] = (Math.random() - 0.5) * 3;
-    positions[i + 2] = (Math.random() - 0.5) * 3;
+    positions[i + 0] = (Math.random() - 0.5) * 3; //x
+    positions[i + 1] = (Math.random() - 0.5) * 3; //y
+    positions[i + 2] = (Math.random() - 0.5) * 3; //z
   }
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
   //MATERIAL
-  const material = new THREE.PointsMaterial({
+  material = new THREE.PointsMaterial({
     size: parameters.size,
     sizeAttenuation: true,
     depthWrite: false,
@@ -46,11 +56,13 @@ const generateGalaxy = () => {
   });
 
   //POINTS
-  const points = new THREE.Points(geometry, material);
+  points = new THREE.Points(geometry, material);
   scene.add(points);
 }
 
 generateGalaxy();
+gui.add(parameters, "count").min(100).max(10000).step(100).onFinishChange(generateGalaxy);
+gui.add(parameters, "size").min(0.001).max(0.1).step(0.001).onFinishChange(generateGalaxy);
 
 /**
  * Sizes
