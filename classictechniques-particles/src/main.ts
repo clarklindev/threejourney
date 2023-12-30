@@ -62,6 +62,8 @@ const particlesMaterials = new THREE.PointsMaterial({
 
 // Points
 const particles = new THREE.Points(particlesGeometry, particlesMaterials);
+
+
 scene.add(particles);
 
 /**
@@ -122,6 +124,7 @@ const tick = () => {
 
 	// Update Particles
 	particles.rotation.y = elapsedTime * 0.2;
+
 
 	for (let i = 0; i < count; i++) {
 		const i3 = i * 3;
