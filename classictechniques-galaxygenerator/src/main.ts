@@ -24,6 +24,9 @@ const parameters = {
   branches: 3,
   spin: 1,
   randomness: 0.2,
+  randomnessPower:3,
+  insideColor:'#FF6030',
+  outsideColor: '#1b3984'
 }
 
 let geometry: THREE.BufferGeometry | null;
@@ -41,7 +44,11 @@ const generateGalaxy = () => {
   // GEOMETRY
   geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(parameters.count * 3); // 3 values per vertex
+  const colors = new Float32Array(parameters.count * 3);//rgb
 
+  const colorInside = new THREE.Color(parameters.insideColor);
+  const colorOutside = new THREE.Color(parameters.outsideColor);
+  
   for (let i =0; i< parameters.count; i++){
     const i3 = i * 3;
 
@@ -50,24 +57,40 @@ const generateGalaxy = () => {
 
     const branchAngle = ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
 
-    const randomX = (Math.random() - 0.5) * parameters.randomness;
-    const randomY = (Math.random() - 0.5) * parameters.randomness;
-    const randomZ = (Math.random() - 0.5) * parameters.randomness;
+    const randomX =
+  Math.pow(Math.random(), parameters.randomnessPower) *
+  (Math.random() < 0.5 ? 1 : -1);
+const randomY =
+  Math.pow(Math.random(), parameters.randomnessPower) *
+  (Math.random() < 0.5 ? 1 : -1);
+const randomZ =
+  Math.pow(Math.random(), parameters.randomnessPower) *
+  (Math.random() < 0.5 ? 1 : -1);
 
 
     positions[i3 + 0] = Math.cos(branchAngle + spinAngle) * radius + randomX;
     positions[i3 + 1] = randomY;
     positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
+
+    //colors
+    const mixedColor = colorInside.clone();
+    mixedColor.lerp(colorOutside, radius / parameters.radius);
+
+    colors[i3 + 0] = mixedColor.r; //r
+    colors[i3 + 1] = mixedColor.g; //g
+    colors[i3 + 2] = mixedColor.b; //b
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
   //MATERIAL
   material = new THREE.PointsMaterial({
     size: parameters.size,
     sizeAttenuation: true,
     depthWrite: false,
-    blending: THREE.AdditiveBlending
+    blending: THREE.AdditiveBlending,
+    vertexColors: true
   });
 
   //POINTS
@@ -82,6 +105,9 @@ gui.add(parameters, "radius").min(0.01).max(20).step(0.01).onFinishChange(genera
 gui.add(parameters, "branches").min(2).max(20).step(1).onFinishChange(generateGalaxy);
 gui.add(parameters, "spin").min(-5).max(5).step(0.001).onFinishChange(generateGalaxy);
 gui.add(parameters, "randomness").min(0).max(2).step(0.001).onFinishChange(generateGalaxy);
+gui.add(parameters, "randomnessPower").min(1).max(10).step(0.001).onFinishChange(generateGalaxy);
+gui.addColor(parameters, "insideColor").onFinishChange(generateGalaxy);
+gui.addColor(parameters, 'outsideColor').onFinishChange(generateGalaxy);
 /**
  * Sizes
  */
