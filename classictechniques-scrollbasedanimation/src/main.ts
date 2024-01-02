@@ -41,36 +41,27 @@ const material = new THREE.MeshToonMaterial({
 });
 
 // Meshes
+
 const mesh1 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
 const mesh2 = new THREE.Mesh(new THREE.ConeGeometry(1, 2, 32), material);
 const mesh3 = new THREE.Mesh(new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16), material);
 
 scene.add(mesh1, mesh2, mesh3);
 
-// const objectDistance = 4;
-// const mesh1 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
-
-// const mesh2 = new THREE.Mesh(new THREE.ConeGeometry(1, 2, 32), material);
-
-// const mesh3 = new THREE.Mesh(
-// 	new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
-// 	material
-// );
+const objectsDistance = 4;
 
 // /**
 //  * this is to position the objects at a certain distance from each other on the y axis
 //  */
-// mesh1.position.y = -objectDistance * 0;
-// mesh2.position.y = -objectDistance * 1;
-// mesh3.position.y = -objectDistance * 2;
+mesh1.position.y = -objectsDistance * 0;
+mesh2.position.y = -objectsDistance * 1;
+mesh3.position.y = -objectsDistance * 2;
 
-// mesh1.position.x = 2;
-// mesh2.position.x = -2;
-// mesh3.position.x = 2;
+mesh1.position.x =  2;
+mesh2.position.x = -2;
+mesh3.position.x = 2;
 
-// scene.add(mesh1, mesh2, mesh3);
-
-// const sectionMeshes = [mesh1, mesh2, mesh3];
+const sectionMeshes = [mesh1, mesh2, mesh3];
 
 // /**
 //  * Particles
@@ -118,20 +109,6 @@ const sizes = {
 	height: window.innerHeight,
 };
 
-window.addEventListener("resize", () => {
-	// Update sizes
-	sizes.width = window.innerWidth;
-	sizes.height = window.innerHeight;
-
-	// Update camera
-	camera.aspect = sizes.width / sizes.height;
-	camera.updateProjectionMatrix();
-
-	// Update renderer
-	renderer.setSize(sizes.width, sizes.height);
-	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-});
-
 /**
  * Camera
  */
@@ -163,11 +140,23 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 /**
  * Scroll
  */
-// let scrollY = window.scrollY;
+let scrollY = window.scrollY;
 // let currentSection = 0;
 
-// window.addEventListener("scroll", () => {
-// 	scrollY = window.scrollY;
+window.addEventListener("scroll", () => {
+	scrollY = window.scrollY;
+
+  // Update sizes
+	sizes.width = window.innerWidth;
+	sizes.height = window.innerHeight;
+
+	// Update camera
+	camera.aspect = sizes.width / sizes.height;
+	camera.updateProjectionMatrix();
+
+	// Update renderer
+	renderer.setSize(sizes.width, sizes.height);
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 // 	const newSection = Math.floor(scrollY / sizes.height);
 // 	if (newSection !== currentSection) {
@@ -181,7 +170,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // 			z: "+=1.5",
 // 		});
 // 	}
-// });
+});
 
 // /**
 //  * Cursor
@@ -209,13 +198,13 @@ const tick = () => {
 	// const deltaTime = elapsedTime - prevTime;
 	// prevTime = elapsedTime;
 
-	// // Animate Camera
-	// /**
-	//  * this is to move the camera up and down based on the scroll position
-	//  * the scroll position is divided by the height of the viewport and multiplied by the distance between the objects
-	//  */
-	// camera.position.y = (-scrollY / sizes.height) * objectDistance;
-
+	// Animate Camera
+	/**
+	 * this is to move the camera up and down based on the scroll position
+	 * the scroll position is divided by the height of the viewport and multiplied by the distance between the objects
+	 */
+	camera.position.y = (-scrollY / sizes.height) * objectsDistance;
+	
 	// const parallaxX = cursor.x * 0.5;
 	// const parallaxY = -cursor.y * 0.5;
 	// /**
@@ -233,10 +222,10 @@ const tick = () => {
 	// 	(parallaxY - cameraGroup.position.y) * deltaTime * 5;
 
 	// // Animate Meshes
-	// for (const mesh of sectionMeshes) {
-	// 	mesh.rotation.x += deltaTime * 0.1;
-	// 	mesh.rotation.y += deltaTime * 0.12;
-	// }
+	for (const mesh of sectionMeshes) {
+		mesh.rotation.x = elapsedTime * 0.1;
+		mesh.rotation.y = elapsedTime * 0.12;
+	}
 
 	// Render
 	renderer.render(scene, camera);
