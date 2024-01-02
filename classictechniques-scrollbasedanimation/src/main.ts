@@ -13,7 +13,7 @@ const parameters = {
 };
 
 gui.addColor(parameters, "materialColor").onChange(() => {
-	// material.color.set(parameters.materialColor);
+	material.color.set(parameters.materialColor);
 	// particlesMaterial.color.set(parameters.materialColor);
 });
 
@@ -30,21 +30,17 @@ const scene = new THREE.Scene();
  * Objects
  */
 // Textures
-// const textureLoader = new THREE.TextureLoader();
-// const gradientTexture = textureLoader.load("/textures/gradients/3.jpg");
-// gradientTexture.magFilter = THREE.NearestFilter;
+const textureLoader = new THREE.TextureLoader();
+const gradientTexture = textureLoader.load("/textures/gradients/3.jpg");
+gradientTexture.magFilter = THREE.NearestFilter;
 
 // // Material
-// const material = new THREE.MeshToonMaterial({
-// 	color: parameters.materialColor,
-// 	gradientMap: gradientTexture,
-// });
+const material = new THREE.MeshToonMaterial({
+	color: parameters.materialColor,
+	gradientMap: gradientTexture,
+});
 
-// // Meshes
- 
-
-const material =  new THREE.MeshToonMaterial({color:parameters.materialColor});
-
+// Meshes
 const mesh1 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
 const mesh2 = new THREE.Mesh(new THREE.ConeGeometry(1, 2, 32), material);
 const mesh3 = new THREE.Mesh(new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16), material);
@@ -107,12 +103,12 @@ scene.add(mesh1, mesh2, mesh3);
 // const particles = new THREE.Points(particlesGeometry, particlesMaterial);
 // scene.add(particles);
 
-// /**
-//  * Lights
-//  */
-// const directionalLights = new THREE.DirectionalLight(0xffffff, 1);
-// directionalLights.position.set(1, 1, 0);
-// scene.add(directionalLights);
+/**
+ * Lights
+ */
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(1, 1, 0);
+scene.add(directionalLight);
 
 /**
  * Sizes
