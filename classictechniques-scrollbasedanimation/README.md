@@ -96,3 +96,93 @@ window.addEventListener("scroll", () => {
   scrollY = -window.scrollY;
 });
 ```
+
+## Parralax
+
+- Parralax is the action of seeing one object through different observation points.
+- is is done naturally by our eyes and its how we feel the depth of things.
+- apply the parralax effect by making the camera move horizontally and vertically according to mouse movements (cursor).
+- the values we get from mouseevent - 'mousemove' should be adapted to fit the context.
+- at this point the amplitude depends on this size of the viewport and users with different screen resolutions will have different results.
+- to create the same experience for every user
+  - we normalize the value (from 0 to 1) by dividing them by the size of the viewport.
+  - make value go from -0.5 to 0.5 (make centerpoint at center) add 0.5 on x and y.
+- we use this value to move the camera
+- but at this point mouse movement and objects are inverted AND camera scroll doesnt work anymore.
+- the problem is we are setting the value for camera.position.y twice.
+  - once to move the camera up and down based on scroll position
+  - and once for parallax effect.
+- to fix: put camera in a group then apply parallax effect on the group and not the camera itself.
+- in tick(), apply parallaxX, and parallaxY position to cameraGroup.
+- create depth by adding particles
+
+```js
+// Group
+const cameraGroup = new THREE.Group();
+scene.add(cameraGroup);
+// scene.add(camera);
+cameraGroup.add(camera); //update by adding to camera group
+
+// /**
+//  * Cursor
+//  */
+const cursor = {
+  x: 0,
+  y: 0,
+};
+
+window.addEventListener("mousemove", (e) => {
+  // 	/**
+  // 	 * x, y ~ -0.5, 0.5
+  // 	 */
+  cursor.x = e.clientX / sizes.width - 0.5;
+  cursor.y = e.clientY / sizes.height - 0.5;
+});
+
+const tick = () => {
+  const parallaxX = cursor.x * 0.5;
+  const parallaxY = -cursor.y * 0.5;
+  camera.position.y = (-scrollY / sizes.height) * objectsDistance; //move the camera up and down based on the scroll position
+
+  /**
+   * to achive parallax effect as well as scrolling effect, we need to add the camera to a group and then set position of the group
+   */
+  // camera.position.x = parallaxX;
+  // camera.position.y = parallaxY;
+  cameraGroup.position.x = parallaxX;
+  cameraGroup.position.y = parallaxY;
+};
+```
+
+## Easing / lerping / smoothing animation
+
+- on each frame, instead of moving the camera straight to the target, we move it (slight closer eg. a tenth), then on next frame, another 10th etc.
+- then the closer we are the smaller the move - because as the distance decreases, so does the value of a 1/10 of the distance.
+- adjust how we set camera group position with +=
+- we need to calculate distance between updated position To destination (parallaxX, parallaxY)
+- DELTA time - we also need to use delta time (time between each frame) - makes same experience for people with hight refresh rates or fps
+- create previousTime variable
+- at the beginning of the tick function, after setting elapsedTime, calculate the deltaTime by subtracting the previousTime from the elapsedTime
+- deltaTime is in seconds - the value will be small. around 0.016 (RUNNING at 60fps)
+- we can convert to larger value like 5
+- now we have same animation speed (frame rate)
+
+```js
+let clock = new THREE.Clock();
+let previousTime = 0;
+
+
+const tick = () => {
+  onst c = clock.getElapsedTime();
+  const deltaTime = elapsedTime - previousTime; //calc time difference
+  previousTime = elapsedTime;  //update previous time for next frame
+
+  camera.position.y = -scrollY / sizes.height * objectsDistance;
+
+  const parallaxX = cursor.x * 0.5;
+  const parallaxY = - cursor.y * 0.5;
+
+  cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+  cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+}
+```

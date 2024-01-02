@@ -1054,11 +1054,14 @@ directionalLight.shadow.mapSize.height = 1024;
 - reduce render area - set shadow render area with .shadow.camera.near and .shadow.camera.far
 
 ### amplitude
+
 - render area - size is adjustable by controlling left, right, top, bottom distance of the camera
 - hide camera helper by directionalLightCameraHelper.visible = false;
 
 ### blur
+
 - blur shadow
+
 ```js
 directionalLight.shadow.radius = 10;
 ```
@@ -1080,14 +1083,13 @@ scene.add(directionalLightCameraHelper);
 
 ### shadowmap algorithms:
 
-  - THREE.BasicShadowMap - very performant - lousy quality
-  - THREE.PCFShadowMap - less performant - smooth edges
-  - THREE.PCFSoftShadowMap - less performant - even softer edges (brunos pick) //RADIUS doesnt work with this
-  - THREE.VSMShadowMap - less performant - more constraints - unexpected results
+- THREE.BasicShadowMap - very performant - lousy quality
+- THREE.PCFShadowMap - less performant - smooth edges
+- THREE.PCFSoftShadowMap - less performant - even softer edges (brunos pick) //RADIUS doesnt work with this
+- THREE.VSMShadowMap - less performant - more constraints - unexpected results
 
 ```js
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
 ```
 
 #### spot light shadows
@@ -1096,9 +1098,8 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 - improve quality by changing shadow.mapSize
 - spotLight uses PerspectiveCamera - and we change fov to change amplitude (render size ie clse/far from objects in scene)
 
-
 ```js
-const spotLight = new THREE.SpotLight(0xFFFFFF, 0.4, 10, Math.PI * 0.3);
+const spotLight = new THREE.SpotLight(0xffffff, 0.4, 10, Math.PI * 0.3);
 spotLight.castShadow = true;
 spotLight.shadow.mapSize.width = 1024;
 spotLight.shadow.mapSize.height = 1024;
@@ -1106,30 +1107,31 @@ spotLight.shadow.camera.fov = 30;
 spotLight.shadow.camera.near = 1;
 spotLight.shadow.camera.far = 6;
 
-spotLight.position.set(0,2,2);
+spotLight.position.set(0, 2, 2);
 scene.add(spotLight);
 scene.add(spotLight.target);
 
 const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
 scene.add(spotLightCameraHelper);
-
 ```
 
 ### pointlight
+
 - reduce brightness in scene by changing ambient, directional and spotlight intensity.
 - Threejs - point light uses perspective camera helper and it takes 6 images (top, right, bottom, left, back, and front) from the point light position (ie. 6x renders for each light)
 - the pointLight Helper in scene is looking down because down is probably the last render that threeJS does
 
 ```js
-const pointLight = new THREE.PointLight(0xFFFFFF, 0.3);
+const pointLight = new THREE.PointLight(0xffffff, 0.3);
 pointLight.castShadow = true;
 pointLight.position.set(-1, 1, 0);
 scene.add(pointLight);
 ```
 
 ### Baking shadows
+
 - bake shadows into the texture floor
-- first disable all shadows by changing 
+- first disable all shadows by changing
 - Instead of MeshStandardMaterial, use a MeshBasicMaterial on the plane material with the bakedShadow
 - moving objects causes a problem because shadow is baked on the plane.
 
@@ -1140,10 +1142,17 @@ const plane = new THREE.Mesh(
   new THREE.PlaneGeometry(5,5);
   new THREE.MeshBasicMaterial({
     map: bakedShadow
-  })  
+  })
 )
 ```
 
 ### Alternative to baking shadows
+
 - using an image (diffused circle gradient), simpleShadow.jpg and we move this image when the object moves, and if the object gets further from plane, we make the shadow have more alpha (transparent).
 - simulate a ball bouce by using Math.abs(sin(x))
+
+---
+
+# Scrollbased animation
+
+- see folder README

@@ -113,8 +113,8 @@ const sizes = {
  * Camera
  */
 // Group
-// const cameraGroup = new THREE.Group();
-// scene.add(cameraGroup);
+const cameraGroup = new THREE.Group();
+scene.add(cameraGroup);
 
 // Base camera
 const camera = new THREE.PerspectiveCamera(
@@ -124,8 +124,8 @@ const camera = new THREE.PerspectiveCamera(
 	100
 );
 camera.position.z = 8;
-scene.add(camera);
-// cameraGroup.add(camera);
+// scene.add(camera); update by adding to camera group
+cameraGroup.add(camera);
 
 /**
  * Renderer
@@ -175,28 +175,30 @@ window.addEventListener("scroll", () => {
 // /**
 //  * Cursor
 //  */
-// const cursor = {
-// 	x: 0,
-// 	y: 0,
-// };
-// window.addEventListener("mousemove", (e) => {
+const cursor = {
+	x: 0,
+	y: 0,
+};
+
+window.addEventListener("mousemove", (e) => {
 // 	/**
 // 	 * x, y ~ -0.5, 0.5
 // 	 */
-// 	cursor.x = e.clientX / sizes.width - 0.5;
-// 	cursor.y = e.clientY / sizes.width - 0.5;
-// });
+	cursor.x = e.clientX / sizes.width - 0.5;
+	cursor.y = e.clientY / sizes.height - 0.5;
+
+});
 
 /**
  * Animate
  */
 const clock = new THREE.Clock();
-// let prevTime = 0;
+let previousTime = 0;
 
 const tick = () => {
 	const elapsedTime = clock.getElapsedTime();
-	// const deltaTime = elapsedTime - prevTime;
-	// prevTime = elapsedTime;
+	const deltaTime = elapsedTime - previousTime;
+	previousTime = elapsedTime;
 
 	// Animate Camera
 	/**
@@ -205,21 +207,25 @@ const tick = () => {
 	 */
 	camera.position.y = (-scrollY / sizes.height) * objectsDistance;
 	
-	// const parallaxX = cursor.x * 0.5;
-	// const parallaxY = -cursor.y * 0.5;
-	// /**
-	//  * to achive parallax effect as well as scrolling effect, we need to add the camera to a group and then set position of the group
-	//  */
-	// // cameraGroup.position.x = parallaxX;
-	// // cameraGroup.position.y = parallaxY;
+	const parallaxX = cursor.x * 0.5;
+	const parallaxY = -cursor.y * 0.5;
+	/**
+	 * to achive parallax effect as well as scrolling effect, we need to add the camera to a group and then set position of the group
+	 */
+  // camera.position.x = parallaxX;
+  // camera.position.y = parallaxY;
+
+	//without delta
+	// cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 0.1;
+	// cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 0.1;
 
 	// /**
 	//  * this is to add a smooth transition (ease-in effect) between the camera position and the parallax position
 	//  */
-	// cameraGroup.position.x +=
-	// 	(parallaxX - cameraGroup.position.x) * deltaTime * 5;
-	// cameraGroup.position.y +=
-	// 	(parallaxY - cameraGroup.position.y) * deltaTime * 5;
+	cameraGroup.position.x +=
+		(parallaxX - cameraGroup.position.x) * deltaTime * 5;
+	cameraGroup.position.y +=
+		(parallaxY - cameraGroup.position.y) * deltaTime * 5;
 
 	// // Animate Meshes
 	for (const mesh of sectionMeshes) {
