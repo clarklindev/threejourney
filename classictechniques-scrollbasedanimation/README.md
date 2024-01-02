@@ -1,14 +1,20 @@
-<div align="center">
+# scrollbased animation
 
-# 21 - Scroll Based Animation
+- set renderer alpha to true - this sets the renderer background color to transparent
+- .setClearAlpha() - value between 0 and 1
+- set the html background color
 
-**[<kbd> <br> **Click to view Live Demo** <br> </kbd>][demo]** &nbsp;&nbsp;
+```js
+const renderer = new THREE.WebGLRenderer({
+  canvas: canvas,
+  alpha: true,
+});
 
-#### Course: [ThreeJS Journey][course] By Bruno Simon
+//renderer.setClearAlpha(1);
+```
 
-<!-----------------------------------{ Links }---------------------------------->
-
-[course]: https://threejs-journey.com
-[demo]: https://scroll-based-animations-threejs-journey.vercel.app
-
-</div>
+```css
+html {
+  background: #1e1a20;
+}
+```

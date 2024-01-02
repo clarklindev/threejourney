@@ -8,13 +8,13 @@ import gsap from "gsap";
  */
 const gui = new dat.GUI();
 
-const params = {
+const parameters = {
 	materialColor: "#ffeded",
 };
 
-gui.addColor(params, "materialColor").onChange(() => {
-	// material.color.set(params.materialColor);
-	// particlesMaterial.color.set(params.materialColor);
+gui.addColor(parameters, "materialColor").onChange(() => {
+	// material.color.set(parameters.materialColor);
+	// particlesMaterial.color.set(parameters.materialColor);
 });
 
 /**
@@ -27,15 +27,6 @@ const canvas: HTMLElement = document.querySelector("canvas.webgl")!;
 const scene = new THREE.Scene();
 
 /**
- * Test cube
- */
-const cube = new THREE.Mesh(
-	new THREE.BoxGeometry(1, 1, 1),
-	new THREE.MeshBasicMaterial({ color: "#ff0000" })
-  );
-  scene.add(cube);
-
-/**
  * Objects
  */
 // Textures
@@ -45,11 +36,21 @@ const cube = new THREE.Mesh(
 
 // // Material
 // const material = new THREE.MeshToonMaterial({
-// 	color: params.materialColor,
+// 	color: parameters.materialColor,
 // 	gradientMap: gradientTexture,
 // });
 
 // // Meshes
+ 
+
+const material =  new THREE.MeshToonMaterial({color:parameters.materialColor});
+
+const mesh1 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
+const mesh2 = new THREE.Mesh(new THREE.ConeGeometry(1, 2, 32), material);
+const mesh3 = new THREE.Mesh(new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16), material);
+
+scene.add(mesh1, mesh2, mesh3);
+
 // const objectDistance = 4;
 // const mesh1 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
 
@@ -98,7 +99,7 @@ const cube = new THREE.Mesh(
 
 // // Material
 // const particlesMaterial = new THREE.PointsMaterial({
-// 	color: params.materialColor,
+// 	color: parameters.materialColor,
 // 	size: 0.03,
 // 	sizeAttenuation: true,
 // });
