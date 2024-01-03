@@ -186,3 +186,5 @@ const tick = () => {
   cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
 }
 ```
+
+## particles
