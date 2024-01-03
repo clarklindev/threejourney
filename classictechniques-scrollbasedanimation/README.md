@@ -188,3 +188,113 @@ const tick = () => {
 ```
 
 ## particles
+
+- creating very simple square particles and spread them around the scene.
+- positioning particles ourselves, we need a BufferGeometry (particles + galaxy generator lesson).
+- create a particlesCount variable and a positions variable using a Float32Array
+- create a loop and add random coordinates to the positions array
+- instantiate the BufferGeometry and set the position attribute.
+- create the material using PointsMaterial
+- create the particles using Points
+  - for the x (horizontal) and z (depth), can use random values that can be positive and negative.
+  - for the y (vertical) we need to make the particles start high enough and then spread far enough below so that we reach the end with the scroll (use objects distance multiply by sections length)
+- can change the color of particles in the change event
+
+```js
+//can change the color of particles in the change event
+gui.addColor(parameters, "materialColor").onChange(() => {
+  material.color.set(parameters.materialColor);
+  particlesMaterial.color.set(parameters.materialColor);
+});
+
+//create a particlesCount variable and a positions variable using a Float32Array
+const particlesCount = 200;
+const positions = new Float32Array(particlesCount * 3); //this is how we store particle positions in Float32Array (x,y,z)
+
+//create a loop and add random coordinates to the positions array
+for (let i = 0; i < particlesCount; i++) {
+  //fill array
+
+  //x position of particle
+  positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
+
+  //y position of particle
+  positions[i * 3 + 1] =
+    objectsDistance * 0.5 -
+    Math.random() * objectsDistance * sectionMeshes.length;
+
+  //z position of particle
+  positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+}
+
+//instantiate the BufferGeometry and set the position attribute.
+const particlesGeometry = new THREE.BufferGeometry();
+
+//provide array to BufferGeometry
+particlesGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(positions, 3)
+); //@props: the Float32Array, 3 is how many values per vertex\
+
+// Material
+const particlesMaterial = new THREE.PointsMaterial({
+  color: parameters.materialColor,
+  size: 0.03,
+  sizeAttenuation: true,
+});
+
+//Points
+const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+scene.add(particles);
+```
+
+## Triggered rotation
+
+- animation when arriving on section - make the objects do a little spin when arriving at corresponding section in addition to the permanent rotation.
+
+1. need to know when we reach a section
+2. we can use the scrollY value and do some calculations to check if we have changed sections.
+3. in the scroll event callback function, calculate the current section by dividing the scrollY by sizes.height.
+4. this works because each section is exactly the height of the viewport
+5. test if newSection is different from currentSection
+6. spin with GSAP: `import gsap from 'gsap';`
+7. code doesnt work because tick() is updating mesh.rotation.x and mesh.rotation.y on each frame already...
+8. fix: in tick(), instead of setting a specific rotation based on elapsedTime, add a deltaTime to current rotation
+
+```js
+import gsap from "gsap";
+
+let currentSection = 0;
+
+window.addEventListener("scroll", () => {
+  scrollY = window.scrollY;
+
+  const newSection = Math.floor(scrollY / sizes.height); //get section
+
+  if (newSection !== currentSection) {
+    currentSection = newSection;
+
+    gsap.to(sectionMeshes[currentSection].rotation, {
+      duration: 1.5,
+      ease: "power2.inOut",
+      x: "+=6",
+      y: "+=3",
+      z: "+=1.5",
+    });
+  }
+});
+
+const tick = () => {
+  // Animate Meshes
+  // for (const mesh of sectionMeshes) {
+  // 	mesh.rotation.x = elapsedTime * 0.1;
+  // 	mesh.rotation.y = elapsedTime * 0.12;
+  // }
+
+  // Animate Meshes - with delta
+  for (const mesh of sectionMeshes) {
+    mesh.rotation.x += deltaTime * 0.1;
+    mesh.rotation.y += deltaTime * 0.12;
+  }
+};
+```

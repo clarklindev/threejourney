@@ -14,7 +14,7 @@ const parameters = {
 
 gui.addColor(parameters, "materialColor").onChange(() => {
 	material.color.set(parameters.materialColor);
-	// particlesMaterial.color.set(parameters.materialColor);
+	particlesMaterial.color.set(parameters.materialColor);
 });
 
 /**
@@ -63,36 +63,42 @@ mesh3.position.x = 2;
 
 const sectionMeshes = [mesh1, mesh2, mesh3];
 
-// /**
-//  * Particles
-//  */
-// // Geometry
-// const particlesCount = 200;
-// const positions = new Float32Array(particlesCount * 3);
+/**
+ * Particles
+ */
+// Geometry
+const particlesCount = 200;
+const positions = new Float32Array(particlesCount * 3); //how we store positions (flat array)
 
-// for (let i = 0; i < particlesCount * 3; i++) {
-// 	positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
-// 	positions[i * 3 + 1] =
-// 		objectDistance * 0.5 -
-// 		Math.random() * objectDistance * sectionMeshes.length;
-// 	positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-// }
 
-// const particlesGeometry = new THREE.BufferGeometry();
-// particlesGeometry.setAttribute(
-// 	"position",
-// 	new THREE.BufferAttribute(positions, 3)
-// );
+for (let i = 0; i < particlesCount; i++) {
+	//fill array 
 
-// // Material
-// const particlesMaterial = new THREE.PointsMaterial({
-// 	color: parameters.materialColor,
-// 	size: 0.03,
-// 	sizeAttenuation: true,
-// });
+	//x position of particle
+	positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
+	
+	//y position of particle
+	positions[i * 3 + 1] = objectsDistance * 0.5 - Math.random() * objectsDistance * sectionMeshes.length;
+	
+	//z position of particle
+	positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+}
 
-// const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-// scene.add(particles);
+const particlesGeometry = new THREE.BufferGeometry();
+ 
+//provide array to BufferGeometry
+particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));//@props: the Float32Array, 3 is how many values per vertex
+
+// Material
+const particlesMaterial = new THREE.PointsMaterial({
+	color: parameters.materialColor,
+	size: 0.03,
+	sizeAttenuation: true,
+});
+
+//Points
+const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+scene.add(particles);
 
 /**
  * Lights
@@ -141,7 +147,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  * Scroll
  */
 let scrollY = window.scrollY;
-// let currentSection = 0;
+let currentSection = 0;
 
 window.addEventListener("scroll", () => {
 	scrollY = window.scrollY;
@@ -158,18 +164,18 @@ window.addEventListener("scroll", () => {
 	renderer.setSize(sizes.width, sizes.height);
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-// 	const newSection = Math.floor(scrollY / sizes.height);
-// 	if (newSection !== currentSection) {
-// 		currentSection = newSection;
+	const newSection = Math.floor(scrollY / sizes.height);
+	if (newSection !== currentSection) {
+		currentSection = newSection;
 
-// 		gsap.to(sectionMeshes[currentSection].rotation, {
-// 			duration: 1.5,
-// 			ease: "power32.inOut",
-// 			x: "+=6",
-// 			y: "+=3",
-// 			z: "+=1.5",
-// 		});
-// 	}
+		gsap.to(sectionMeshes[currentSection].rotation, {
+			duration: 1.5,
+			ease: "power32.inOut",
+			x: "+=6",
+			y: "+=3",
+			z: "+=1.5",
+		});
+	}
 });
 
 // /**
@@ -207,13 +213,15 @@ const tick = () => {
 	 */
 	camera.position.y = (-scrollY / sizes.height) * objectsDistance;
 	
+	//lower the amplitude of the effect
 	const parallaxX = cursor.x * 0.5;
 	const parallaxY = -cursor.y * 0.5;
+
 	/**
 	 * to achive parallax effect as well as scrolling effect, we need to add the camera to a group and then set position of the group
 	 */
-  // camera.position.x = parallaxX;
-  // camera.position.y = parallaxY;
+	//camera.position.x = parallaxX;
+	//camera.position.y = parallaxY;
 
 	//without delta
 	// cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 0.1;
@@ -227,10 +235,18 @@ const tick = () => {
 	cameraGroup.position.y +=
 		(parallaxY - cameraGroup.position.y) * deltaTime * 5;
 
+	
+
 	// // Animate Meshes
+	// for (const mesh of sectionMeshes) {
+	// 	mesh.rotation.x = elapsedTime * 0.1;
+	// 	mesh.rotation.y = elapsedTime * 0.12;
+	// }
+
+	// // Animate Meshes - with delta
 	for (const mesh of sectionMeshes) {
-		mesh.rotation.x = elapsedTime * 0.1;
-		mesh.rotation.y = elapsedTime * 0.12;
+		mesh.rotation.x += deltaTime * 0.1;
+		mesh.rotation.y += deltaTime * 0.12;
 	}
 
 	// Render
