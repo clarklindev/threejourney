@@ -2,7 +2,7 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
-// import CANNON, { Vec3 } from "cannon";
+import CANNON, { Vec3 } from "cannon";
 
 /**
  * Debug
@@ -61,7 +61,7 @@ const environmentMapTexture = cubeTextureLoader.load([
  * Physics
  */
 // World
-// const world = new CANNON.World();
+const world = new CANNON.World();
 /**
  * broadphase: the algorithm used to detect collisions between objects
  * by default it checks all the objects in the world against each other, which is very inefficient
@@ -72,7 +72,7 @@ const environmentMapTexture = cubeTextureLoader.load([
  * allowSleep: if true, bodies that are at rest will fall asleep and won't be checked for collisions until they move again
  */
 // world.allowSleep = true;
-// world.gravity.set(0, -9.82, 0);
+world.gravity.set(0, -9.82, 0);
 
 // Materials
 // const concreteMaterial = new CANNON.Material("concrete");
@@ -104,31 +104,33 @@ const environmentMapTexture = cubeTextureLoader.load([
 // world.defaultContactMaterial = defaultContactMaterial;
 
 // Sphere body
-// const sphereShape = new CANNON.Sphere(0.5);
-// const sphereBody = new CANNON.Body({
-// 	mass: 1,
-// 	shape: sphereShape,
-// 	position: new CANNON.Vec3(0, 3, 0),
-// 	// material: plasticMaterial,
-// 	// material: defaultMaterial,
-// });
+const sphereShape = new CANNON.Sphere(0.5);
+const sphereBody = new CANNON.Body({
+	mass: 1,
+	shape: sphereShape,
+	position: new CANNON.Vec3(0, 3, 0),	 //start with y of 3 so it falls
+	// material: plasticMaterial,
+	// material: defaultMaterial,
+});
+
+
 // sphereBody.applyLocalForce(
 // 	new CANNON.Vec3(150, 0, 0), // force
 // 	new CANNON.Vec3(0, 0, 0) // local position
 // );
-// world.addBody(sphereBody);
+world.addBody(sphereBody);
 
 // Floor
-// const floorShape = new CANNON.Plane();
-// const floorBody = new CANNON.Body({
-// 	mass: 0, // this means that the body is static
-// 	shape: floorShape,
-// 	// material: concreteMaterial,
-// 	// material: defaultMaterial,
-// });
-// // Rotate the floor 90 degrees to make it horizontal
-// floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5);
-// world.addBody(floorBody);
+const floorShape = new CANNON.Plane();
+const floorBody = new CANNON.Body({
+ 	mass: 0, // this means that the body is static
+ 	shape: floorShape,
+	// material: concreteMaterial,
+ 	// material: defaultMaterial,
+});
+// Rotate the floor 90 degrees to make it horizontal
+floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5);
+world.addBody(floorBody);
 
 /**
  * Test sphere
@@ -374,8 +376,8 @@ let prevElapsedTime = 0;
 
 const tick = () => {
 	const elapsedTime = clock.getElapsedTime();
-	// const deltaTime = elapsedTime - prevElapsedTime;
-
+	const deltaTime = elapsedTime - prevElapsedTime;
+	prevElapsedTime = elapsedTime;
 	// Update Physics World
 	// sphereBody.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position);
 
@@ -386,9 +388,14 @@ const tick = () => {
 	 * deltaTime - the time elapsed since the last call to step
 	 * maxSubSteps - the maximum number of fixed updates to take per function call
 	 */
-	// world.step(1 / 60, deltaTime, 3);
-
-	// // sphere.position.copy(sphereBody.position as unknown as THREE.Vector3);
+	world.step(1 / 60, deltaTime, 3);
+	
+	//update threejs sphere 
+	// sphere.position.x = sphereBody.position.x;
+	// sphere.position.y = sphereBody.position.y;
+	// sphere.position.z = sphereBody.position.z;
+	//replaces above code
+	sphere.position.copy(sphereBody.position as unknown as THREE.Vector3);
 
 	// for (const obj of objectToUpdate) {
 	// 	obj.mesh.position.copy(obj.body.position as unknown as THREE.Vector3);
