@@ -74,34 +74,22 @@ const world = new CANNON.World();
 // world.allowSleep = true;
 world.gravity.set(0, -9.82, 0);
 
-// Materials
-// const concreteMaterial = new CANNON.Material("concrete");
-// const plasticMaterial = new CANNON.Material("plastic");
-// const defaultMaterial = new CANNON.Material("default");
+// Material
+const defaultMaterial = new CANNON.Material("default");
 
-// const concretePlasticContactMaterial = new CANNON.ContactMaterial(
-// 	concreteMaterial,
-// 	plasticMaterial,
-// 	{
-// 		friction: 0.1,
-// 		restitution: 0.7, // bounciness
-// 	}
-// );
-// world.addContactMaterial(concretePlasticContactMaterial);
-
-// const defaultContactMaterial = new CANNON.ContactMaterial(
-// 	defaultMaterial,
-// 	defaultMaterial,
-// 	{
-// 		friction: 0.1,
-// 		restitution: 0.7, // bounciness
-// 	}
-// );
-// world.addContactMaterial(defaultContactMaterial);
+const defaultContactMaterial = new CANNON.ContactMaterial(
+	defaultMaterial,
+	defaultMaterial,
+	{
+		friction: 0.1,
+		restitution: 0.7, // bounciness
+	}
+);
+world.addContactMaterial(defaultContactMaterial);
 /**
  * either set the material on the object body or set the defaultContactMaterial like below
  */
-// world.defaultContactMaterial = defaultContactMaterial;
+world.defaultContactMaterial = defaultContactMaterial;
 
 // Sphere body
 const sphereShape = new CANNON.Sphere(0.5);
@@ -109,7 +97,6 @@ const sphereBody = new CANNON.Body({
 	mass: 1,
 	shape: sphereShape,
 	position: new CANNON.Vec3(0, 3, 0),	 //start with y of 3 so it falls
-	// material: plasticMaterial,
 	// material: defaultMaterial,
 });
 
@@ -125,7 +112,6 @@ const floorShape = new CANNON.Plane();
 const floorBody = new CANNON.Body({
  	mass: 0, // this means that the body is static
  	shape: floorShape,
-	// material: concreteMaterial,
  	// material: defaultMaterial,
 });
 // Rotate the floor 90 degrees to make it horizontal

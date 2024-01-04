@@ -126,3 +126,74 @@ const tick = () => {
   sphere.position.copy(sphereBody.position as unknown as THREE.Vector3);
 };
 ```
+
+## Contact material (36min 26sec)
+
+- we can change the friction and bouncing behavior by setting a material.
+- a material is just a reference (plastic, concrete, etc)
+- we should create one for each type of material in the scene
+- (actually will just use 1 material as the collision material - see below)
+- materials are references and are associated with Bodies.
+
+```js
+const concreteMaterial = new CANNON.Material("concrete"); //"concrete" is the reference name
+const plasticMaterial = new CANNON.Material("plastic"); //"plastic" is the reference name
+```
+
+- we can create a ContactMaterial which is the combination of two Materials and how they should collide.
+  - the first 2 parameters are the Materials.
+  - the 3rd is an object containing collision properties (the default value for both is 0.3):
+    - friction (how much does it rub)
+    - restitution (how much does it bouce)
+- then we have to tell our wall and floor shapes to use the contact material.
+
+```js
+const concretePlasticContactMaterial = new CANNON.ContactMaterial(
+  concreteMaterial,
+  plasticMaterial,
+  {
+    friction: 0.1, //higher slows object quicker
+    restitution: 0.7, // bounciness
+  }
+);
+
+world.addContactMaterial(concretePlasticContactMaterial);
+
+// Sphere body
+const sphereShape = new CANNON.Sphere(0.5);
+const sphereBody = new CANNON.Body({
+  mass: 1,
+  shape: sphereShape,
+  position: new CANNON.Vec3(0, 3, 0), //start with y of 3 so it falls
+  material: plasticMaterial, //  <----added this
+});
+world.addBody(sphereBody);
+
+// Floor
+const floorShape = new CANNON.Plane();
+const floorBody = new CANNON.Body({
+  mass: 0, // this means that the body is static
+  shape: floorShape,
+  material: concreteMaterial, //  <----added this
+});
+world.addBody(floorBody);
+```
+
+- instead of making 2 materials, just use one.
+- so name the contact material 'default' and just use defaultMaterial.
+- BUT EVEN BETTER - we can set our material as the default material with .defaultContactMaterial property on World
+- now the world can be composed of same material.
+
+```js
+const defaultMaterial = new CANNON.Material("default");
+const defaultContactMaterial = new CANNON.ContactMaterial(
+  defaultMaterial,
+  defaultMaterial,
+  {
+    friction: 0.1,
+    restitution: 0.7,
+  }
+);
+world.addContactMaterial(defaultContactMaterial);
+world.defaultContactMaterial = defaultContactMaterial; //  <----to this instead
+```
