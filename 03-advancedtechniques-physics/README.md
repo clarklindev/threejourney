@@ -197,3 +197,5 @@ const defaultContactMaterial = new CANNON.ContactMaterial(
 world.addContactMaterial(defaultContactMaterial);
 world.defaultContactMaterial = defaultContactMaterial; //  <----to this instead
 ```
+
+## Apply forces
