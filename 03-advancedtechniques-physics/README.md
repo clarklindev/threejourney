@@ -253,3 +253,19 @@ const tick = () => {
 //function to create spheres
 const createSphere = (radius, position) => {};
 ```
+
+### Boxes in CANNONJs
+
+- when creating box geometry in CANNONjs, use half extent values as new THREE.Vector3() - meaning they are from the center of the geometry to the edge which is half the full (width, height, depth).
+- in the tick() we also need to copy object.mesh.quaternion from CANNONjs to THREEjs object
+
+```js
+const shape = new CANNON.Box(new Vec3(width * 0.5, height * 0.5, depth * 0.5));
+
+const tick = ()=>{
+
+  object.mesh.quaternion.copy(
+    object.body.quaternion as unknown as THREE.Quaternion
+  );
+}
+```

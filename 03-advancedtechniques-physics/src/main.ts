@@ -2,16 +2,16 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
-import CANNON from "cannon";
+import CANNON, { Vec3 } from "cannon";
 
 /**
  * Debug
  */
 const gui = new dat.GUI();
 const debugObject = {
-	createSphere: () => {},
-	createBox: () => {},
-	reset: () => {},
+  createSphere: () => {},
+  createBox: () => {},
+  reset: () => {},
 };
 
 /**
@@ -49,12 +49,12 @@ const scene = new THREE.Scene();
 const cubeTextureLoader = new THREE.CubeTextureLoader();
 
 const environmentMapTexture = cubeTextureLoader.load([
-	"/textures/environmentMaps/0/px.png",
-	"/textures/environmentMaps/0/nx.png",
-	"/textures/environmentMaps/0/py.png",
-	"/textures/environmentMaps/0/ny.png",
-	"/textures/environmentMaps/0/pz.png",
-	"/textures/environmentMaps/0/nz.png",
+  "/textures/environmentMaps/0/px.png",
+  "/textures/environmentMaps/0/nx.png",
+  "/textures/environmentMaps/0/py.png",
+  "/textures/environmentMaps/0/ny.png",
+  "/textures/environmentMaps/0/pz.png",
+  "/textures/environmentMaps/0/nz.png",
 ]);
 
 /**
@@ -78,12 +78,12 @@ world.gravity.set(0, -9.82, 0);
 const defaultMaterial = new CANNON.Material("default");
 
 const defaultContactMaterial = new CANNON.ContactMaterial(
-	defaultMaterial,
-	defaultMaterial,
-	{
-		friction: 0.1,
-		restitution: 0.7, // bounciness
-	}
+  defaultMaterial,
+  defaultMaterial,
+  {
+    friction: 0.1,
+    restitution: 0.7, // bounciness
+  }
 );
 world.addContactMaterial(defaultContactMaterial);
 /**
@@ -91,24 +91,21 @@ world.addContactMaterial(defaultContactMaterial);
  */
 world.defaultContactMaterial = defaultContactMaterial;
 
-
 //----------------------------------------------------------------------------------------------------------
-// CANNONJS (PHYSICS) 
+// CANNONJS (PHYSICS)
 //----------------------------------------------------------------------------------------------------------
-
 
 // Floor
 const floorShape = new CANNON.Plane();
 const floorBody = new CANNON.Body({
- 	mass: 0, // this means that the body is static
- 	shape: floorShape,
- 	// material: defaultMaterial,
+  mass: 0, // this means that the body is static
+  shape: floorShape,
+  // material: defaultMaterial,
 });
 
 // Rotate the floor 90 degrees to make it horizontal
 floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5);
 world.addBody(floorBody);
-
 
 //---------------------------------------------------------------------------------------------------------
 // THREEJS
@@ -118,14 +115,14 @@ world.addBody(floorBody);
  * Floor
  */
 const floor = new THREE.Mesh(
-	new THREE.PlaneGeometry(500, 500),
-	new THREE.MeshStandardMaterial({
-		color: "#777777",
-		metalness: 0.3,
-		roughness: 0.4,
-		envMap: environmentMapTexture,
-		envMapIntensity: 0.5,
-	})
+  new THREE.PlaneGeometry(500, 500),
+  new THREE.MeshStandardMaterial({
+    color: "#777777",
+    metalness: 0.3,
+    roughness: 0.4,
+    envMap: environmentMapTexture,
+    envMapIntensity: 0.5,
+  })
 );
 floor.receiveShadow = true;
 floor.rotation.x = -Math.PI * 0.5;
@@ -152,22 +149,22 @@ scene.add(directionalLight);
  * Sizes
  */
 const sizes = {
-	width: window.innerWidth,
-	height: window.innerHeight,
+  width: window.innerWidth,
+  height: window.innerHeight,
 };
 
 window.addEventListener("resize", () => {
-	// Update sizes
-	sizes.width = window.innerWidth;
-	sizes.height = window.innerHeight;
+  // Update sizes
+  sizes.width = window.innerWidth;
+  sizes.height = window.innerHeight;
 
-	// Update camera
-	camera.aspect = sizes.width / sizes.height;
-	camera.updateProjectionMatrix();
+  // Update camera
+  camera.aspect = sizes.width / sizes.height;
+  camera.updateProjectionMatrix();
 
-	// Update renderer
-	renderer.setSize(sizes.width, sizes.height);
-	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // Update renderer
+  renderer.setSize(sizes.width, sizes.height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
 /**
@@ -175,10 +172,10 @@ window.addEventListener("resize", () => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(
-	75,
-	sizes.width / sizes.height,
-	0.1,
-	1000
+  75,
+  sizes.width / sizes.height,
+  0.1,
+  1000
 );
 camera.position.set(-3, 3, 3);
 scene.add(camera);
@@ -191,7 +188,7 @@ controls.enableDamping = true;
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-	canvas: canvas,
+  canvas: canvas,
 });
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -206,70 +203,63 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  */
 const objectToUpdate: any[] = []; //array of objects that need to be updated
 
+//sphere
 const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
 const sphereMaterial = new THREE.MeshStandardMaterial({
   metalness: 0.3,
   roughness: 0.3,
-  envMap: environmentMapTexture
-})
+  envMap: environmentMapTexture,
+});
 // /**
 //  * This will create a Three.js sphere along with a Cannon.js physics sphere
 //  * @param radius radius of the sphere
 //  * @param position position of the sphere
 //  */
 const createSphere = (radius: number, position: THREE.Vector3) => {
+  //Three.js mesh
+  const mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+  mesh.scale.set(radius, radius, radius); //scale the mesh
+  mesh.castShadow = true;
+  mesh.position.copy(position);
+  scene.add(mesh);
 
-//Three.js mesh
-	const mesh = new THREE.Mesh(
-    sphereGeometry, 
-    sphereMaterial
-  );
-  mesh.scale.set(radius, radius, radius); //scale the mesh 
-	mesh.castShadow = true;
-	mesh.position.copy(position);
-	scene.add(mesh);
+  // Cannon.js body
+  const shape = new CANNON.Sphere(radius);
+  const body = new CANNON.Body({
+    mass: 1,
+    shape,
+    position: new CANNON.Vec3(0, 3, 0),
+    material: defaultMaterial,
+  });
+  body.position.copy(position as unknown as CANNON.Vec3);
 
-// Cannon.js body
-	const shape = new CANNON.Sphere(radius);
-	const body = new CANNON.Body({
-		mass: 1,
-		shape,
-		position: new CANNON.Vec3(0, 3, 0),
-		material: defaultMaterial,
-	});
-	body.position.copy(position as unknown as CANNON.Vec3);
+  // 	/**
+  // 	 * This will play a sound when the box collides with the other objects
+  // 	 */
+  // 	body.addEventListener("collide", playSound);
+  world.addBody(body);
 
-// 	/**
-// 	 * This will play a sound when the box collides with the other objects
-// 	 */
-// 	body.addEventListener("collide", playSound);
-	world.addBody(body);
-
-//Save in objectToUpdate array
-	objectToUpdate.push({
-		mesh,
-		body,
-	});
+  //Save in objectToUpdate array
+  objectToUpdate.push({
+    mesh,
+    body,
+  });
 };
 
 debugObject.createSphere = () => {
   createSphere(
-    Math.random() * 0.5, 
-    new THREE.Vector3(
-      (Math.random() - 0.5)* 3,
-      3,
-      (Math.random() - 0.5)* 3,
-    )
-  )
+    Math.random() * 0.5,
+    new THREE.Vector3((Math.random() - 0.5) * 3, 3, (Math.random() - 0.5) * 3)
+  );
 };
 
 // Box
-// const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-// const boxMaterial = new THREE.MeshStandardMaterial({
-// 	metalness: 0.3,
-// 	roughness: 0.4,
-// 	envMap: environmentMapTexture,
-// });
+const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+const boxMaterial = new THREE.MeshStandardMaterial({
+  metalness: 0.3,
+  roughness: 0.4,
+  envMap: environmentMapTexture,
+});
 
 // /**
 //  * This will create a Three.js Box along with a Cannon.js physics Box
@@ -279,54 +269,51 @@ debugObject.createSphere = () => {
 //  * @param position position of the box
 //  *
 //  */
-// const createBox = (
-// 	width: number,
-// 	height: number,
-// 	depth: number,
-// 	position: THREE.Vector3
-// ) => {
-// 	// Three.js mesh
-// 	const mesh = new THREE.Mesh(boxGeometry, boxMaterial);
-// 	mesh.scale.set(width, height, depth);
-// 	mesh.castShadow = true;
-// 	mesh.position.copy(position);
-// 	scene.add(mesh);
+const createBox = (
+  width: number,
+  height: number,
+  depth: number,
+  position: THREE.Vector3
+) => {
+  // 	// Three.js mesh
+  const mesh = new THREE.Mesh(boxGeometry, boxMaterial);
+  mesh.scale.set(width, height, depth);
+  mesh.castShadow = true;
+  mesh.position.copy(position);
+  scene.add(mesh);
 
+  // 	// Cannon.js body
+  const shape = new CANNON.Box(
+    new Vec3(width * 0.5, height * 0.5, depth * 0.5)
+  );
+  const body = new CANNON.Body({
+    mass: 1,
+    shape,
+    position: new CANNON.Vec3(0, 3, 0),
+    material: defaultMaterial,
+  });
+  body.position.copy(position as unknown as CANNON.Vec3);
+  // 	/**
+  // 	 * This will play a sound when the box collides with the other objects
+  // 	 */
+  // 	body.addEventListener("collide", playSound);
+  world.addBody(body);
 
-// 	// Cannon.js body
-// 	const shape = new CANNON.Box(
-// 		new Vec3(width * 0.5, height * 0.5, depth * 0.5)
-// 	);
-// 	const body = new CANNON.Body({
-// 		mass: 1,
-// 		shape,
-// 		position: new CANNON.Vec3(0, 3, 0),
-// 		material: defaultMaterial,
-// 	});
-// 	body.position.copy(position as unknown as CANNON.Vec3);
-// 	/**
-// 	 * This will play a sound when the box collides with the other objects
-// 	 */
-// 	body.addEventListener("collide", playSound);
-// 	world.addBody(body);
+  // 	// Save in the updatable objects array
+  objectToUpdate.push({
+    mesh,
+    body,
+  });
+};
 
-// 	// Save in the updatable objects array
-// 	objectToUpdate.push({
-// 		mesh,
-// 		body,
-// 	});
-// };
-
-// createBox(1, 1, 1, new THREE.Vector3(0, 3, 0));
-
-// debugObject.createBox = () => {
-// 	createBox(
-// 		Math.random(),
-// 		Math.random(),
-// 		Math.random(),
-// 		new THREE.Vector3(Math.random() - 0.5 * 3, 3, Math.random() - 0.5 * 3)
-// 	);
-// };
+debugObject.createBox = () => {
+  createBox(
+    Math.random(),
+    Math.random(),
+    Math.random(),
+    new THREE.Vector3((Math.random() - 0.5) * 3, 3, (Math.random() - 0.5) * 3)
+  );
+};
 
 // debugObject.reset = () => {
 // 	for (const object of objectToUpdate) {
@@ -341,7 +328,7 @@ debugObject.createSphere = () => {
 // };
 
 gui.add(debugObject, "createSphere").name("Click to Create Sphere");
-// gui.add(debugObject, "createBox").name("Click to Create Box");
+gui.add(debugObject, "createBox").name("Click to Create Box");
 // gui.add(debugObject, "reset").name("Reset");
 
 //---------------------------------------------------------------------------------------------------------
@@ -354,36 +341,36 @@ const clock = new THREE.Clock();
 let prevElapsedTime = 0;
 
 const tick = () => {
-	const elapsedTime = clock.getElapsedTime();
-	const deltaTime = elapsedTime - prevElapsedTime;
-	prevElapsedTime = elapsedTime;
+  const elapsedTime = clock.getElapsedTime();
+  const deltaTime = elapsedTime - prevElapsedTime;
+  prevElapsedTime = elapsedTime;
 
-	/**
-	 *  this is used to update the physics world
-	 * parameters:
-	 * fixedTimeStep - the time step to use for fixed updates
-	 * deltaTime - the time elapsed since the last call to step
-	 * maxSubSteps - the maximum number of fixed updates to take per function call
-	 */
-	world.step(1 / 60, deltaTime, 3);
-	
-	for (const object of objectToUpdate) {
-	  object.mesh.position.copy(object.body.position as unknown as THREE.Vector3);
+  /**
+   *  this is used to update the physics world
+   * parameters:
+   * fixedTimeStep - the time step to use for fixed updates
+   * deltaTime - the time elapsed since the last call to step
+   * maxSubSteps - the maximum number of fixed updates to take per function call
+   */
+  world.step(1 / 60, deltaTime, 3);
 
-	// 	// this is used to update the rotation of the object
-	// 	obj.mesh.quaternion.copy(
-	// 		obj.body.quaternion as unknown as THREE.Quaternion
-	// 	);
-	}
+  for (const object of objectToUpdate) {
+    object.mesh.position.copy(object.body.position as unknown as THREE.Vector3);
 
-	// Update controls
-	controls.update();
+    // this is used to update the rotation of the object
+    object.mesh.quaternion.copy(
+      object.body.quaternion as unknown as THREE.Quaternion
+    );
+  }
 
-	// Render
-	renderer.render(scene, camera);
+  // Update controls
+  controls.update();
 
-	// Call tick again on the next frame
-	window.requestAnimationFrame(tick);
+  // Render
+  renderer.render(scene, camera);
+
+  // Call tick again on the next frame
+  window.requestAnimationFrame(tick);
 };
 
 tick();
