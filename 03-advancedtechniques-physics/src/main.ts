@@ -206,6 +206,12 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  */
 const objectToUpdate: any[] = []; //array of objects that need to be updated
 
+const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
+const sphereMaterial = new THREE.MeshStandardMaterial({
+  metalness: 0.3,
+  roughness: 0.3,
+  envMap: environmentMapTexture
+})
 // /**
 //  * This will create a Three.js sphere along with a Cannon.js physics sphere
 //  * @param radius radius of the sphere
@@ -215,15 +221,10 @@ const createSphere = (radius: number, position: THREE.Vector3) => {
 
 //Three.js mesh
 	const mesh = new THREE.Mesh(
-    new THREE.SphereGeometry(radius, 20, 20), 
-    new THREE.MeshStandardMaterial({
-      metalness: 0.3,
-      roughness: 0.4,
-      envMap: environmentMapTexture,
-    })
+    sphereGeometry, 
+    sphereMaterial
   );
-
-// 	mesh.scale.set(radius, radius, radius);
+  mesh.scale.set(radius, radius, radius); //scale the mesh 
 	mesh.castShadow = true;
 	mesh.position.copy(position);
 	scene.add(mesh);
@@ -251,21 +252,15 @@ const createSphere = (radius: number, position: THREE.Vector3) => {
 	});
 };
 
-// createSphere(0.5, new THREE.Vector3(0, 3, 0));//radius and position
-// createSphere(0.5, new THREE.Vector3(2, 3, 2));//radius and position
-// createSphere(0.5, new THREE.Vector3(3, 3, 3));//radius and position
-
 debugObject.createSphere = () => {
-
-  //size , position
-	createSphere(
-		Math.random() * 0.5,
-		new THREE.Vector3(
-      Math.random() - 0.5 * 3, 
-      3, 
-      Math.random() - 0.5 * 3
+  createSphere(
+    Math.random() * 0.5, 
+    new THREE.Vector3(
+      (Math.random() - 0.5)* 3,
+      3,
+      (Math.random() - 0.5)* 3,
     )
-	);
+  )
 };
 
 // Box
