@@ -199,3 +199,45 @@ world.defaultContactMaterial = defaultContactMaterial; //  <----to this instead
 ```
 
 ## Apply forces
+
+4 methods to apply forces:
+
+### applyImpulse / applyLocalImpulse
+
+- using applyForce also results in change in velocity, 'impulse' methods will take a back seat.
+- applyImpulse - like applyForce but instead of adding the force, will add to the velocity.
+- applyLocalImpulse - same as applyImpulse but the coordinates are local to the Body.
+
+### applyForce
+
+- applyForce - apply a force from a specified point in space (not necessarily on the body's surface) eg. wind, a small push on a domino, or a strong force on an angry bird.
+
+### applyLocalForce
+
+- same as applyForce but the coordinates are local to the Body (0,0,0 would be the center of the Body)
+- use applyLocalForce() to apply a small push on sphereBody at the start
+  props
+  - axis to push
+  - local position on object
+
+```js
+//
+sphereBody.applyLocalForce(
+  new CANNON.Vec3(150, 0, 0), //axis to push (Vec3)
+  new CANNON.Vec3(0, 0, 0) //local position on object (where to apply force )
+);
+```
+
+#### mimic the wind
+
+- mimic the wind by using applyForce on each frame BEFORE updating the World.
+- use sphereBody.position to apply the force at the right position
+
+```js
+const tick = () => {
+  sphereBody.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position);
+  world.step(1 / 60, deltaTime, 3);
+};
+```
+
+### managing multiple objects

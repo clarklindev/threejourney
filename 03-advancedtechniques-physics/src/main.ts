@@ -101,10 +101,10 @@ const sphereBody = new CANNON.Body({
 });
 
 
-// sphereBody.applyLocalForce(
-// 	new CANNON.Vec3(150, 0, 0), // force
-// 	new CANNON.Vec3(0, 0, 0) // local position
-// );
+sphereBody.applyLocalForce(
+	new CANNON.Vec3(150, 0, 0), // force
+	new CANNON.Vec3(0, 0, 0) // local position
+);
 world.addBody(sphereBody);
 
 // Floor
@@ -365,7 +365,9 @@ const tick = () => {
 	const deltaTime = elapsedTime - prevElapsedTime;
 	prevElapsedTime = elapsedTime;
 	// Update Physics World
-	// sphereBody.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position);
+
+	//wind
+	sphereBody.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position);
 
 	/**
 	 *  this is used to update the physics world
