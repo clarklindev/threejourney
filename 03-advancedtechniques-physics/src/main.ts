@@ -8,11 +8,11 @@ import CANNON from "cannon";
  * Debug
  */
 const gui = new dat.GUI();
-// const debugObject = {
-// 	createSphere: () => {},
-// 	createBox: () => {},
-// 	reset: () => {},
-// };
+const debugObject = {
+	createSphere: () => {},
+	createBox: () => {},
+	reset: () => {},
+};
 
 /**
  * Base
@@ -251,16 +251,22 @@ const createSphere = (radius: number, position: THREE.Vector3) => {
 	});
 };
 
-createSphere(0.5, new THREE.Vector3(0, 3, 0));//radius and position
+// createSphere(0.5, new THREE.Vector3(0, 3, 0));//radius and position
 // createSphere(0.5, new THREE.Vector3(2, 3, 2));//radius and position
 // createSphere(0.5, new THREE.Vector3(3, 3, 3));//radius and position
 
-// debugObject.createSphere = () => {
-// 	createSphere(
-// 		Math.random(),
-// 		new THREE.Vector3(Math.random() - 0.5 * 3, 3, Math.random() - 0.5 * 3)
-// 	);
-// };
+debugObject.createSphere = () => {
+
+  //size , position
+	createSphere(
+		Math.random() * 0.5,
+		new THREE.Vector3(
+      Math.random() - 0.5 * 3, 
+      3, 
+      Math.random() - 0.5 * 3
+    )
+	);
+};
 
 // Box
 // const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -339,7 +345,7 @@ createSphere(0.5, new THREE.Vector3(0, 3, 0));//radius and position
 // 	}
 // };
 
-// gui.add(debugObject, "createSphere").name("Click to Create Sphere");
+gui.add(debugObject, "createSphere").name("Click to Create Sphere");
 // gui.add(debugObject, "createBox").name("Click to Create Box");
 // gui.add(debugObject, "reset").name("Reset");
 
