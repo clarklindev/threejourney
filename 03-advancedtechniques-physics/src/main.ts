@@ -2,7 +2,7 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
-import CANNON, { Vec3 } from "cannon";
+import CANNON from "cannon";
 
 /**
  * Debug
@@ -91,21 +91,11 @@ world.addContactMaterial(defaultContactMaterial);
  */
 world.defaultContactMaterial = defaultContactMaterial;
 
-// Sphere body
-const sphereShape = new CANNON.Sphere(0.5);
-const sphereBody = new CANNON.Body({
-	mass: 1,
-	shape: sphereShape,
-	position: new CANNON.Vec3(0, 3, 0),	 //start with y of 3 so it falls
-	// material: defaultMaterial,
-});
 
+//----------------------------------------------------------------------------------------------------------
+// CANNONJS (PHYSICS) 
+//----------------------------------------------------------------------------------------------------------
 
-sphereBody.applyLocalForce(
-	new CANNON.Vec3(150, 0, 0), // force
-	new CANNON.Vec3(0, 0, 0) // local position
-);
-world.addBody(sphereBody);
 
 // Floor
 const floorShape = new CANNON.Plane();
@@ -114,25 +104,15 @@ const floorBody = new CANNON.Body({
  	shape: floorShape,
  	// material: defaultMaterial,
 });
+
 // Rotate the floor 90 degrees to make it horizontal
 floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5);
 world.addBody(floorBody);
 
-/**
- * Test sphere
- */
-const sphere = new THREE.Mesh(
-	new THREE.SphereGeometry(0.5, 32, 32),
-	new THREE.MeshStandardMaterial({
-		metalness: 0.3,
-		roughness: 0.4,
-		envMap: environmentMapTexture,
-		envMapIntensity: 0.5,
-	})
-);
-sphere.castShadow = true;
-sphere.position.y = 0.5;
-scene.add(sphere);
+
+//---------------------------------------------------------------------------------------------------------
+// THREEJS
+//---------------------------------------------------------------------------------------------------------
 
 /**
  * Floor
@@ -218,55 +198,62 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+//---------------------------------------------------------------------------------------------------------
+// UTILS - THREEJS + CANNONJS
+//---------------------------------------------------------------------------------------------------------
 /**
  * utils
  */
-// const objectToUpdate: any[] = [];
-
-// // Sphere
-// const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
-// const sphereMaterial = new THREE.MeshStandardMaterial({
-// 	metalness: 0.3,
-// 	roughness: 0.4,
-// 	envMap: environmentMapTexture,
-// });
+const objectToUpdate: any[] = []; //array of objects that need to be updated
 
 // /**
 //  * This will create a Three.js sphere along with a Cannon.js physics sphere
 //  * @param radius radius of the sphere
 //  * @param position position of the sphere
 //  */
-// const createSphere = (radius: number, position: THREE.Vector3) => {
-// 	// Three.js mesh
-// 	const mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-// 	mesh.scale.set(radius, radius, radius);
-// 	mesh.castShadow = true;
-// 	mesh.position.copy(position);
-// 	scene.add(mesh);
+const createSphere = (radius: number, position: THREE.Vector3) => {
 
-// 	// Cannon.js body
-// 	const shape = new CANNON.Sphere(radius);
-// 	const body = new CANNON.Body({
-// 		mass: 1,
-// 		shape,
-// 		position: new CANNON.Vec3(0, 3, 0),
-// 		material: defaultMaterial,
-// 	});
-// 	body.position.copy(position as unknown as CANNON.Vec3);
+//Three.js mesh
+	const mesh = new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 20, 20), 
+    new THREE.MeshStandardMaterial({
+      metalness: 0.3,
+      roughness: 0.4,
+      envMap: environmentMapTexture,
+    })
+  );
+
+// 	mesh.scale.set(radius, radius, radius);
+	mesh.castShadow = true;
+	mesh.position.copy(position);
+	scene.add(mesh);
+
+// Cannon.js body
+	const shape = new CANNON.Sphere(radius);
+	const body = new CANNON.Body({
+		mass: 1,
+		shape,
+		position: new CANNON.Vec3(0, 3, 0),
+		material: defaultMaterial,
+	});
+	body.position.copy(position as unknown as CANNON.Vec3);
+
 // 	/**
 // 	 * This will play a sound when the box collides with the other objects
 // 	 */
 // 	body.addEventListener("collide", playSound);
-// 	world.addBody(body);
+	world.addBody(body);
 
-// 	// Save in the updatable objects array
-// 	objectToUpdate.push({
-// 		mesh,
-// 		body,
-// 	});
-// };
+//Save in objectToUpdate array
+	objectToUpdate.push({
+		mesh,
+		body,
+	});
+};
 
-// createSphere(0.5, new THREE.Vector3(0, 3, 0));
+createSphere(0.5, new THREE.Vector3(0, 3, 0));//radius and position
+// createSphere(0.5, new THREE.Vector3(2, 3, 2));//radius and position
+// createSphere(0.5, new THREE.Vector3(3, 3, 3));//radius and position
 
 // debugObject.createSphere = () => {
 // 	createSphere(
@@ -303,6 +290,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // 	mesh.castShadow = true;
 // 	mesh.position.copy(position);
 // 	scene.add(mesh);
+
 
 // 	// Cannon.js body
 // 	const shape = new CANNON.Box(
@@ -354,6 +342,10 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // gui.add(debugObject, "createSphere").name("Click to Create Sphere");
 // gui.add(debugObject, "createBox").name("Click to Create Box");
 // gui.add(debugObject, "reset").name("Reset");
+
+//---------------------------------------------------------------------------------------------------------
+// ANIMATE
+//---------------------------------------------------------------------------------------------------------
 /**
  * Animate
  */
@@ -364,10 +356,6 @@ const tick = () => {
 	const elapsedTime = clock.getElapsedTime();
 	const deltaTime = elapsedTime - prevElapsedTime;
 	prevElapsedTime = elapsedTime;
-	// Update Physics World
-
-	//wind
-	sphereBody.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position);
 
 	/**
 	 *  this is used to update the physics world
@@ -378,21 +366,14 @@ const tick = () => {
 	 */
 	world.step(1 / 60, deltaTime, 3);
 	
-	//update threejs sphere 
-	// sphere.position.x = sphereBody.position.x;
-	// sphere.position.y = sphereBody.position.y;
-	// sphere.position.z = sphereBody.position.z;
-	//replaces above code
-	sphere.position.copy(sphereBody.position as unknown as THREE.Vector3);
-
-	// for (const obj of objectToUpdate) {
-	// 	obj.mesh.position.copy(obj.body.position as unknown as THREE.Vector3);
+	for (const object of objectToUpdate) {
+	  object.mesh.position.copy(object.body.position as unknown as THREE.Vector3);
 
 	// 	// this is used to update the rotation of the object
 	// 	obj.mesh.quaternion.copy(
 	// 		obj.body.quaternion as unknown as THREE.Quaternion
 	// 	);
-	// }
+	}
 
 	// Update controls
 	controls.update();

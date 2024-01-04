@@ -240,4 +240,16 @@ const tick = () => {
 };
 ```
 
-### managing multiple objects
+### managing multiple objects (54min45sec)
+
+- first remove CANNON (physics): sphere, sphereShape and sphereBody
+- remove THREEJS: sphere
+- create a createSphere function with radius and position parameters.
+- clean up tick() by removing sphere related code
+- calling createSphere(0.5, new THREE.Vector3(0, 3, 0));//radius and position updates the Physics world but not threejs
+- we create an array (objectToUpdate) of all objects that need to be updated
+
+```js
+//function to create spheres
+const createSphere = (radius, position) => {};
+```
