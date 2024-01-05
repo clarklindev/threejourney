@@ -201,7 +201,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 /**
  * utils
  */
-const objectToUpdate: any[] = []; //array of objects that need to be updated
+const objectsToUpdate: any[] = []; //array of objects that need to be updated
 
 //sphere
 const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
@@ -239,8 +239,8 @@ const createSphere = (radius: number, position: THREE.Vector3) => {
   body.addEventListener("collide", playSound);
   world.addBody(body);
 
-  //Save in objectToUpdate array
-  objectToUpdate.push({
+  //Save in objectsToUpdate array
+  objectsToUpdate.push({
     mesh,
     body,
   });
@@ -300,7 +300,7 @@ const createBox = (
   world.addBody(body);
 
   // 	// Save in the updatable objects array
-  objectToUpdate.push({
+  objectsToUpdate.push({
     mesh,
     body,
   });
@@ -315,21 +315,21 @@ debugObject.createBox = () => {
   );
 };
 
-// debugObject.reset = () => {
-// 	for (const object of objectToUpdate) {
-// 		object.body.removeEventListener("collide", playSound);
+debugObject.reset = () => {
+  for (const object of objectsToUpdate) {
+    object.body.removeEventListener("collide", playSound);
 
-// 		// remove body from physical world
-// 		world.remove(object.body);
+    // remove body from physical world
+    world.remove(object.body);
 
-// 		// remove mesh from scene
-// 		scene.remove(object.mesh);
-// 	}
-// };
+    // remove mesh from scene
+    scene.remove(object.mesh);
+  }
+};
 
 gui.add(debugObject, "createSphere").name("Click to Create Sphere");
 gui.add(debugObject, "createBox").name("Click to Create Box");
-// gui.add(debugObject, "reset").name("Reset");
+gui.add(debugObject, "reset").name("Reset");
 
 //---------------------------------------------------------------------------------------------------------
 // ANIMATE
@@ -354,7 +354,7 @@ const tick = () => {
    */
   world.step(1 / 60, deltaTime, 3);
 
-  for (const object of objectToUpdate) {
+  for (const object of objectsToUpdate) {
     object.mesh.position.copy(object.body.position as unknown as THREE.Vector3);
 
     // this is used to update the rotation of the object

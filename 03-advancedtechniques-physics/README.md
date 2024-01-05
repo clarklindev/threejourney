@@ -247,7 +247,7 @@ const tick = () => {
 - create a createSphere function with radius and position parameters.
 - clean up tick() by removing sphere related code
 - calling createSphere(0.5, new THREE.Vector3(0, 3, 0));//radius and position updates the Physics world but not threejs
-- we create an array (objectToUpdate) of all objects that need to be updated
+- we create an array (objectsToUpdate) of all objects that need to be updated
 
 ```js
 //function to create spheres
@@ -340,4 +340,25 @@ const playSound = (collision: any) => {
 const createBox = () => {
   body.addEventListener("collide", playSound);
 };
+```
+
+### Removing things from stage
+
+- create a reset function and add it to your Dat.GUI as we did for createBox and createSphere
+- add to debug GUI
+
+```js
+debugObject.reset = () => {
+  for (const object of objectsToUpdate) {
+    object.body.removeEventListener("collide", playSound);
+
+    // remove body from physical world
+    world.remove(object.body);
+
+    // remove mesh from scene
+    scene.remove(object.mesh);
+  }
+};
+
+gui.add(debugObject, "reset").name("Reset");
 ```
