@@ -270,4 +270,35 @@ const tick = ()=>{
 }
 ```
 
-## Broadphase
+## Broadphase (CANNONJS - optimization)
+
+- When testing the collisions between objects, a naive approach to test every body against every other Body. - this is bad for performance.
+- we call this step of testing for collision between object and every object: Broadphase.
+- use difference broadphase for better performance.
+
+- NaiveBroadphase - tests every Bodies against every other Bodies
+- GridBroadphase - quadrilles the world and only tests Bodies against other Bodies in the same grid box or the neighbors' grid boxes.
+- SAPBroadphase (Sweep and Prune) - tests bodies on arbitrary axes during multiple steps
+- recommended to switch to SAPBroadphase (can generate bugs if bodies moving really fast)
+
+```js
+//switch to SAPBroadphase
+world.broadphase = new CANNON.SAPBroadphase(world);
+```
+
+### Sleep
+
+- Even if we use an improved broadphase algorithm, all the Bodies are tested, even those not moving anymore
+
+- sleep helps with performance issues
+- non-colliding (still objects) are put to sleep.
+
+- pushing or applying a force awakes the collision test - When the Body speed gets really slow the Body can fall asleep and wont
+  be tested unless a sufficient force is applied
+
+- sleepTimeLimit - at what speed object should be considered sleeping
+- speedSpeedLimit - how quickly items fall asleep
+
+```js
+world.allowSleep = true;
+```

@@ -67,11 +67,11 @@ const world = new CANNON.World();
  * by default it checks all the objects in the world against each other, which is very inefficient
  * SAPBroadphase is a good alternative, it checks objects against each other only if they are close to each other
  */
-// world.broadphase = new CANNON.SAPBroadphase(world);
+world.broadphase = new CANNON.SAPBroadphase(world);
 /**
  * allowSleep: if true, bodies that are at rest will fall asleep and won't be checked for collisions until they move again
  */
-// world.allowSleep = true;
+world.allowSleep = true;
 world.gravity.set(0, -9.82, 0);
 
 // Material
