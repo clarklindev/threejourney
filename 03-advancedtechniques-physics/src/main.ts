@@ -2,7 +2,7 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
-import CANNON, { Vec3 } from "cannon";
+import * as CANNON from "cannon-es";
 
 /**
  * Debug
@@ -284,7 +284,7 @@ const createBox = (
 
   // 	// Cannon.js body
   const shape = new CANNON.Box(
-    new Vec3(width * 0.5, height * 0.5, depth * 0.5)
+    new CANNON.Vec3(width * 0.5, height * 0.5, depth * 0.5)
   );
   const body = new CANNON.Body({
     mass: 1,
@@ -320,7 +320,7 @@ debugObject.reset = () => {
     object.body.removeEventListener("collide", playSound);
 
     // remove body from physical world
-    world.remove(object.body);
+    world.removeBody(object.body);
 
     // remove mesh from scene
     scene.remove(object.mesh);

@@ -362,3 +362,43 @@ debugObject.reset = () => {
 
 gui.add(debugObject, "reset").name("Reset");
 ```
+
+### Constraints
+
+- Constraints enable constraints between two bodies
+  #### HingeConstraint
+  - acts like a door hinge
+  #### DistanceConstraint
+  - forces the bodies to keep a distance between each other
+  #### LockConstraint
+  - merges the bodies like if they were one piece
+  #### PointToPointConstraint
+  - glues the bodies to a specific point
+
+### Classes, Methods, properties and events
+
+- https://schteppe.github.io/cannon.js/docs/#api-classes
+
+- https://schteppe.github.io/cannon.js/
+
+### Workers
+
+https://schteppe.github.io/cannon.js/examples/worker
+https://github.com/schteppe/cannon.js/blob/master/examples/worker.html
+
+- physics part of cannonjs is handled by CPU.
+- webgl is gpu.
+- currently everything is handled by same same thread in CPU. it can get overloaded quickly.
+- workers allow multitasking
+- workers let you put a part of your code in a different thread to spread the load (usually separate the physics)
+- you can then send and receive data from that code and considerably improve performances.
+
+### Cannon.ES
+
+- forked cannon "with updates"
+- https://github.com/pmndrs/cannon-es
+- https://pmndrs.github.io/cannon-es/
+
+```cmd
+npm i cannon-es@0.15.1
+```
