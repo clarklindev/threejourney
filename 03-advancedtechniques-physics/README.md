@@ -302,3 +302,42 @@ world.broadphase = new CANNON.SAPBroadphase(world);
 ```js
 world.allowSleep = true;
 ```
+
+### Events
+
+- listen to events on Body: colide, sleep, wakeup
+- and play sounds when collision occurs
+- Chrome prevents sounds unless user has interacted with the page.
+- add event listener to play sound.
+- the problem is that when we call sound.play() while the sound is playing, nothing happens because it is already playing. required to reset sound to 0 with the currentTime property.
+- sound can only play once previous sound completed.
+- fix: reset to start sound.currentTime = 0;
+- the 2nd problem is that we hear too many hit sounds even when a cube slightly touches another.
+  fix: find how strong the impact was and only play sound above a threshold.
+- we can get information about the collision by adding a parameter "collision" and the contact.getImpactVelocityAlongNormal() property.
+- add randomness too
+- can scale volume according to impact strength
+
+```js
+//load sound
+const sound = new Audio("/sounds/hit.mp3");
+
+//play sound
+const playSound = (collision: any) => {
+  /**
+   * this is the velocity of the object that hit the other object
+   * we can use this to determine how hard the object hit the other object
+   */
+  const impactStrength = collision.contact.getImpactVelocityAlongNormal();
+
+  if (impactStrength > 1.5) {
+    sound.volume = Math.random();
+    sound.currentTime = 0;
+    sound.play();
+  }
+};
+
+const createBox = () => {
+  body.addEventListener("collide", playSound);
+};
+```

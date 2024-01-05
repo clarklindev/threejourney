@@ -26,21 +26,21 @@ const scene = new THREE.Scene();
 /**
  * Sounds
  */
-// const sound = new Audio("/sounds/hit.mp3");
+const sound = new Audio("/sounds/hit.mp3");
 
-// const playSound = (collision: any) => {
-// 	/**
-// 	 * this is the velocity of the object that hit the other object
-// 	 * we can use this to determine how hard the object hit the other object
-// 	 */
-// 	const impactStrength = collision.contact.getImpactVelocityAlongNormal();
+const playSound = (collision: any) => {
+  /**
+   * this is the velocity of the object that hit the other object
+   * we can use this to determine how hard the object hit the other object
+   */
+  const impactStrength = collision.contact.getImpactVelocityAlongNormal();
 
-// 	if (impactStrength > 1.5) {
-// 		sound.volume = Math.random();
-// 		sound.currentTime = 0;
-// 		sound.play();
-// 	}
-// };
+  if (impactStrength > 1.5) {
+    sound.volume = Math.random();
+    sound.currentTime = 0;
+    sound.play();
+  }
+};
 
 /**
  * Textures
@@ -236,7 +236,7 @@ const createSphere = (radius: number, position: THREE.Vector3) => {
   // 	/**
   // 	 * This will play a sound when the box collides with the other objects
   // 	 */
-  // 	body.addEventListener("collide", playSound);
+  body.addEventListener("collide", playSound);
   world.addBody(body);
 
   //Save in objectToUpdate array
@@ -296,7 +296,7 @@ const createBox = (
   // 	/**
   // 	 * This will play a sound when the box collides with the other objects
   // 	 */
-  // 	body.addEventListener("collide", playSound);
+  body.addEventListener("collide", playSound);
   world.addBody(body);
 
   // 	// Save in the updatable objects array
