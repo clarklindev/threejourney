@@ -402,3 +402,23 @@ https://github.com/schteppe/cannon.js/blob/master/examples/worker.html
 ```cmd
 npm i cannon-es@0.15.1
 ```
+
+### Ammojs
+
+- port of Bullet https://pybullet.org/wordpress/
+- supports more features than Cannonjs
+
+### Physijs
+
+- https://chandlerprall.github.io/Physijs/
+- https://github.com/chandlerprall/Physijs
+- instead of creating Three.js object and physics object, both are created simultaneously
+
+```js
+box = new Physijs.BoxMesh(
+  new THREE.CubeGeometry(5, 5, 5),
+  new THREE.MeshBasicMaterial({ color: 0x888888 })
+);
+
+scene.add(box);
+```
