@@ -2,7 +2,7 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // import * as dat from "dat.gui";
-// import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 // import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 
 /**
@@ -22,20 +22,27 @@ const scene = new THREE.Scene();
 // const dracoLoader = new DRACOLoader();
 // dracoLoader.setDecoderPath("/draco/");
 
-// const gltfLoader = new GLTFLoader();
+const gltfLoader = new GLTFLoader();
 // gltfLoader.setDRACOLoader(dracoLoader);
 
 // let mixer: THREE.AnimationMixer | null = null;
 
-// gltfLoader.load("/models/Fox/glTF/Fox.gltf", (gltf) => {
-//   gltf.scene.scale.set(0.025, 0.025, 0.025);
-//   scene.add(gltf.scene);
+//method:binary
+// gltfLoader.load("/models/Duck/glTF-Binary/Duck.glb", (gltf) => {}
 
-//   // Animation
-//   mixer = new THREE.AnimationMixer(gltf.scene);
-//   const action = mixer.clipAction(gltf.animations[2]);
-//   action.play();
-// });
+//method:embedded
+// gltfLoader.load("/models/Duck/glTF-Embedded/Duck.gltf", (gltf) => {
+
+//method:gltf
+//@param1 path, @param2 success function(loaded-item)=>{}
+gltfLoader.load("/models/Duck/glTF/Duck.gltf", (gltf) => {
+  //   gltf.scene.scale.set(0.025, 0.025, 0.025);
+  scene.add(gltf.scene.children[0]);
+  //   // Animation
+  //   mixer = new THREE.AnimationMixer(gltf.scene);
+  //   const action = mixer.clipAction(gltf.animations[2]);
+  //   action.play();
+});
 
 /**
  * Floor
