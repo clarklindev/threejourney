@@ -27,8 +27,6 @@ dracoLoader.setDecoderPath("/draco/"); //set up for webworkers
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 
-// let mixer: THREE.AnimationMixer | null = null;
-
 //@param1 path, @param2 success function(loaded-item)=>{}
 
 //method:binary
@@ -38,18 +36,27 @@ gltfLoader.setDRACOLoader(dracoLoader);
 // gltfLoader.load("/models/Duck/glTF-Embedded/Duck.gltf", (gltf) => {
 
 //draco version
-gltfLoader.load("/models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
-  scene.add(gltf.scene);
-});
+// gltfLoader.load("/models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
+//   scene.add(gltf.scene);
+// });
 
 //gltf method
 // gltfLoader.load("/models/Duck/glTF/Duck.gltf", (gltf) => {
-//   //   gltf.scene.scale.set(0.025, 0.025, 0.025);
+//   gltf.scene.scale.set(0.025, 0.025, 0.025);
+//   scene.add(gltf.scene);
+//});
 
-//   //   // Animation
-//   //   mixer = new THREE.AnimationMixer(gltf.scene);
-//   //   const action = mixer.clipAction(gltf.animations[2]);
-//   //   action.play();
+//animation
+let mixer: THREE.AnimationMixer | null = null;
+gltfLoader.load("/models/Fox/glTF/Fox.gltf", (gltf) => {
+  // Animation
+  mixer = new THREE.AnimationMixer(gltf.scene);
+  const action = mixer.clipAction(gltf.animations[1]);
+  action.play();
+
+  gltf.scene.scale.set(0.025, 0.025, 0.025);
+  scene.add(gltf.scene);
+});
 
 //   //add one-by-one (only loading what you need)
 //   // const children = [...gltf.scene.children];
@@ -155,9 +162,9 @@ const tick = () => {
   previousTime = elapsedTime;
 
   // Model animation
-  // if (mixer) {
-  //   mixer.update(deltaTime);
-  // }
+  if (mixer) {
+    mixer.update(deltaTime);
+  }
 
   // Update controls
   controls.update();

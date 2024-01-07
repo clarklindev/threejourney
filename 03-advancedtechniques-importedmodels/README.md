@@ -229,3 +229,48 @@ THREE.DRACOLoader: Unexpected geometry type.
   draco_wasm_wrapper.js
   draco_wasm_wrapper_gltf.js
   time_draco_decode.html
+
+#### Draco loader thoughts
+
+- so even though we have compressed files, we have to still load the DracoLoader AND the decoder
+
+#### animation
+
+- animated models
+- fix scale on loaded model
+- the loaded gltf object contains a "animations" property composed of multiple THREEjs 'AnimationClip's (similar to animation keyframes)
+- we need to create an AnimationMixer (THREE js Class) to use these animation clips.
+- An AnimationMixer is like a player associated with an object that can contain one or many AnimationClips.
+- can target and play an animation
+- inside the success load function, create an AnimationMixer
+  - send gltf.scene as parameter
+- then you can add the animation to the mixer
+- add one of the AnimationClips to the mixer with clipAction() method
+- this mixer.clipAction method returns a AnimationAction and wE call the play() method.
+- need to tell the mixer to update itself (on each frame)
+- move the mixer declaration outside of the funciton with a null value and update it when the model is loaded
+- can load different animations from the model file we loaded.eg: gltf.animations[0] or [1] or [2] etc
+
+```js
+let mixer = null;
+
+gltfLoader.load("/models/Fox/glTF/Fox.gltf", (gltf) => {
+  mixer = new THREE.AnimationMixer(gltf.scene);
+  const action = mixer.clipAction(gltf.animations[1]); //animationAction
+
+  action.play();
+
+  gltf.scene.scale.set(0.025, 0.025, 0.025);
+  scene.add(gltf.scene);
+});
+
+const tick = () => {
+  mixer.update();
+};
+```
+
+##### Three.js editor
+
+- useful for testing models
+- threejs.org/editor
+- it needs lights
