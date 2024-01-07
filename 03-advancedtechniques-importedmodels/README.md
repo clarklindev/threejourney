@@ -23,6 +23,8 @@
 
 ##### gltf
 
+- sample models: https://github.com/KhronosGroup/glTF-Sample-Models
+
 - multiple files in export
   - .gltf (json with properties/data)
   - .bin (has geometries, uv coordinates, vertex positions, colors etc)
@@ -166,3 +168,64 @@ for (const child of children) {
   scene.add(child);
 }
 ```
+
+### Draco loader (load compressed model)
+
+- loading the draco version (https://google.github.io/draco)
+- https://github.com/google.draco
+- Draco version can be much lighter than the default version
+- Compression is applied to the buffer data (typically the geometry)
+- Draco is not exclusive to glTF but they got popular at the same time and implementation went faster with glTF exporters
+- Google develops the algorithm under open-source Apache License
+
+- instantiate the loader
+- the decoder is also available in WebAssembly (faster)
+- it can run in a worker (in another thread) to improve performances significantly.
+- Three.js already provided the code in '/node_modules/three/examples/js/libs/draco' folder
+- copy whole folder and place in static (public): 'public/draco'
+- with workers, just have to provide path to draco folder.
+- Provide the DracoLoader instance to the GLTFLoader instance with setDRACOLoader()
+- NOTE: you can still load not compressed glTF file with GLTFLoader and the Draco decoder is only loaded when needed
+
+```js
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+
+const dracoLoader = new DRACOLoader(); //instantiate the loader - uses webassembly and worker
+dracoLoader.setDecoderPath("/draco/"); //path from static (public) folder
+
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader); //give draco instance to gltf loader
+
+gltfLoader.load("/models/Duck/glTF-Draco/Duck.gltf", (gltf) => {});
+```
+
+#### DRACOLoader ERROR
+
+- Assets may be provided either in JSON (.gltf) or binary (.glb)
+- DRACOLoader expects .drc it’s limited to just mesh data and can’t include materials, animations, textures, or other thing…
+- Instead the most common thing is to start with a glTF file, then apply Draco compression to the mesh data in that file. At the end you still have a glTF file (which can include materials, animations, etc.), and need to use GLTFloader to read it.
+  how to install the DRACO decoder - see example: https://threejs.org/docs/#examples/en/loaders/GLTFLoader
+
+```error
+
+THREE.DRACOLoader: Unexpected geometry type.
+    at decodeGeometry
+```
+
+#### FIX error above
+
+- install Draco 1.5.6 release (Feb 8, 2023) (https://github.com/google/draco/releases)
+- DOWNLOAD THIS https://github.com/google/draco/archive/refs/tags/1.5.6.zip
+
+- copy contents (files below) from (unzipped co-1.5.6 folder) /javascript / AND put contents in 'public/draco' folder:
+
+  draco_decoder.js
+  draco_decoder.wasm
+  draco_decoder_gltf.js
+  draco_decoder_gltf.wasm
+  draco_encoder.js
+  draco_encoder.wasm
+  draco_encoder_wrapper.js
+  draco_wasm_wrapper.js
+  draco_wasm_wrapper_gltf.js
+  time_draco_decode.html

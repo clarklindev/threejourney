@@ -3,8 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // import * as dat from "dat.gui";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-// import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 /**
  * Base
  */
@@ -19,13 +18,18 @@ const scene = new THREE.Scene();
 /**
  * Models
  */
-// const dracoLoader = new DRACOLoader();
-// dracoLoader.setDecoderPath("/draco/");
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath("/draco/"); //set up for webworkers
+
+// Optional: Pre-fetch Draco WASM/JS module.
+// dracoLoader.preload();
 
 const gltfLoader = new GLTFLoader();
-// gltfLoader.setDRACOLoader(dracoLoader);
+gltfLoader.setDRACOLoader(dracoLoader);
 
 // let mixer: THREE.AnimationMixer | null = null;
+
+//@param1 path, @param2 success function(loaded-item)=>{}
 
 //method:binary
 // gltfLoader.load("/models/Duck/glTF-Binary/Duck.glb", (gltf) => {}
@@ -33,24 +37,28 @@ const gltfLoader = new GLTFLoader();
 //method:embedded
 // gltfLoader.load("/models/Duck/glTF-Embedded/Duck.gltf", (gltf) => {
 
-//method:gltf
-//@param1 path, @param2 success function(loaded-item)=>{}
-gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
-  //   gltf.scene.scale.set(0.025, 0.025, 0.025);
-
-  //   // Animation
-  //   mixer = new THREE.AnimationMixer(gltf.scene);
-  //   const action = mixer.clipAction(gltf.animations[2]);
-  //   action.play();
-
-  //add one-by-one (only loading what you need)
-  // const children = [...gltf.scene.children];
-  // for (const child of children) {
-  //   scene.add(child);
-  // }
-  //add everything
+//draco version
+gltfLoader.load("/models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
   scene.add(gltf.scene);
 });
+
+//gltf method
+// gltfLoader.load("/models/Duck/glTF/Duck.gltf", (gltf) => {
+//   //   gltf.scene.scale.set(0.025, 0.025, 0.025);
+
+//   //   // Animation
+//   //   mixer = new THREE.AnimationMixer(gltf.scene);
+//   //   const action = mixer.clipAction(gltf.animations[2]);
+//   //   action.play();
+
+//   //add one-by-one (only loading what you need)
+//   // const children = [...gltf.scene.children];
+//   // for (const child of children) {
+//   //   scene.add(child);
+//   // }
+//   //add everything
+//   scene.add(gltf.scene);
+// });
 
 /**
  * Floor
