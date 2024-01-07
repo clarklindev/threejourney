@@ -35,13 +35,21 @@ const gltfLoader = new GLTFLoader();
 
 //method:gltf
 //@param1 path, @param2 success function(loaded-item)=>{}
-gltfLoader.load("/models/Duck/glTF/Duck.gltf", (gltf) => {
+gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
   //   gltf.scene.scale.set(0.025, 0.025, 0.025);
-  scene.add(gltf.scene.children[0]);
+
   //   // Animation
   //   mixer = new THREE.AnimationMixer(gltf.scene);
   //   const action = mixer.clipAction(gltf.animations[2]);
   //   action.play();
+
+  //add one-by-one (only loading what you need)
+  // const children = [...gltf.scene.children];
+  // for (const child of children) {
+  //   scene.add(child);
+  // }
+  //add everything
+  scene.add(gltf.scene);
 });
 
 /**

@@ -136,4 +136,33 @@ gltfLoader.load(
   (scale is on the parent and not the mesh itself)
 - open the file in 3d software, clean it and re-export
 
-#
+#### looping to add to scene
+
+- adding from loaded array actually removes it from that array and it messes up indexes due to length of remaining items not being constant.
+
+- dont do a for loop to loop through items (as indexes for length are messed up)
+
+```js
+//DONT DO THIS
+for (const child of gltf.scene.children) {
+  scene.add(child);
+}
+```
+
+- SOLUTION1: use a while to add always the first element
+
+```js
+while (gltf.scene.children.length) {
+  scene.add(gltf.scene.children[0]);
+}
+```
+
+- SOLUTION2 (tutorial method): duplicate the children array (use it as a temp array) in order to have an unaltered independent array
+- use spread operator ... and put the result in a brand new array []
+
+```js
+const children = [...gltf.scene.children];
+for (const child of children) {
+  scene.add(child);
+}
+```
