@@ -103,3 +103,92 @@ const tick = () => {
   }
 };
 ```
+
+### mouse interactions
+
+#### Hovering
+
+- test if mouse is over circle
+- we need the coordinates of the mouse but not in pixels.
+- we need a value from -1 ot 1 in
+
+  - horizontal axes (-1 left, 1 right) and
+  - vertical axes (-1 bottom, 1 top).
+
+- create a mouse variable with a Vector2 (x , y) and update it when the mouse is moving
+- avoid casting the ray in the mousemove event callback, and do it in the tick() function
+- AND instead calculating the from / to - use setFromCamera() method to orient the ray in the right direction
+- setFromCamera(TO, FROM) - it positions the ray from camera (FROM) to the cursor (TO).
+
+```js
+const mouse = new THREE.Vector2();
+
+window.addEventListener("mousemove", (event) => {
+  mouse.x = (event.clientX / sizes.width) * 2 - 1;
+  mouse.y = -(event.clientY / sizes.height) * 2 + 1;
+
+  // console.log(mouse)
+});
+
+const tick = () => {
+  raycaster.setFromCamera(mouse, camera);
+  const objectsToTest = [object1, object2, object3];
+  const intersects = raycaster.intersectObjects(objectsToTest);
+};
+```
+
+#### mouse enter and leave events
+
+- how do you check when mouse enters and leaves an object?
+- create a "witness" variable containing the currently hovered object
+- if an object intersects, but there wasnt one before a "mouseenter" happened
+- if no object intersects, but there was one before, a "mouseleave" happened
+
+- let currentIntersect = null;
+- test and update the currentIntersect in the tick()
+
+```js
+let currentIntersect = null;
+
+const tick = () => {
+  if (intersects.length) {
+    if (!currentIntersect) {
+      //if was not intersecting before...
+      console.log("mouse enter");
+    }
+
+    currentIntersect = intersects[0]; //check the first intersected
+  } else {
+    if (currentIntersect) {
+      //if there was intersection but , not anymore...
+      console.log("mouse leave");
+    }
+
+    currentIntersect = null;
+  }
+};
+```
+
+#### Mouse click events
+
+- we can test which object is being clicked on via the .object
+
+```js
+window.addEventListener("click", () => {
+  if (currentIntersect) {
+    switch (currentIntersect.object) {
+      case object1:
+        console.log("click on object 1");
+        break;
+
+      case object2:
+        console.log("click on object 2");
+        break;
+
+      case object3:
+        console.log("click on object 3");
+        break;
+    }
+  }
+});
+```

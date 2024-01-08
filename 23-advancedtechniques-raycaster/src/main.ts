@@ -150,17 +150,32 @@ const tick = () => {
   object2.position.y = Math.sin(elapsedTime * 0.8) * 1.5;
   object3.position.y = Math.sin(elapsedTime * 1.4) * 1.5;
 
+  //manual checking of ray and direction casting
   // Cast a ray
-  const rayOrigin = new THREE.Vector3(-3, 0, 0);
-  const rayDirection = new THREE.Vector3(1, 0, 0);
-  rayDirection.normalize();
+  // const rayOrigin = new THREE.Vector3(-3, 0, 0);
+  // const rayDirection = new THREE.Vector3(1, 0, 0);
+  // rayDirection.normalize();
 
-  raycaster.set(rayOrigin, rayDirection);
+  // raycaster.set(rayOrigin, rayDirection);
 
+  // const objectsToTest = [object1, object2, object3];
+  // const intersects = raycaster.intersectObjects(objectsToTest);
+  // console.log(intersects);
+
+  // //change all to red first
+  // for (const object of objectsToTest) {
+  //   object.material.color.set("#ff0000");
+  // }
+
+  // //change intersects to blue
+  // for (const intersect of intersects) {
+  //   intersect.object.material.color.set("#0000ff");
+  // }
+
+  // Mouse
+  raycaster.setFromCamera(mouse, camera);
   const objectsToTest = [object1, object2, object3];
   const intersects = raycaster.intersectObjects(objectsToTest);
-  console.log(intersects);
-
   //change all to red first
   for (const object of objectsToTest) {
     object.material.color.set("#ff0000");
@@ -170,11 +185,6 @@ const tick = () => {
   for (const intersect of intersects) {
     intersect.object.material.color.set("#0000ff");
   }
-
-  // Mouse
-  raycaster.setFromCamera(mouse, camera);
-  // const objectsToTest = [object1, object2, object3];
-  // const intersects = raycaster.intersectObjects(objectsToTest);
 
   if (intersects.length) {
     if (!currentIntersect) {
