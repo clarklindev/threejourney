@@ -1153,6 +1153,16 @@ const plane = new THREE.Mesh(
 
 ---
 
-# Scrollbased animation
+# 19-classictechniques-scrollbasedanimation
+
+# 20-advancedtechniques-physics
+
+# 21-advancedtechniques-importedmodels
+
+# 22-advancedtechniques-raycaster
+
+# 23-advancedtechniques-custom-model-with-blender
+
+# 24-advancedtechniques-environment-map
 
 - see folder README
