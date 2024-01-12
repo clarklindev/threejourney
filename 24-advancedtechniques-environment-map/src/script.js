@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "lil-gui";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 /**
  * Base
@@ -14,15 +15,44 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
+//loader
+const gltfLoader = new GLTFLoader();
+const cubeTextureLoader = new THREE.CubeTextureLoader();
+
+//environment map
+const environmentMap = cubeTextureLoader.load([
+  "environmentMaps/0/px.png",
+  "environmentMaps/0/nx.png",
+  "environmentMaps/0/py.png",
+  "environmentMaps/0/ny.png",
+  "environmentMaps/0/pz.png",
+  "environmentMaps/0/nz.png",
+]);
+scene.environment = environmentMap; //apply env map as lighting to whole scene
+scene.background = environmentMap;
 /**
  * Torus Knot
  */
 const torusKnot = new THREE.Mesh(
   new THREE.TorusKnotGeometry(1, 0.4, 100, 16),
-  new THREE.MeshBasicMaterial()
+  new THREE.MeshStandardMaterial({
+    roughness: 0.3,
+    metalness: 1,
+    color: 0xaaaaaa,
+  })
 );
+
+torusKnot.position.x = -4;
 torusKnot.position.y = 4;
 scene.add(torusKnot);
+
+//models
+gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
+  console.log("successs");
+  gltf.scene.scale.set(10, 10, 10); //scale
+
+  scene.add(gltf.scene);
+});
 
 /**
  * Sizes
