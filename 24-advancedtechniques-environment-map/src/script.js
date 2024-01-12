@@ -30,6 +30,12 @@ const updateAllMaterials = () => {
   });
 };
 
+scene.backgroundBlurriness = 0;
+scene.backgroundIntensity = 1;
+
+gui.add(scene, "backgroundBlurriness").min(0).max(1).step(0.001);
+gui.add(scene, "backgroundIntensity").min(0).max(10).step(0.001);
+
 //global intensity
 global.envMapIntensity = 1;
 gui

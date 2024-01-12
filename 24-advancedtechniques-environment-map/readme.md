@@ -107,7 +107,7 @@ const global = {};
 global.envMapIntensity = 1;
 
 gui
-  .add(global, "environmentIntensity")
+  .add(global, "envMapIntensity")
   .min(0)
   .max(10)
   .step(0.001)
@@ -128,4 +128,18 @@ const updateAllMaterials = () => {
     }
   });
 };
+```
+
+### Background bluriness and intensity
+
+- useful if environment resolution is quite low, or if you want user to focus on the object in the foreground
+- backgroundIntensity will control the background brightness.
+- NOTE: only controls the background NOT the environment map intensity
+
+```js
+scene.backgroundBlurriness = 0.2;
+scene.backgroundIntensity = 5;
+
+gui.add(scene, "backgroundBlurriness").min(0).max(1).step(0.001);
+gui.add(scene, "backgroundIntensity").min(0).max(10).step(0.001);
 ```
