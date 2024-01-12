@@ -143,3 +143,117 @@ scene.backgroundIntensity = 5;
 gui.add(scene, "backgroundBlurriness").min(0).max(1).step(0.001);
 gui.add(scene, "backgroundIntensity").min(0).max(10).step(0.001);
 ```
+
+## HDRI Equirectangular environment map
+
+- .hdr file inside -> /static/environmentMaps/0/
+- if OS supports it, you can get a preview of environment map
+- HDRI (high dynamic range image)
+- color values stored have a much higher range than traditional image(ideal to store luminosity data)
+- Equirectangular format meaning its 1 file not 6 (360 of whole scene) - sky and floor is stretched
+- loading .hdr files instead
+- need to use RGBELoader (Red Green Blue Exponent Loader) - exponent stores the brightness
+- RGBE is the encoding for .hdr format
+- import and instantiate the loader
+- set its mapping property to THREE.EquirectangularReflectionMapping and assign it to the background and environment properties of scene.
+- scene looks better (because the color range values stored is higher)
+- CONS of using HDR:
+  - file is heavier / load / render
+- RECOMMENDATION:
+  - use low res HDR for lighting
+  - blur the background
+
+```js
+// const environmentMap = cubeTextureLoader.load([
+//   "environmentMaps/0/px.png",
+//   "environmentMaps/0/nx.png",
+//   "environmentMaps/0/py.png",
+//   "environmentMaps/0/ny.png",
+//   "environmentMaps/0/pz.png",
+//   "environmentMaps/0/nz.png",
+// ]);
+// scene.environment = environmentMap;
+// scene.background = environmentMap;
+
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+
+const rgbeLoader = new RGBELoader();
+rgbeLoader.load("/environmentMaps/0/2k.hdr", (environmentMap) => {
+  console.log(environmentMap);
+
+  environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = environmentMap;
+  scene.environment = environmentMap;
+});
+```
+
+---
+
+### Generate environment map using Blender
+
+- can get from HDRI section on https://polyhaven.com
+- but can create own
+
+#### Render
+
+- RenderIcon (looks like a camera - right panel) change render engine from EEvee to Cycles
+- sampling - rays being casted to test color
+  - viewport (max samples set 256)
+  - render (max samples set 256)
+
+#### world
+
+- world properties (world icon)
+- surface color (move to 0 - creates a dimming on edge or scene)
+
+#### output
+
+- output properties (looks like printer icon)
+- set x: 2048 px
+- set y: 1024 px
+- % - tweak the output as percentage
+- webgl2 supports non power of 2 textures
+
+  - but we still do power of 2's for compatibility with other apps
+
+#### on the main scene
+
+- back to the scene, we are placing objects in the scene to test environment maps
+- create 6 objects (TOP, BOTTOM, LEFT, RIGHT, FRONT, BACK)
+- add camera (N - configure values)
+  - location: 0 (select drag x,y,z set 0)
+  - rotation: x:90, y: 0, z:0 (select drag y,z set 0)
+
+#### camera
+
+- camera properties (camera icon on right panel)
+- lens type -> set to panoramic
+- panorama type -> set to equirectangular
+
+#### Lights
+
+- add area light and move away from center of scene (ENSURE RAY points to center of scene 0,0,0)
+  - G - move
+  - R - rotate
+  - S - scale
+- change light intensity
+  - Object data properties (lightbulb icon) -> power -> 1000w
+- ensure light is visible in scene
+  - object properties (square icon) -> visibility -> ray visibility -> check Camera
+  - now in render mode (z-> rendered) you can see the light
+
+#### preview scene / render scene / save render as environment map
+
+z - preview render
+F12 - render scene
+
+##### save + load .hdr
+
+- to save the render
+
+  - hover over rendered
+  - ALT+S -> save to static folder -> environmentMaps ->
+  - update name (blender-2k)
+  - fileformat -> radiance HDR
+
+- load hdr from static folder
