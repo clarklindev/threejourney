@@ -8,6 +8,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
  */
 // Debug
 const gui = new dat.GUI();
+const global = {};
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -18,6 +19,25 @@ const scene = new THREE.Scene();
 //loader
 const gltfLoader = new GLTFLoader();
 const cubeTextureLoader = new THREE.CubeTextureLoader();
+
+//update all materials
+const updateAllMaterials = () => {
+  console.log("traverse the scene and update all materials here");
+  scene.traverse((child) => {
+    if (child.isMesh && child.material.isMeshStandardMaterial) {
+      child.material.envMapIntensity = global.envMapIntensity;
+    }
+  });
+};
+
+//global intensity
+global.envMapIntensity = 1;
+gui
+  .add(global, "envMapIntensity")
+  .min(0)
+  .max(10)
+  .step(0.001)
+  .onChange(updateAllMaterials);
 
 //environment map
 const environmentMap = cubeTextureLoader.load([
@@ -52,6 +72,9 @@ gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
   gltf.scene.scale.set(10, 10, 10); //scale
 
   scene.add(gltf.scene);
+
+  //update all materials
+  updateAllMaterials();
 });
 
 /**

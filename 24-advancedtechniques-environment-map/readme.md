@@ -83,3 +83,49 @@ scene.add(torusKnot);
 scene.environment = environmentMap;
 scene.background = environmentMap;
 ```
+
+### control environmentmap insensity
+
+- we are going to tweak intensity but it has to be done on each material
+- traverse() and apply the intensity whenever suitable
+- travers() is available on every Object3D and classes that inherit from it like Group, Mesh, and Scene
+- we will do the updates in a separate function named updateAllMaterials and call it once the model is loaded
+- create this function before the environment map and the model
+- use the traverse() method on the scene (traverses every child in scene)
+- we only want to apply environment map to the Meshes that have a MeshStandardMaterial
+- test if the child is an instance of THREE.Mesh
+- and if its (child material) is an instance of THREE.MeshStandardMaterial
+- SHORTCUT: test if child.isMesh && child.material.isMeshStandardMaterial
+- adjust with child.material.envMapIntensity =
+- ability to control intensity with DAT.ui
+  - use a global variable, tweak only one property and use that value on every child in the scene.
+- call the updateAllMaterials function when the tweak value changes using onChange
+- use the global.envMapIntensity on the materials
+
+```js
+const global = {};
+global.envMapIntensity = 1;
+
+gui
+  .add(global, "environmentIntensity")
+  .min(0)
+  .max(10)
+  .step(0.001)
+  .onChange(updateAllMaterials);
+
+const updateAllMaterials = () => {
+  console.log("traverse the scene and update all materials here");
+  scene.traverse((child) => {
+    console.log(child);
+    if (
+      // child instanceof THREE.Mesh &&
+      // child.material instanceof THREE.MeshStandardMaterial
+      child.isMesh &&
+      child.material.isMeshStandardMaterial
+    ) {
+      console.log(child);
+      child.material.envMapIntensity = global.envMapIntensity;
+    }
+  });
+};
+```
