@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "lil-gui";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 
 /**
  * Base
@@ -18,6 +19,8 @@ const scene = new THREE.Scene();
 
 //loader
 const gltfLoader = new GLTFLoader();
+const rgbeLoader = new RGBELoader();
+
 const cubeTextureLoader = new THREE.CubeTextureLoader();
 
 //update all materials
@@ -46,16 +49,25 @@ gui
   .onChange(updateAllMaterials);
 
 //environment map
-const environmentMap = cubeTextureLoader.load([
-  "environmentMaps/0/px.png",
-  "environmentMaps/0/nx.png",
-  "environmentMaps/0/py.png",
-  "environmentMaps/0/ny.png",
-  "environmentMaps/0/pz.png",
-  "environmentMaps/0/nz.png",
-]);
-scene.environment = environmentMap; //apply env map as lighting to whole scene
-scene.background = environmentMap;
+// const environmentMap = cubeTextureLoader.load([
+//   "environmentMaps/0/px.png",
+//   "environmentMaps/0/nx.png",
+//   "environmentMaps/0/py.png",
+//   "environmentMaps/0/ny.png",
+//   "environmentMaps/0/pz.png",
+//   "environmentMaps/0/nz.png",
+// ]);
+// scene.environment = environmentMap; //apply env map as lighting to whole scene
+// scene.background = environmentMap;
+
+// ### HDR (RGBE) equirectangular
+rgbeLoader.load("/environmentMaps/0/2k.hdr", (environmentMap) => {
+  console.log("environmentMap: ", environmentMap);
+  environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = environmentMap;
+  scene.environment = environmentMap;
+});
+
 /**
  * Torus Knot
  */

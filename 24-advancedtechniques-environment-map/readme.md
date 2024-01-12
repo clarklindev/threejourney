@@ -143,3 +143,46 @@ scene.backgroundIntensity = 5;
 gui.add(scene, "backgroundBlurriness").min(0).max(1).step(0.001);
 gui.add(scene, "backgroundIntensity").min(0).max(10).step(0.001);
 ```
+
+## HDRI Equirectangular environment map
+
+- .hdr file inside -> /static/environmentMaps/0/
+- if OS supports it, you can get a preview of environment map
+- HDRI (high dynamic range image)
+- color values stored have a much higher range than traditional image(ideal to store luminosity data)
+- Equirectangular format meaning its 1 file not 6 (360 of whole scene) - sky and floor is stretched
+- loading .hdr files instead
+- need to use RGBELoader (Red Green Blue Exponent Loader) - exponent stores the brightness
+- RGBE is the encoding for .hdr format
+- import and instantiate the loader
+- set its mapping property to THREE.EquirectangularReflectionMapping and assign it to the background and environment properties of scene.
+- scene looks better (because the color range values stored is higher)
+- CONS of using HDR:
+  - file is heavier / load / render
+- RECOMMENDATION:
+  - use low res HDR for lighting
+  - blur the background
+
+```js
+// const environmentMap = cubeTextureLoader.load([
+//   "environmentMaps/0/px.png",
+//   "environmentMaps/0/nx.png",
+//   "environmentMaps/0/py.png",
+//   "environmentMaps/0/ny.png",
+//   "environmentMaps/0/pz.png",
+//   "environmentMaps/0/nz.png",
+// ]);
+// scene.environment = environmentMap;
+// scene.background = environmentMap;
+
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+
+const rgbeLoader = new RGBELoader();
+rgbeLoader.load("/environmentMaps/0/2k.hdr", (environmentMap) => {
+  console.log(environmentMap);
+
+  environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = environmentMap;
+  scene.environment = environmentMap;
+});
+```
