@@ -230,7 +230,7 @@ rgbeLoader.load("/environmentMaps/0/2k.hdr", (environmentMap) => {
 - lens type -> set to panoramic
 - panorama type -> set to equirectangular
 
-#### Lights
+#### Lights (environment maps 44:27)
 
 - add area light and move away from center of scene (ENSURE RAY points to center of scene 0,0,0)
   - G - move
@@ -238,9 +238,12 @@ rgbeLoader.load("/environmentMaps/0/2k.hdr", (environmentMap) => {
   - S - scale
 - change light intensity
   - Object data properties (lightbulb icon) -> power -> 1000w
-- ensure light is visible in scene
+
+- ##### ensure light is visible in scene
   - object properties (square icon) -> visibility -> ray visibility -> check Camera
   - now in render mode (z-> rendered) you can see the light
+  - NOTE: if you cant find ray visibility - change rendering engine to cycles
+      * Eevee render engine by default, just switch to Cycles engine and it will all be there.
 
 #### preview scene / render scene / save render as environment map
 
@@ -251,8 +254,9 @@ F12 - render scene
 
 - to save the render
 
-  - hover over rendered
-  - ALT+S -> save to static folder -> environmentMaps ->
+  - hover over rendered (RENDERED image)
+  - 
+  - save as (ALT+S) -> save to static folder -> environmentMaps ->
   - update name (blender-2k)
   - fileformat -> radiance HDR
 
