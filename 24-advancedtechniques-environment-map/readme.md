@@ -261,3 +261,26 @@ F12 - render scene
   - fileformat -> radiance HDR
 
 - load hdr from static folder
+
+### using AI to generate Environment maps
+#### NVidia Canvas
+- create panorama (in beta)
+- export (4k) .. saves as .exr (still is HDR with different encoding)
+- exr also has layers and alpha channel if needed.
+
+```js
+import {EXRLoader}  from "three/examples/jsm/loaders/EXRLoader";
+
+exrLoader.load('/environmentMaps/nvidiaCanvas-4k.exr', (environmentMap)=>{
+  environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = environmentMap;
+  scene.environmentMap = environmentMap;  //environmentMap working as lighting too
+
+});
+
+```
+#### Skybox Lab by BlockadeLabs 
+- https://skybox.blockadelabs.com/
+- futuristic -> cyberpunk -> "neon city, orange lights, taxi using digital painting style"
+- download jpg Equirectangular
+- 
