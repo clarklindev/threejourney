@@ -264,6 +264,7 @@ F12 - render scene
 
 ### using AI to generate Environment maps
 #### NVidia Canvas
+- requires NVidia RTX GPU
 - create panorama (in beta)
 - export (4k) .. saves as .exr (still is HDR with different encoding)
 - exr also has layers and alpha channel if needed.
@@ -301,3 +302,34 @@ global.envMapIntensity = 4;
 ```
 
 ### Ground projected Skyboxes
+- reuse env map BUT only for scene scene environment
+- import GroundProjectedSkybox
+- create a new instance of GroundProjectedSkybox passing environmentMap as prop
+- set scale
+- can control the skybox projection with the radius and height
+- its better to add these values to dat.ui
+- this wont always work (especially) when there are items at center of environment map
+
+```js
+import {GroundProjectedSkybox} from "three/examples/jsm/objects/GroundProjectedSkybox";
+
+//GROUND PROJECTED SKYBOX
+rgbeLoader.load("/environmentMaps/2/2k.hdr", (environmentMap) => {
+  console.log("environmentMap: ", environmentMap);
+  environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+  scene.environment = environmentMap;
+  
+  //skybox
+  const skybox = new GroundProjectedSkybox(environmentMap);
+    skybox.radius = 120;
+    skybox.height = 11;
+
+  skybox.scale.setScalar(50);
+
+  scene.add(skybox);
+
+  gui.add(skybox, 'radius', 1, 200, 0.1).name('skyboxRadius');
+  gui.add(skybox, 'height', 1, 100, 0.1).name('skyboxHeight');
+
+});
+```

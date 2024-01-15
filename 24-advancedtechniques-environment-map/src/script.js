@@ -4,6 +4,7 @@ import * as dat from "lil-gui";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import {EXRLoader}  from "three/examples/jsm/loaders/EXRLoader";
+import {GroundProjectedSkybox} from "three/examples/jsm/objects/GroundProjectedSkybox";
 
 /**
  * Base
@@ -43,8 +44,7 @@ gui.add(scene, "backgroundBlurriness").min(0).max(1).step(0.001);
 gui.add(scene, "backgroundIntensity").min(0).max(10).step(0.001);
 
 //global intensity
-// global.envMapIntensity = 1;
-global.envMapIntensity = 4;
+global.envMapIntensity = 1;
 
 
 gui
@@ -83,13 +83,30 @@ gui
 // });
 
 //LDR equirectangular - https://skybox.blockadelabs.com
-  const environmentMap = textureLoader.load('/environmentMaps/blockadesLabsSkybox/anime_art_style_japan_streets_with_cherry_blossom_.jpg')
+  // const environmentMap = textureLoader.load('/environmentMaps/blockadesLabsSkybox/anime_art_style_japan_streets_with_cherry_blossom_.jpg')
+  // environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+  // environmentMap.colorSpace = THREE.SRGBColorSpace;
+
+  // scene.background = environmentMap;
+  // scene.environment = environmentMap;
+
+//GROUND PROJECTED SKYBOX
+rgbeLoader.load("/environmentMaps/2/2k.hdr", (environmentMap) => {
+  console.log("environmentMap: ", environmentMap);
   environmentMap.mapping = THREE.EquirectangularReflectionMapping;
-  environmentMap.colorSpace = THREE.SRGBColorSpace;
-
-  scene.background = environmentMap;
   scene.environment = environmentMap;
+    //skybox
+    const skybox = new GroundProjectedSkybox(environmentMap);
 
+    skybox.radius = 120;
+    skybox.height = 11;
+    skybox.scale.setScalar(50);
+    
+    scene.add(skybox);
+
+    gui.add(skybox, 'radius', 1, 200, 0.1).name('skyboxRadius');
+    gui.add(skybox, 'height', 1, 100, 0.1).name('skyboxHeight');
+});
 /**
  * Torus Knot
  */
