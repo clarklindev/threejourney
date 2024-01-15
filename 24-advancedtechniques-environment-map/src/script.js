@@ -22,6 +22,7 @@ const scene = new THREE.Scene();
 const gltfLoader = new GLTFLoader();
 const rgbeLoader = new RGBELoader();
 const exrLoader = new EXRLoader();
+const textureLoader = new THREE.TextureLoader();
 
 const cubeTextureLoader = new THREE.CubeTextureLoader();
 
@@ -42,7 +43,10 @@ gui.add(scene, "backgroundBlurriness").min(0).max(1).step(0.001);
 gui.add(scene, "backgroundIntensity").min(0).max(10).step(0.001);
 
 //global intensity
-global.envMapIntensity = 1;
+// global.envMapIntensity = 1;
+global.envMapIntensity = 4;
+
+
 gui
   .add(global, "envMapIntensity")
   .min(0)
@@ -72,11 +76,19 @@ gui
 
 // ### HDR (EXR) equirectangular
 
-exrLoader.load('/environmentMaps/nvidiaCanvas-4k.exr', (environmentMap)=>{
+// exrLoader.load('/environmentMaps/nvidiaCanvas-4k.exr', (environmentMap)=>{
+//   environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+//   scene.background = environmentMap;
+//   scene.environment = environmentMap;  //environmentMap working as lighting too
+// });
+
+//LDR equirectangular - https://skybox.blockadelabs.com
+  const environmentMap = textureLoader.load('/environmentMaps/blockadesLabsSkybox/anime_art_style_japan_streets_with_cherry_blossom_.jpg')
   environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+  environmentMap.colorSpace = THREE.SRGBColorSpace;
+
   scene.background = environmentMap;
-  scene.environment = environmentMap;  //environmentMap working as lighting too
-});
+  scene.environment = environmentMap;
 
 /**
  * Torus Knot

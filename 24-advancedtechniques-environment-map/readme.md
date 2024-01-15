@@ -282,5 +282,22 @@ exrLoader.load('/environmentMaps/nvidiaCanvas-4k.exr', (environmentMap)=>{
 #### Skybox Lab by BlockadeLabs 
 - https://skybox.blockadelabs.com/
 - futuristic -> cyberpunk -> "neon city, orange lights, taxi using digital painting style"
-- download jpg Equirectangular
-- 
+- download jpg Equirectangular (.LDR)
+- set the mapping to THREE.EquirectangularReflectionMapping
+- fix the colorspace to: environmentMap.colorSpace = THREE.SRGBColorSpace;
+- since the environmentmap is LDR, you should increase default envMapIntensity on global.
+
+### Loading these LDR files
+```js
+const textureLoader = new THREE.TextureLoader();
+const environmentMap = textureLoader.load('/environmentMaps/blockadesLabsSkybox/anime_art_style_japan_streets_with_cherry_blossom_.jpg')
+environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+  environmentMap.colorSpace = THREE.SRGBColorSpace;
+  scene.background = environmentMap;
+  scene.environmentMap = environmentMap;  //environmentMap working as lighting too
+
+global.envMapIntensity = 4;
+
+```
+
+### Ground projected Skyboxes
