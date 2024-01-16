@@ -8,6 +8,8 @@ import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
  * Loaders
  */
 const gltfLoader = new GLTFLoader();
+const cubeTextureLoader = new THREE.CubeTextureLoader();
+
 // const rgbeLoader = new RGBELoader();
 // const textureLoader = new THREE.TextureLoader();
 
@@ -21,22 +23,50 @@ const global = {};
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
+/**
+ * Environment map
+ */
+
+const environmentMap = cubeTextureLoader.load([
+  '/environmentMaps/0/px.png',
+  '/environmentMaps/0/nx.png',
+  '/environmentMaps/0/py.png',
+  '/environmentMaps/0/ny.png',
+  '/environmentMaps/0/pz.png',
+  '/environmentMaps/0/nz.png',
+]);
+
+
 // Scene
 const scene = new THREE.Scene();
 
-const testSphere = new THREE.Mesh(
-  new THREE.SphereGeometry(1,32,32),
-  new THREE.MeshStandardMaterial()
-)
-scene.add(testSphere);
+// environmentMap.encoding = THREE.sRGBEncoding; //DEPRECATED
+
+environmentMap.colorSpace = THREE.SRGBColorSpace;
+
+scene.background = environmentMap;
+scene.environment = environmentMap;
+
+// const testSphere = new THREE.Mesh(
+//   new THREE.SphereGeometry(1,32,32),
+//   new THREE.MeshStandardMaterial()
+// )
+// scene.add(testSphere);
 
 /**
- * Update all materials
+ * Update all materials on scene
  */
 const updateAllMaterials = () => {
   scene.traverse((child) => {
     if (child.isMesh && child.material.isMeshStandardMaterial) {
+      console.log(child);
+
+      child.material.envMap = environmentMap; //change envMap property
+
+      // child.material.envMapIntensity = 5;
       child.material.envMapIntensity = global.envMapIntensity;
+      child.material.needsUpdate = true;
+
 
       child.castShadow = true;
       child.receiveShadow = true;
@@ -44,17 +74,15 @@ const updateAllMaterials = () => {
   });
 };
 
-/**
- * Environment map
- */
-// Global intensity
-// global.envMapIntensity = 1;
-// gui
-//   .add(global, "envMapIntensity")
-//   .min(0)
-//   .max(10)
-//   .step(0.001)
-//   .onChange(updateAllMaterials);
+
+// Global intensity - update after tweaks
+global.envMapIntensity = 5;
+gui
+  .add(global, "envMapIntensity")
+  .min(0)
+  .max(10)
+  .step(0.001)
+  .onChange(updateAllMaterials);
 
 // // HDR (RGBE) equirectangular
 // rgbeLoader.load("/environmentMaps/0/2k.hdr", (environmentMap) => {
@@ -136,11 +164,11 @@ gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
   
   scene.add(gltf.scene);  //add to scene
 
-  //-Math.PI - half circle
-  //Math.PI half circle
+  //-Math.PI - half circle to Math.PI half circle in positive direction
   gui.add(gltf.scene.rotation, 'y').min(-Math.PI).max(Math.PI).step(0.001).name('rotation');
 
-  updateAllMaterials();
+  updateAllMaterials(); //update materials of whole scene
+
 });
 
 // Hamburger
@@ -238,7 +266,9 @@ window.addEventListener("resize", () => {
   // Update renderer
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.physicallyCorrectLights = true;
+  // renderer.physicallyCorrectLights = true; deprecated
+  renderer.useLegacyLights = false;
+
 
 });
 
@@ -269,22 +299,34 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+// renderer.physicallyCorrectLights = true;  //deprecated
+// renderer.useLegacyLights = true;  //DEPRECATED https://discourse.threejs.org/t/updates-to-lighting-in-three-js-r155/53733
+renderer.useLegacyLights = false;
+
+// renderer.outputEncoding = THREE.sRGBEncoding;  //deprecated
+//outputColorSpace - Defines the output color space of the renderer. Default is THREE.SRGBColorSpace.
+renderer.outputColorSpace = THREE.SRGBColorSpace;   //this is default
+
 
 // Tone mapping
 // The tone mapping intends to convert High Dynamic Range (HDR) values to Low Dynamic Range (LDR) values.
 // tone mapping in Three.js will actually fake the process of converting LDR to HDR
 // even if the colors aren’t HDR resulting in a very realistic render.
-// renderer.toneMapping = THREE.ReinhardToneMapping;
-// renderer.toneMappingExposure = 3;
+renderer.toneMapping = THREE.ReinhardToneMapping;
+renderer.toneMappingExposure = 3;
 
-// gui.add(renderer, "toneMapping", {
-//   No: THREE.NoToneMapping,
-//   Linear: THREE.LinearToneMapping,
-//   Reinhard: THREE.ReinhardToneMapping,
-//   Cineon: THREE.CineonToneMapping,
-//   ACESFilmic: THREE.ACESFilmicToneMapping,
-// });
-// gui.add(renderer, "toneMappingExposure").min(0).max(10).step(0.001);
+gui.add(renderer, "toneMapping", {
+  No: THREE.NoToneMapping,
+  Linear: THREE.LinearToneMapping,
+  Reinhard: THREE.ReinhardToneMapping,
+  Cineon: THREE.CineonToneMapping,
+  ACESFilmic: THREE.ACESFilmicToneMapping,
+})
+.onFinishChange(()=>{
+  renderer.toneMapping = Number(renderer.toneMapping);
+  updateAllMaterials();
+})
+gui.add(renderer, "toneMappingExposure").min(0).max(10).step(0.001);
 
 // Physically accurate lighting
 // Default Three.js light intensity values aren't realistic.
