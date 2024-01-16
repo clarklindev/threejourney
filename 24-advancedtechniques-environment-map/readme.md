@@ -333,3 +333,137 @@ rgbeLoader.load("/environmentMaps/2/2k.hdr", (environmentMap) => {
 
 });
 ```
+
+### Realtime environment map
+
+- insert the (low dynamic range) LDR Woodcabin environment map again, but only as a background of the scene
+- LDR is darker, so you add own lighting
+- making a holy donut - surrounding the scene and try to make that torus illuminate and reflect of the surface of our objects
+- use a TorusGeometry and call the object holyDonut.
+- make the donut rotate
+- at the beginning of tick() funcition, after elapsedTime, test if holyDonut exists
+- use elapsedTime on the rotation if it exists
+
+```js
+//REALTIME ENVIRONMENT MAP
+const environmentMap = textureLoader.load('/environmentMaps/blockadesLabsSkybox/interior_views_cozy_wood_cabin_with_cauldron_and_p.jpg')
+  environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+  environmentMap.colorSpace = THREE.SRGBColorSpace;
+  scene.background = environmentMap;
+
+// HOLY DONUT
+const holyDonut = new THREE.Mesh(
+  new THREE.TorusGeometry(8, 0.5),
+  new THREE.MeshBasicMaterial({color:'white'})
+);
+holyDonut.position.y = 3.5;
+scene.add(holyDonut);
+
+const tick = ()=>{
+  const elapsedTime = clock.getElapsedTime();
+
+  //realtime environment map
+  if(holyDonut){
+    // holyDonut.rotation.x = elapsedTime;
+    holyDonut.rotation.x = Math.sin(elapsedTime) * 2;  
+  }
+}
+```
+
+### Cube render target
+- getting donut to get light on the model
+- render the scene inside our own environment map texture - a "cube texture" (front, back, left, right, top, bottom)
+- we need to use a WebGLCubeRenderTarget
+- Render targets are textures in which we can store renders of any scene (6 renders)
+  - first parameter is the resolution of each side of the cube (use 256)
+  - second parameter is the object whose properties will be used to set up the render target.
+- the only property that matters is type in which we can choose the type of value that will be stored
+- since we want the same behavior as an HDR with a high range of data, we should use THREE.HalfFloatType (16bit) or THREE.FloatType (32 bit)
+- Float uses 32 bits to store a wide range of values.
+- HalfFloat uses only 16 bits, but its still quite a wide range, the difference wont be noticeable and its better for performance since it requires less memory
+- assign it to the environment of the scene
+
+#### CubeCamera
+- we need to render 6 textures (one texture for each face of a cube)
+  ##### you could do it yourself?
+    - with PerspectiveCamera
+    - set the field of view to fill one side perfectly
+    - do one render for each side
+    - combine the renders etc...
+
+  ##### CubeCamera
+  - First parameter is the near
+  - Second parameter is the far
+  - Third parameter is the WebGLCubeRenderTarget
+
+- render on each frame
+- render the scene in the CubeCamera using its update method and sending it 
+    - the "renderer" 
+    - and the "scene"
+  - cubeCamera.update(renderer, scene);
+- since we are using a high-range texture on the render target, we can make the cube color go beyond the 0 to 1 range
+  eg. new THREE.MeshBasicMaterial({color:'white'}) - change the color of holyDonut to ta Color with (10,4,2) as parameters
+- there is a bug - to see it, change the roughness of the torus knot to 0 and watch the reflection
+- BUG - the bug is that the torus knot is also rendered in the realtime environment map and technically it shouldnt even be there as its reflecting the environment
+- ie. all objects in the scene are now part of the environment map (helmet and torus knot in the scene is blocking the light inside the environment map)
+
+##### Layers
+- layers work like categories and can be set on any object inheriting from Object3D (like a mesh , camera)
+- BY SETTING LAYERS ON A CAMERA, THIS CAMERA WILL ONLY SEE OBJECTS MATCHING THE SAME LAYERS
+- if a camera has its layers set to 1, and 2, it will only see objects that have layers set to 1 or 2.
+- by default all objects have layers set to 0
+- to change the layers of an object or a camera, we can use 3 methods:
+  
+  - object.layers.enable(...) - adds a layer
+  - object.layers.disable(...) - disables a layer
+  - object.layers.set(...) - enables a layer BUT disables all other layers automatically
+
+- we want the cubeCamera to only see the holyDonut, so we set its layers to 1
+- we want our holyDonut to be visible for both the default camera and the cubeCamera - since the default layer is 0, we just need to add 1.
+
+### thoughts
+- 6 renders per frame is a lot for performance, 
+- keep eye on frame rate, 
+- use smallest possible resolution on WebGLCubeRenderTarget
+- keep the scene that is being rendered in the enviroment map simple
+
+```js
+
+// HOLY DONUT
+const holyDonut = new THREE.Mesh(
+  new THREE.TorusGeometry(8, 0.5),
+  new THREE.MeshBasicMaterial({ color: new THREE.Color(10, 4, 2) })
+);
+holyDonut.layers.enable(1);   //makes the donut on same layer as camera
+holyDonut.position.y = 3.5;
+scene.add(holyDonut);
+
+
+//cube render target - texture where we put renders
+const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(
+  256, 
+  {
+    type: THREE.HalfFloatType 
+  }
+);
+
+scene.environment = cubeRenderTarget.texture; //provide texture
+
+//cube camera - receives cubeRenderTarget
+const cubeCamera = new THREE.CubeCamera(0.1, 100, cubeRenderTarget);
+cubeCamera.layers.set(1);
+
+const tick = () => { 
+  const elapsedTime = clock.getElapsedTime();
+
+  //realtime environment map
+  if(holyDonut){
+    // holyDonut.rotation.x = elapsedTime;
+    holyDonut.rotation.x = Math.sin(elapsedTime) * 2;  
+
+    cubeCamera.update(renderer, scene);
+
+  }
+}
+
+```

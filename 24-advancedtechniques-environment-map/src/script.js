@@ -91,29 +91,60 @@ gui
   // scene.environment = environmentMap;
 
 //GROUND PROJECTED SKYBOX
-rgbeLoader.load("/environmentMaps/2/2k.hdr", (environmentMap) => {
-  console.log("environmentMap: ", environmentMap);
-  environmentMap.mapping = THREE.EquirectangularReflectionMapping;
-  scene.environment = environmentMap;
-    //skybox
-    const skybox = new GroundProjectedSkybox(environmentMap);
+// rgbeLoader.load("/environmentMaps/2/2k.hdr", (environmentMap) => {
+//   console.log("environmentMap: ", environmentMap);
+//   environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+//   scene.environment = environmentMap;
+//     //skybox
+//     const skybox = new GroundProjectedSkybox(environmentMap);
 
-    skybox.radius = 120;
-    skybox.height = 11;
-    skybox.scale.setScalar(50);
+//     skybox.radius = 120;
+//     skybox.height = 11;
+//     skybox.scale.setScalar(50);
     
-    scene.add(skybox);
+//     scene.add(skybox);
 
-    gui.add(skybox, 'radius', 1, 200, 0.1).name('skyboxRadius');
-    gui.add(skybox, 'height', 1, 100, 0.1).name('skyboxHeight');
-});
+//     gui.add(skybox, 'radius', 1, 200, 0.1).name('skyboxRadius');
+//     gui.add(skybox, 'height', 1, 100, 0.1).name('skyboxHeight');
+// });
+
+//REALTIME ENVIRONMENT MAP
+const environmentMap = textureLoader.load('/environmentMaps/blockadesLabsSkybox/interior_views_cozy_wood_cabin_with_cauldron_and_p.jpg')
+  environmentMap.mapping = THREE.EquirectangularReflectionMappin;
+  environmentMap.colorSpace = THREE.SRGBColorSpace;
+  scene.background = environmentMap;  //only use as background
+
+// HOLY DONUT
+const holyDonut = new THREE.Mesh(
+  new THREE.TorusGeometry(8, 0.5),
+  new THREE.MeshBasicMaterial({ color: new THREE.Color(10, 4, 2) })
+);
+holyDonut.layers.enable(1);
+holyDonut.position.y = 3.5;
+scene.add(holyDonut);
+
+//CUBE RENDER TARGET
+//cube render target - texture where we put renders
+const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(
+  256, 
+  {
+    type: THREE.HalfFloatType   //makes the shine else without it its dull
+  }
+);
+
+scene.environment = cubeRenderTarget.texture;
+
+//CUBE CAMERA
+const cubeCamera = new THREE.CubeCamera(0.1, 100, cubeRenderTarget);
+cubeCamera.layers.set(1);
+
 /**
  * Torus Knot
  */
 const torusKnot = new THREE.Mesh(
   new THREE.TorusKnotGeometry(1, 0.4, 100, 16),
   new THREE.MeshStandardMaterial({
-    roughness: 0.3,
+    roughness: 0,
     metalness: 1,
     color: 0xaaaaaa,
   })
@@ -191,6 +222,15 @@ const tick = () => {
   // Time
   const elapsedTime = clock.getElapsedTime();
 
+  //real time environment map
+  if(holyDonut){
+    // holyDonut.rotation.x = elapsedTime;
+    holyDonut.rotation.x = Math.sin(elapsedTime) * 2;
+
+    cubeCamera.update(renderer, scene);
+
+  }
+ 
   // Update controls
   controls.update();
 
