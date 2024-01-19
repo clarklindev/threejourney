@@ -5,6 +5,7 @@ import World from './World/World.js';
 import sources from './sources.js';
 import Resources from './Utils/Resources.js';
 import Renderer from './Renderer.js';
+import Debug from './Utils/Debug.js';
 
 import * as THREE from 'three';
 
@@ -26,6 +27,7 @@ export default class Experience{
     this.canvas = canvas;
 
     //setup
+    this.debug = new Debug();
     this.sizes = new Sizes();
     this.time = new Time();
     this.scene = new THREE.Scene();
@@ -53,5 +55,39 @@ export default class Experience{
   update(){
     this.camera.update();
     this.renderer.update();
+    this.world.update();
+  }
+
+  destroy(){
+    this.sizes.off('resize');
+    this.time.off('tick');
+
+    //traverse scene and look for things to destroy
+    
+    //geometries
+    this.scene.traverse((child)=>{
+      if(child instanceof THREE.Mesh){
+        child.geometry.dispose();
+        for(const key in child.material){
+          const value = child.material[key];
+          if(value && typeof value.dispose === "function"){
+            value.dispose();
+          }
+        }
+      }
+    });
+
+    //controls
+    this.camera.controls.dispose();
+
+    //webglrenderer
+    this.renderer.instance.dispose();
+
+    //debug ui
+    if(this.debug.active){
+      this.debug.ui.destroy();
+    }
+
+
   }
 }
