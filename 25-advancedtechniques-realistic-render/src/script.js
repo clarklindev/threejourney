@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import * as dat from "lil-gui";
+import * as dat from 'dat.gui';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 
@@ -23,10 +23,30 @@ const global = {};
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
+
+// Scene
+const scene = new THREE.Scene();
+
+/**
+ * Update all materials
+ */
+const updateAllMaterials = () => {
+  scene.traverse((child) => {
+    if (child.isMesh && child.material.isMeshStandardMaterial) {
+
+      // child.material.envMap = environmentMap; //change envMap property   //NOTE: handled by scene.environment, same as scene.environment = environmentMap;
+      child.material.envMapIntensity = global.envMapIntensity;
+      child.material.needsUpdate = true; //tone mapping 
+
+      child.castShadow = true;  //enable shadow for all children
+      child.receiveShadow = true;
+    }
+  });
+};
+
 /**
  * Environment map
  */
-
 const environmentMap = cubeTextureLoader.load([
   '/environmentMaps/0/px.png',
   '/environmentMaps/0/nx.png',
@@ -37,52 +57,16 @@ const environmentMap = cubeTextureLoader.load([
 ]);
 
 
-// Scene
-const scene = new THREE.Scene();
-
-// environmentMap.encoding = THREE.sRGBEncoding; //DEPRECATED
-
-environmentMap.colorSpace = THREE.SRGBColorSpace;
+// environmentMap.encoding = THREE.sRGBEncoding; //DEPRECATED THREE.sRGBEncoding
+//environmentMap.encoding = THREE.SRGBColorSpace; //DEPRECATED .encoding (but works if not using .toneMappingExposure multiplier) 
+environmentMap.colorSpace = THREE.LinearSRGBColorSpace; 
 
 scene.background = environmentMap;
 scene.environment = environmentMap;
 
-// const testSphere = new THREE.Mesh(
-//   new THREE.SphereGeometry(1,32,32),
-//   new THREE.MeshStandardMaterial()
-// )
-// scene.add(testSphere);
-
-/**
- * Update all materials on scene
- */
-const updateAllMaterials = () => {
-  scene.traverse((child) => {
-    if (child.isMesh && child.material.isMeshStandardMaterial) {
-      console.log(child);
-
-      child.material.envMap = environmentMap; //change envMap property
-
-      // child.material.envMapIntensity = 5;
-      child.material.envMapIntensity = global.envMapIntensity;
-      child.material.needsUpdate = true;
-
-
-      child.castShadow = true;
-      child.receiveShadow = true;
-    }
-  });
-};
-
-
 // Global intensity - update after tweaks
 global.envMapIntensity = 5;
-gui
-  .add(global, "envMapIntensity")
-  .min(0)
-  .max(10)
-  .step(0.001)
-  .onChange(updateAllMaterials);
+gui.add(global, "envMapIntensity").min(0).max(10).step(0.001).onChange(updateAllMaterials);
 
 // // HDR (RGBE) equirectangular
 // rgbeLoader.load("/environmentMaps/0/2k.hdr", (environmentMap) => {
@@ -92,44 +76,53 @@ gui
 //   scene.environment = environmentMap;
 // });
 
+
+
+/**
+ * Models
+ */
+// Helmet
+// gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
+//   gltf.scene.scale.set(10, 10, 10); //increase scale
+//   gltf.scene.position.set(0, -4, 0);
+//   gltf.scene.rotation.y = Math.PI * 0.5;
+  
+//   scene.add(gltf.scene);  //add to scene
+
+//   //-Math.PI - half circle to Math.PI half circle in positive direction
+//   gui.add(gltf.scene.rotation, 'y').min(-Math.PI).max(Math.PI).step(0.001).name('rotation');
+
+//   updateAllMaterials(); //update materials of whole scene
+// });
+
+// Hamburger
+gltfLoader.load("/models/hamburger.glb", (gltf) => {
+  gltf.scene.scale.set(0.4, 0.4, 0.4);
+  gltf.scene.position.set(0, 2.5, 0);
+  scene.add(gltf.scene);
+
+  updateAllMaterials();
+});
+
 /**
  * Directional light - environment map doesn't have light. So we need it.
  */
 const directionalLight = new THREE.DirectionalLight("#ffffff", 3);
-directionalLight.position.set(0.25, 3, -2.25);
-scene.add(directionalLight);
-gui
-  .add(directionalLight, "intensity")
-  .min(0)
-  .max(10)
-  .step(0.001)
-  .name("lightIntensity");
-
-gui
-  .add(directionalLight.position, "x")
-  .min(-5)
-  .max(5)
-  .step(0.001)
-  .name("lightX");
-gui
-  .add(directionalLight.position, "y")
-  .min(-5)
-  .max(5)
-  .step(0.001)
-  .name("lightY");
-gui
-  .add(directionalLight.position, "z")
-  .min(-5)
-  .max(5)
-  .step(0.001)
-  .name("lightZ");
 
 // Shadows
-// directionalLight.castShadow = true;
-// directionalLight.shadow.camera.far = 15;
-// directionalLight.shadow.normalBias = 0.027;
-// directionalLight.shadow.bias = -0.004;
-// directionalLight.shadow.mapSize.set(512, 512);
+directionalLight.castShadow = true;
+directionalLight.shadow.camera.far = 15;
+directionalLight.shadow.normalBias = 0.027;
+directionalLight.shadow.bias = -0.004;
+directionalLight.shadow.mapSize.set(1024, 1024);
+
+directionalLight.position.set(0.25, 3, -2.25);
+scene.add(directionalLight);
+
+gui.add(directionalLight, "intensity").min(0).max(10).step(0.001).name("lightIntensity");
+gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001).name("lightX");
+gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001).name("lightY");
+gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001).name("lightZ");
 
 gui.add(directionalLight, "castShadow");
 
@@ -141,10 +134,10 @@ gui.add(directionalLight, "castShadow");
 // gui.add(directionalLight.shadow, "bias").min(-0.05).max(0.05).step(0.001);
 
 // Helper
-// const directionalLightCameraHelper = new THREE.CameraHelper(
-//   directionalLight.shadow.camera
-// );
-// scene.add(directionalLightCameraHelper);
+const directionalLightCameraHelper = new THREE.CameraHelper(
+  directionalLight.shadow.camera
+);
+scene.add(directionalLightCameraHelper); //see camera being used to create shadow map
 
 // Target - change the position of directional light a bit higher.
 // Three.js is using matrices to define object transforms. When we change properties like position, rotation and scale,
@@ -152,33 +145,6 @@ gui.add(directionalLight, "castShadow");
 // only if it’s in the scene. Even though the directionalLight is in the scene, its target is not.
 directionalLight.target.position.set(0, 4, 0);
 directionalLight.target.updateWorldMatrix(); // update target!
-
-/**
- * Models
- */
-// Helmet
-gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
-  gltf.scene.scale.set(10, 10, 10); //increase scale
-  gltf.scene.position.set(0, -4, 0);
-  gltf.scene.rotation.y = Math.PI * 0.5;
-  
-  scene.add(gltf.scene);  //add to scene
-
-  //-Math.PI - half circle to Math.PI half circle in positive direction
-  gui.add(gltf.scene.rotation, 'y').min(-Math.PI).max(Math.PI).step(0.001).name('rotation');
-
-  updateAllMaterials(); //update materials of whole scene
-
-});
-
-// Hamburger
-// gltfLoader.load("/models/hamburger.glb", (gltf) => {
-//   gltf.scene.scale.set(0.4, 0.4, 0.4);
-//   gltf.scene.position.set(0, 2.5, 0);
-//   scene.add(gltf.scene);
-
-//   updateAllMaterials();
-// });
 
 /**
  * Floor
@@ -266,7 +232,7 @@ window.addEventListener("resize", () => {
   // Update renderer
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  // renderer.physicallyCorrectLights = true; deprecated
+  // renderer.physicallyCorrectLights = true; //DEPRECATED: physicallyCorrectLights
   renderer.useLegacyLights = false;
 
 
@@ -295,25 +261,36 @@ controls.enableDamping = true;
  */
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
-  antialias: true, // get rid of stair-like effect
+  antialias: true, // get rid of stair-like effect MSAA (mutlisampling activate)
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-// renderer.physicallyCorrectLights = true;  //deprecated
-// renderer.useLegacyLights = true;  //DEPRECATED https://discourse.threejs.org/t/updates-to-lighting-in-three-js-r155/53733
-renderer.useLegacyLights = false;
 
-// renderer.outputEncoding = THREE.sRGBEncoding;  //deprecated
+//renderer.outputEncoding = THREE.sRGBEncoding;  //deprecated use .outputColorSpace 
 //outputColorSpace - Defines the output color space of the renderer. Default is THREE.SRGBColorSpace.
 renderer.outputColorSpace = THREE.SRGBColorSpace;   //this is default
 
+// Physically accurate lighting
+// Default Three.js light intensity values aren't realistic.
+// They are based on an arbitrary scale unit and don't reflect real-world values.
+// It might be more comfortable to reproduce real-life conditions with useLegacyLights false.
+// 👆 Always start the project with useLegacyLights to false.
+// renderer.physicallyCorrectLights = true;  //deprecated
+// renderer.useLegacyLights = true;  //DEPRECATED https://discourse.threejs.org/t/updates-to-lighting-in-three-js-r155/53733
+// renderer.useLegacyLights = false; //default
+gui.add(renderer, "useLegacyLights");
+
+// Shadows
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 // Tone mapping
 // The tone mapping intends to convert High Dynamic Range (HDR) values to Low Dynamic Range (LDR) values.
 // tone mapping in Three.js will actually fake the process of converting LDR to HDR
 // even if the colors aren’t HDR resulting in a very realistic render.
-renderer.toneMapping = THREE.ReinhardToneMapping;
-renderer.toneMappingExposure = 3;
+
+renderer.toneMapping = Number(THREE.ReinhardToneMapping);
+// renderer.toneMappingExposure = 3; //this should be removed
 
 gui.add(renderer, "toneMapping", {
   No: THREE.NoToneMapping,
@@ -325,24 +302,12 @@ gui.add(renderer, "toneMapping", {
 .onFinishChange(()=>{
   renderer.toneMapping = Number(renderer.toneMapping);
   updateAllMaterials();
-})
+});
+
 gui.add(renderer, "toneMappingExposure").min(0).max(10).step(0.001);
 
-// Physically accurate lighting
-// Default Three.js light intensity values aren't realistic.
-// They are based on an arbitrary scale unit and don't reflect real-world values.
-// It might be more comfortable to reproduce real-life conditions with useLegacyLights false.
-// 👆 Always start the project with useLegacyLights to false.
-// renderer.useLegacyLights = false;
-// gui.add(renderer, "useLegacyLights");
 
-// Shadows
-// renderer.shadowMap.enabled = true;
-// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-/**
- * Animate
- */
+ // Animate
 const tick = () => {
   // Update controls
   controls.update();

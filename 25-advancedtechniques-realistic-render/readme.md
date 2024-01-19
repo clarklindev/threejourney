@@ -58,11 +58,15 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;   //this is default
 - summary - going from 0 (black) to 1 (white) in a more optimized way where its non-linear since eyes are able to see difference at lower end and not so much closer to white.
 - the problem is when you use gammaEncoding / srgbencoding, you have to convert back to correct encoding otherwise your values wont be accurate
 
+### Textures Encoding (advanced techniques - Realistic Render - 41min11sec)
 
 #### Wrong encoding?
 - when it appears too bright ( grayish and toned down)
 - problem is renderer outputEncoding is THREE.sRGBEncoding but the environment map texture is by default THREE.LinearEncoding
 - all textures that we can see directly like the map - should have THREE.sRGBEncoding 
+```js
+environmentMap.encoding = THREE>sRGBEncoding;
+```
 - and all other textures such as normalMap should have THREE.LinearEncoding
 - DEPRECATED: change the environmentMap encoding to THREE.sRGBEncoding //@deprecated — Use SRGBColorSpace in three.js r152+.
 - UPDATED - use: environmentMap.colorSpace = THREE.SRGBColorSpace;
@@ -70,7 +74,8 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;   //this is default
 
 ### Tone Mapping
 - tone mapping is the algorithm that intends to convert high dynamic range(HDR) values to Low dynamic range (LDR) values
-- HDR is more than the way its defined above, but you can see that in images where the color values can go beyond 1. *(eg given is like white paper value of white is 1 but what if you shine light on paper, it should be higher than 1)
+- HDR is more than the way its defined above, but you can see that in images where the color values can go beyond 1. *(eg given is like white paper value of white is 1 but what if you shine light on paper, it should be higher than 1) eg. looking at the sun white is different from paper white.
+
 - our assets are not HDR, but the tone mapping effect can have a realistic result as if the camera was poorly adjusted. 
 - so its like you have higher values than 1 but how do you get it to value between 0 and 1 - tone mapping uses an algorithm to convert rgb values down to 0 and 1.
 - we can change the toneMapping property on the WebGLRenderer with the following values
@@ -90,18 +95,46 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;   //this is default
 ### Anti-aliasing
 - aliasing is an artifact that may appear on edges of geometry where we see stair-like effect
 - due to renderer having to choose if the geometry is in the pixel or not (pixels of screen)
+
+#### Super-sampling (SSAA)
 - one easy solution to increase the renderers resolution by double - each pixel color will automatically be averaged from the 4 pixels rendered
 - this is called super sampling (SSAA ) or fullscreen sampling (FSAA) its easy and efficient one but not performant
 
 #### multi-sampling (MSAA)
-- another solution is multi sampling (MSAA) will also render multiple values per pixel (usually 4) like for super sampling but only on the geometries edges
+- another solution is multi sampling (MSAA) will also render multiple values per pixel (usually 4) like for super sampling but ONLY on the geometry EDGES
 - the values of the pixels are then averaged to get the final pixel value
 - most recent GPU can perform this multi sampling anti-aliasing and THREEJS handles the setup automatically
-- MUST - change the antialias property to true during the instantiating (not after)
+- MUST - change the antialias property to true during the INSTANTIATING PHASE (not after)
 - screens with a pixel ration above 1 dont really need antialias
 - the best solution would be to activate the antialias only for screen with a pixel ratio below 2.
 
 ### Shadows
+- toggle the shadows on WebGLRenderer and change the shadow type to THREE.PCFSoftShadowMap
+- activate it on the DirectionalLight 
+- add a CameraHelper to the directionalLight.shadow.camera
+- reduce the far value
+- CLEANUP: remove directionalLightCameraHelper after use 
+- increase the shadow map size to 1024x1024
+- activate shadows on all meshes in the updateAllMaterials function
+- tweak the values to make sure the directionalLight corresponds to the light in the environment map.
+- load the hamburger - textures are creating shadows in wrong places (on its own surface)
+  - artifacts are called shadow acne and occur on both smooth and flat surfaces for precision reasons when calculating if the surface is in the shadow or not.
+  - the hamburger is casting a shadow on its own surface.
+- we can tweak the light shadow's "bias" and "normalBias" to fix it
+  - the bias usually helpes for flat surfaces
+  - the normalBias usually helps for rounded surfaces, increase it until the shadow acne is barely visible
+
+```js
+directionalLight.castShadow = true;
+directionalLight.shadow.camera.far = 15;
+directionalLight.shadow.normalBias = 0.027;
+directionalLight.shadow.bias = -0.004;
+//camera helper
+// const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// scene.add(directionalLightCameraHelper);
+directionalLight.shadow.mapSize.set(1024, 1024);
+
+```
 
 ```js
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -156,8 +189,17 @@ const testSphere = new THREE.Mesh(
 //light
 const directionalLight = new THREE.DirectionalLight('#FFFFFF', 3); //color, intensity
 directionalLight.position.set(0.25, 3, -2.25);
+directionalLight.castShadow = true;
+directionalLight.shadow.camera.far = 15;
+directionalLight.shadow.mapSize.set(1024, 1024);
+directionalLight.shadow.normalBias = 0.027;
+directionalLight.shadow.bias = -0.004;
 scene.add(directionalLight);
 
+
+//camera helper
+// const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// scene.add(directionalLightCameraHelper);
 
 //add tweaks to Dat.GUI
 gui.add(directionalLight, "intensity").min(0).max(10).step(0.001).name("lightIntensity");
@@ -168,13 +210,17 @@ gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001).name("lightZ"
 
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
-  antialias: true, // get rid of stair-like effect
+  antialias: true, // get rid of stair-like effect activate MSAA / MULTISAMPLING
 });
 
 //use physically correct values
 // renderer.physicallyCorrectLights = true; //DEPRECATED use  renderer.useLegacyLights instead.
 // renderer.useLegacyLights = true;  //DEPRECATED three.js r155 https://discourse.threejs.org/t/updates-to-lighting-in-three-js-r155/53733
 renderer.useLegacyLights = false;
+
+//shadows
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 // renderer.outputEncoding = THREE.sRGBEncoding; //DEPRECATED use outputColorSpace
 renderer.outputColorSpace = THREE.SRGBColorSpace;   //this is default now since three.js v152+
@@ -205,6 +251,10 @@ const updateAllMaterials = ()=>{
       // child.material.envMap = environmentMap; //change envMap property
       child.material.envMapIntensity = global.envMapIntensity;
       child.material.needsUpdate = true;
+
+      //shadows
+      child.castShadow = true;
+      child.receiveShadow = true;
 
 
     }
