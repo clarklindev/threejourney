@@ -64,11 +64,11 @@ float cnoise(vec2 P)
 void main()
 {
     // // Pattern 1
-    gl_FragColor = vec4(vUv, 1.0, 1.0);
+    // gl_FragColor = vec4(vUv, 1.0, 1.0);
 
     // // Pattern 2
     // gl_FragColor = vec4(vUv, 0.0, 1.0);
-    // gl_FragColor = vec4(vUv, 0.5, 1.0);
+    gl_FragColor = vec4(vUv, 0.5, 1.0);
 
     // // Pattern 3
     // float strength = vUv.x;
