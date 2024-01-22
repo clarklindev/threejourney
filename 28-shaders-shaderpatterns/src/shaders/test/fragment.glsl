@@ -124,17 +124,17 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 14 - combination of pattern 13 on both horizontal and vertical
-    float barX = step(0.4, mod(vUv.x * 10.0, 1.0)) * step(0.8, mod(vUv.y * 10.0, 1.0));
-    float barY = step(0.8, mod(vUv.x * 10.0, 1.0)) * step(0.4, mod(vUv.y * 10.0, 1.0));
-    float strength = barX + barY;
-    strength = clamp(strength, 0.0, 1.0);
-    gl_FragColor = (vec4(vec3(strength), 1));
-
-    // // Pattern 15
-    // float barX = step(0.4, mod(vUv.x * 10.0 - 0.2, 1.0)) * step(0.8, mod(vUv.y * 10.0, 1.0));
-    // float barY = step(0.8, mod(vUv.x * 10.0, 1.0)) * step(0.4, mod(vUv.y * 10.0 - 0.2, 1.0));
+    // float barX = step(0.4, mod(vUv.x * 10.0, 1.0)) * step(0.8, mod(vUv.y * 10.0, 1.0));
+    // float barY = step(0.8, mod(vUv.x * 10.0, 1.0)) * step(0.4, mod(vUv.y * 10.0, 1.0));
     // float strength = barX + barY;
     // strength = clamp(strength, 0.0, 1.0);
+    // gl_FragColor = (vec4(vec3(strength), 1));
+
+    // // Pattern 15 - variation pattern 14 by creating plus(+) pattern by using offset 
+    float barX = step(0.4, mod(vUv.x * 10.0, 1.0)) * step(0.8, mod(vUv.y * 10.0 + 0.2, 1.0));
+    float barY = step(0.8, mod(vUv.x * 10.0 + 0.2, 1.0)) * step(0.4, mod(vUv.y * 10.0, 1.0));
+    float strength = barX + barY;
+    gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 16
     // float strength = abs(vUv.x - 0.5);
