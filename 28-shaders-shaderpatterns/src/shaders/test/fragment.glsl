@@ -98,20 +98,20 @@ void main()
     // strength = step(0.5, strength); //step function - value is 1 when it reaches a limit (eg limit is 0.5), but if it doesnt - it will be 0
     // gl_FragColor = (vec4(vec3(strength), 1));
 
-    // Pattern 9 - variation of pattern 8 (below 0.8 strength will be 0, else 1)
+    // Pattern 9 - variation of pattern 8 - horizontal lines (below 0.8 strength will be 0, else 1)
     // float strength = mod(vUv.y * 10.0, 1.0);
     // strength = step(0.8, strength);
     // gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 10 - vertical lines - variation of pattern 9
-    float strength = mod(vUv.x * 10.0, 1.0);
-    strength = step(0.8, strength);
-    gl_FragColor = (vec4(vec3(strength), 1));
+    // float strength = mod(vUv.x * 10.0, 1.0);
+    // strength = step(0.8, strength);
+    // gl_FragColor = (vec4(vec3(strength), 1));
 
-    // // Pattern 11
-    // float strength = step(0.8, mod(vUv.x * 10.0, 1.0));
-    // strength += step(0.8, mod(vUv.y * 10.0, 1.0));
-    // strength = clamp(strength, 0.0, 1.0);
+    // Pattern 11 combining vertical AND horizontal lines from 
+    float strength = step(0.8, mod(vUv.x * 10.0, 1.0)); //vertical lines
+    strength += step(0.8, mod(vUv.y * 10.0, 1.0)); //horizontal lines
+    gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 12
     // float strength = step(0.8, mod(vUv.x * 10.0, 1.0));
