@@ -114,13 +114,14 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1));
 
     // Pattern 12 - only show intersection of lines of pattern 11 (intersections as 1 (white) and not-intersect 0 (black))
-    float strength = step(0.8, mod(vUv.x * 10.0, 1.0));
-    strength *= step(0.8, mod(vUv.y * 10.0, 1.0));
-    gl_FragColor = (vec4(vec3(strength), 1));
-
-    // // Pattern 13
-    // float strength = step(0.4, mod(vUv.x * 10.0, 1.0));
+    // float strength = step(0.8, mod(vUv.x * 10.0, 1.0));
     // strength *= step(0.8, mod(vUv.y * 10.0, 1.0));
+    // gl_FragColor = (vec4(vec3(strength), 1));
+
+    // // Pattern 13 - variation of pattern 12 - change the strength of step limit - so value is 1 (white) earlier - ie lower the value on 
+    float strength = step(0.4, mod(vUv.x * 10.0, 1.0));  //vertical lines
+    strength *= step(0.8, mod(vUv.y * 10.0, 1.0));  //horizontal lines
+    gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 14
     // float barX = step(0.4, mod(vUv.x * 10.0, 1.0)) * step(0.8, mod(vUv.y * 10.0, 1.0));
