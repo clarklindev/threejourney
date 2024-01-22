@@ -82,14 +82,15 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);
 
     // Pattern 5 - gradient from top to bottom (alpha on TOP)
-    float strength = 1.0 - vUv.y;
-    gl_FragColor = (vec4(vec3(strength), 1));
+    // float strength = 1.0 - vUv.y;
+    // gl_FragColor = (vec4(vec3(strength), 1));
     
-    // // Pattern 6
-    // float strength = vUv.y * 10.0;
+    // Pattern 6 - quick gradient change (gradient lopsided)
+    float strength = vUv.y * 10.0;
+    gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 7
-    // float strength = mod(vUv.y * 10.0, 1.0);
+    // float strength = mod(vUv.y * 10.0, 1.0);   
 
     // // Pattern 8
     // float strength = mod(vUv.y * 10.0, 1.0);
