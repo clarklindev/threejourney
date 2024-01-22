@@ -131,16 +131,18 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 15 - variation pattern 14 by creating plus(+) pattern by using offset 
-    float barX = step(0.4, mod(vUv.x * 10.0, 1.0)) * step(0.8, mod(vUv.y * 10.0 + 0.2, 1.0));
-    float barY = step(0.8, mod(vUv.x * 10.0 + 0.2, 1.0)) * step(0.4, mod(vUv.y * 10.0, 1.0));
-    float strength = barX + barY;
-    gl_FragColor = (vec4(vec3(strength), 1));
+    // float barX = step(0.4, mod(vUv.x * 10.0, 1.0)) * step(0.8, mod(vUv.y * 10.0 + 0.2, 1.0));
+    // float barY = step(0.8, mod(vUv.x * 10.0 + 0.2, 1.0)) * step(0.4, mod(vUv.y * 10.0, 1.0));
+    // float strength = barX + barY;
+    // gl_FragColor = (vec4(vec3(strength), 1));
 
-    // // Pattern 16
-    // float strength = abs(vUv.x - 0.5);
+    // // Pattern 16 - using positive values with absolute - results in horizontal gradient with white on left/right with 0 alpha at center
+    float strength = abs(vUv.x - 0.5);
+    gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 17
     // float strength = min(abs(vUv.x - 0.5), abs(vUv.y - 0.5));
+    // gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 18
     // float strength = max(abs(vUv.x - 0.5), abs(vUv.y - 0.5));
