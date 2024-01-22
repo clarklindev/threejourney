@@ -89,18 +89,19 @@ void main()
     // float strength = vUv.y * 10.0;
     // gl_FragColor = (vec4(vec3(strength), 1));
 
-    // // Pattern 7 quick gradient change (gradient lopsided) WITH repeat using mod
+    // Pattern 7 quick gradient change (gradient lopsided) WITH repeat using mod
     // float strength = mod(vUv.y * 10.0, 1.0);   
     // gl_FragColor = (vec4(vec3(strength), 1));
 
     // Pattern 8 recreating if/else with step() its either 1 or 0
-    float strength = mod(vUv.y * 10.0, 1.0);
-    strength = step(0.5, strength); //step function - value is 1 when it reaches a limit (eg limit is 0.5), but if it doesnt - it will be 0
-    gl_FragColor = (vec4(vec3(strength), 1));
-
-    // // Pattern 9
     // float strength = mod(vUv.y * 10.0, 1.0);
-    // strength = step(0.8, strength);
+    // strength = step(0.5, strength); //step function - value is 1 when it reaches a limit (eg limit is 0.5), but if it doesnt - it will be 0
+    // gl_FragColor = (vec4(vec3(strength), 1));
+
+    // Pattern 9 - variation of pattern 8 (below 0.8 strength will be 0, else 1)
+    float strength = mod(vUv.y * 10.0, 1.0);
+    strength = step(0.8, strength);
+    gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 10
     // float strength = mod(vUv.x * 10.0, 1.0);
