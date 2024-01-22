@@ -68,12 +68,16 @@ void main()
 
     // // Pattern 2
     // gl_FragColor = vec4(vUv, 0.0, 1.0);
-    gl_FragColor = vec4(vUv, 0.5, 1.0);
+    // gl_FragColor = vec4(vUv, 0.5, 1.0);
 
-    // // Pattern 3
-    // float strength = vUv.x;
+    // // Pattern 3 - black and white pattern (horizontal gradient 0 to 1 on x)
+    // gl_FragColor = vec4(vUv.x,vUv.x, vUv.x, 1.0);
 
-    // // Pattern 4
+    //OR using a variable to represent all 3 values
+    float strength = vUv.x;
+    gl_FragColor = vec4(vec3(strength), 1);
+
+    // // Pattern 4 
     // float strength = vUv.y;
 
     // // Pattern 5
