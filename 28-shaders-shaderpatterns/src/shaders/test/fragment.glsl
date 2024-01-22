@@ -86,11 +86,12 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1));
     
     // Pattern 6 - quick gradient change (gradient lopsided)
-    float strength = vUv.y * 10.0;
-    gl_FragColor = (vec4(vec3(strength), 1));
+    // float strength = vUv.y * 10.0;
+    // gl_FragColor = (vec4(vec3(strength), 1));
 
-    // // Pattern 7
-    // float strength = mod(vUv.y * 10.0, 1.0);   
+    // // Pattern 7 quick gradient change (gradient lopsided) WITH repeat using mod
+    float strength = mod(vUv.y * 10.0, 1.0);   
+    gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 8
     // float strength = mod(vUv.y * 10.0, 1.0);
