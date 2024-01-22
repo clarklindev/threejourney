@@ -99,13 +99,14 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1));
 
     // Pattern 9 - variation of pattern 8 (below 0.8 strength will be 0, else 1)
-    float strength = mod(vUv.y * 10.0, 1.0);
+    // float strength = mod(vUv.y * 10.0, 1.0);
+    // strength = step(0.8, strength);
+    // gl_FragColor = (vec4(vec3(strength), 1));
+
+    // // Pattern 10 - vertical lines - variation of pattern 9
+    float strength = mod(vUv.x * 10.0, 1.0);
     strength = step(0.8, strength);
     gl_FragColor = (vec4(vec3(strength), 1));
-
-    // // Pattern 10
-    // float strength = mod(vUv.x * 10.0, 1.0);
-    // strength = step(0.8, strength);
 
     // // Pattern 11
     // float strength = step(0.8, mod(vUv.x * 10.0, 1.0));
