@@ -31,6 +31,7 @@ vec2 fade(vec2 t)
     return t*t*t*(t*(t*6.0-15.0)+10.0);
 }
 
+//classic perlin noise - requires permute(), fade()
 float cnoise(vec2 P)
 {
     vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
@@ -330,14 +331,20 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 45 - circle (pattern36) with adjustment to radius depending on the angle from (pattern 44) - radial using sin() with angle
-    float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
-    float sinusoid = sin(angle * 100.0);
-    float radius = 0.25 + sinusoid * 0.02;
-    float strength = 1.0 - step(0.01, abs(distance(vUv, vec2(0.5)) - radius));
-    gl_FragColor = vec4(vec3(strength), 1);   
+    // float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
+    // float sinusoid = sin(angle * 100.0);
+    // float radius = 0.25 + sinusoid * 0.02;
+    // float strength = 1.0 - step(0.01, abs(distance(vUv, vec2(0.5)) - radius));
+    // gl_FragColor = vec4(vec3(strength), 1);   
 
-    // // Pattern 46
-    // float strength = cnoise(vUv * 10.0);
+    // // Pattern 46 - perlin noise
+    //examples: https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
+    //classic perlin noise - stefan gustavson
+      //provide a vec2 and get a float in return
+
+    //perlin noise can be used to create natural shapes like clouds, water, fire, terrain elevation, animate grass or snow moving in the wind
+    float strength = cnoise(vUv * 10.0);
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 47
     // float strength = step(0.0, cnoise(vUv * 10.0));
