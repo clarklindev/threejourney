@@ -207,16 +207,28 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 30 - stretched pattern 29 on horizontal
-    vec2 lightUv = vec2(
+    // vec2 lightUv = vec2(
+    //   vUv.x, 
+    //   (vUv.y - 0.5) * 5.0 + 0.5
+    // );
+    // float strength = 0.15 / (distance(lightUv, vec2(0.5)));
+    // gl_FragColor = vec4(vec3(strength), 1);   
+
+    // // Pattern 31 - star (diamond with gradient) - pattern30 (stretched sun) on vertical AND horizontal
+    vec2 lightUvX = vec2(
       vUv.x, 
       (vUv.y - 0.5) * 5.0 + 0.5
     );
-    float strength = 0.15 / (distance(lightUv, vec2(0.5)));
-    gl_FragColor = vec4(vec3(strength), 1);   
+    float lightX = 0.15 / (distance(lightUvX, vec2(0.5)));
 
-    // // Pattern 31
-    // float strength = 0.15 / (distance(vec2(vUv.x, (vUv.y - 0.5) * 5.0 + 0.5), vec2(0.5)));
-    // strength *= 0.15 / (distance(vec2(vUv.y, (vUv.x - 0.5) * 5.0 + 0.5), vec2(0.5)));
+    vec2 lightUvY = vec2(
+      vUv.y, 
+      (vUv.x - 0.5) * 5.0 + 0.5
+    );
+    float lightY = 0.15 / (distance(lightUvY, vec2(0.5)));
+
+    float strength = lightX * lightY;
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 32
     // vec2 rotatedUv = rotate(vUv, PI * 0.25, vec2(0.5));
