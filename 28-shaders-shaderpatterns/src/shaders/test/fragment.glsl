@@ -2,6 +2,7 @@
 
 varying vec2 vUv;
 
+//pattern 23 uses random
 float random(vec2 st)
 {
     return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
@@ -163,11 +164,12 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 22 - variation of pattern 21 with vertical and horizontal gradient intersect (x intersect y)
-    float strength = floor(vUv.x * 10.0) / 10.0 * floor(vUv.y * 10.0) / 10.0;
-    gl_FragColor = (vec4(vec3(strength), 1)); 
+    // float strength = floor(vUv.x * 10.0) / 10.0 * floor(vUv.y * 10.0) / 10.0;
+    // gl_FragColor = (vec4(vec3(strength), 1)); 
 
-    // // Pattern 23
-    // float strength = random(vUv);
+    // // Pattern 23 - tv static grain using custom random()
+    float strength = random(vUv);
+    gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 24
     // vec2 gridUv = vec2(floor(vUv.x * 10.0) / 10.0, floor(vUv.y * 10.0) / 10.0);
