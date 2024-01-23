@@ -159,11 +159,12 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 21 - gradient left to right segmented steps created with floor() creating vertical stripes
-    float strength = floor(vUv.x * 10.0) / 10.0; //value always a whole number
-    gl_FragColor = (vec4(vec3(strength), 1)); 
+    // float strength = floor(vUv.x * 10.0) / 10.0; //value always a whole number
+    // gl_FragColor = (vec4(vec3(strength), 1)); 
 
-    // // Pattern 22
-    // float strength = floor(vUv.x * 10.0) / 10.0 * floor(vUv.y * 10.0) / 10.0;
+    // // Pattern 22 - variation of pattern 21 with vertical and horizontal gradient intersect (x intersect y)
+    float strength = floor(vUv.x * 10.0) / 10.0 * floor(vUv.y * 10.0) / 10.0;
+    gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 23
     // float strength = random(vUv);
