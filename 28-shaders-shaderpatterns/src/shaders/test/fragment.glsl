@@ -320,13 +320,14 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 43 - radial using angle and mod() 
-    float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
-    float strength = mod(angle * 20.0, 1.0);  //20 is the frequency
-    gl_FragColor = vec4(vec3(strength), 1);   
-
-    // // Pattern 44
     // float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
-    // float strength = sin(angle * 100.0);
+    // float strength = mod(angle * 20.0, 1.0);  //20 is the frequency
+    // gl_FragColor = vec4(vec3(strength), 1);   
+
+    // // Pattern 44 - radial using sin() with angle
+    float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
+    float strength = sin(angle * 100.0);
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 45
     // float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
