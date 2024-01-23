@@ -188,12 +188,16 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // Pattern 26 - gradient from bottom-left (0 alpha) to top-right (white) - using length of vUv (0 to 1 from 0,0 axis)
-    float strength = length(vUv);
-    gl_FragColor = (vec4(vec3(strength), 1)); 
+    // float strength = length(vUv);
+    // gl_FragColor = (vec4(vec3(strength), 1)); 
 
-    // // Pattern 27
-    // float strength = distance(vUv, vec2(0.5));
-
+    // // Pattern 27 - radial gradient from center (alpha 0 to 1)
+      //OPTION 1
+      // float strength = length(vUv - 0.5); //offset vUv from center by 0.5 (makes center coord on render space)
+      //OPTION 2
+      float strength = distance(vUv, vec2(0.5)); //distance between vUv and a point
+      gl_FragColor = vec4(vec3(strength), 1);   
+ 
     // // Pattern 28
     // float strength = 1.0 - distance(vUv, vec2(0.5));
 
