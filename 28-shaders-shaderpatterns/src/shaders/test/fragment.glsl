@@ -168,12 +168,16 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 23 - tv static grain using custom random()
-    float strength = random(vUv);
-    gl_FragColor = (vec4(vec3(strength), 1)); 
+    // float strength = random(vUv);
+    // gl_FragColor = (vec4(vec3(strength), 1)); 
 
-    // // Pattern 24
-    // vec2 gridUv = vec2(floor(vUv.x * 10.0) / 10.0, floor(vUv.y * 10.0) / 10.0);
-    // float strength = random(gridUv);
+    // // Pattern 24 - using pattern22 for vec2 coordinates to create squares - then random values gives color between 0 and 1 (whole number)
+    vec2 gridUv = vec2(
+      floor(vUv.x * 10.0) / 10.0, 
+      floor(vUv.y * 10.0) / 10.0
+    );
+    float strength = random(gridUv);
+    gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 25
     // vec2 gridUv = vec2(floor(vUv.x * 10.0) / 10.0, floor((vUv.y + vUv.x * 0.5) * 10.0) / 10.0);
