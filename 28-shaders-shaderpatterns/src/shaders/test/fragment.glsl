@@ -285,19 +285,20 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 38 - applying sin() on vUv.x and vUv.y (variation of pattern37)
+    // vec2 wavedUv = vec2(
+    //     vUv.x + sin(vUv.y * 30.0) * 0.1,
+    //     vUv.y + sin(vUv.x * 30.0) * 0.1
+    // );
+    // float strength = 1.0 - step(0.01, abs(distance(wavedUv, vec2(0.5)) - 0.25));
+    // gl_FragColor = vec4(vec3(strength), 1);   
+
+    // // Pattern 39 - sin() frequency - variation of pattern38 with increased freq
     vec2 wavedUv = vec2(
-        vUv.x + sin(vUv.y * 30.0) * 0.1,
-        vUv.y + sin(vUv.x * 30.0) * 0.1
+        vUv.x + sin(vUv.y * 100.0) * 0.1,
+        vUv.y + sin(vUv.x * 100.0) * 0.1
     );
     float strength = 1.0 - step(0.01, abs(distance(wavedUv, vec2(0.5)) - 0.25));
     gl_FragColor = vec4(vec3(strength), 1);   
-
-    // // Pattern 39
-    // vec2 wavedUv = vec2(
-    //     vUv.x + sin(vUv.y * 100.0) * 0.1,
-    //     vUv.y + sin(vUv.x * 100.0) * 0.1
-    // );
-    // float strength = 1.0 - step(0.01, abs(distance(wavedUv, vec2(0.5)) - 0.25));
 
     // // Pattern 40
     // float angle = atan(vUv.x, vUv.y);
