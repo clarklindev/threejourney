@@ -172,16 +172,20 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 24 - using pattern22 for vec2 coordinates to create squares - then random values gives color between 0 and 1 (whole number)
+    // vec2 gridUv = vec2(
+    //   floor(vUv.x * 10.0) / 10.0, 
+    //   floor(vUv.y * 10.0) / 10.0
+    // );
+    // float strength = random(gridUv);
+    // gl_FragColor = (vec4(vec3(strength), 1)); 
+
+    // // Pattern 25 - similar-to-pattern24 with tilt by offsetting vUv.y depending on vUv.x
     vec2 gridUv = vec2(
-      floor(vUv.x * 10.0) / 10.0, 
-      floor(vUv.y * 10.0) / 10.0
+      floor(vUv.x * 10.0) / 10.0, //x
+      floor((vUv.y + vUv.x * 0.5) * 10.0) / 10.0  //y
     );
     float strength = random(gridUv);
     gl_FragColor = (vec4(vec3(strength), 1)); 
-
-    // // Pattern 25
-    // vec2 gridUv = vec2(floor(vUv.x * 10.0) / 10.0, floor((vUv.y + vUv.x * 0.5) * 10.0) / 10.0);
-    // float strength = random(gridUv);
 
     // // Pattern 26
     // float strength = length(vUv);
