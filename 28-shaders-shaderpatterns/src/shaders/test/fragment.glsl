@@ -343,11 +343,12 @@ void main()
       //provide a vec2 and get a float in return
 
     //perlin noise can be used to create natural shapes like clouds, water, fire, terrain elevation, animate grass or snow moving in the wind
-    float strength = cnoise(vUv * 10.0);
-    gl_FragColor = vec4(vec3(strength), 1);   
+    // float strength = cnoise(vUv * 10.0);
+    // gl_FragColor = vec4(vec3(strength), 1);   
 
-    // // Pattern 47
-    // float strength = step(0.0, cnoise(vUv * 10.0));
+    // // Pattern 47 - perlin noise without gradient using step(limit, value) 
+    float strength = step(0.0, cnoise(vUv * 10.0));
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 48
     // float strength = 1.0 - abs(cnoise(vUv * 10.0));
