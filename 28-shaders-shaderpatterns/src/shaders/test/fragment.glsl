@@ -149,12 +149,14 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 19 - square frame (white) with square alpha 0 center - with step() 
-    float strength = step(0.2, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5)));
-    gl_FragColor = (vec4(vec3(strength), 1)); 
-
-    // // Pattern 20
     // float strength = step(0.2, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5)));
-    // strength *= 1.0 - step(0.25, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5)));
+    // gl_FragColor = (vec4(vec3(strength), 1)); 
+
+    // // Pattern 20 - variation of pattern 19 - with 2 squares, 2nd square is inverted and slightly bigger - then you take the difference by multiplying the two.
+    float square1 = step(0.2, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5)));
+    float square2 = 1.0 - step(0.25, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5))); //slightly bigger than square1
+    float strength = square1 * square2; //difference between 2 - union only takes where both intersect
+    gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 21
     // float strength = floor(vUv.x * 10.0) / 10.0;
