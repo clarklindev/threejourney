@@ -203,11 +203,16 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 29 - sun effect - start from a really small value and divide it by distance - exponential graph - borders never 0 (color)
-    float strength = 0.015 / (distance(vUv, vec2(0.5)));
-    gl_FragColor = vec4(vec3(strength), 1);   
+    // float strength = 0.015 / (distance(vUv, vec2(0.5)));
+    // gl_FragColor = vec4(vec3(strength), 1);   
 
-    // // Pattern 30
-    // float strength = 0.15 / (distance(vec2(vUv.x, (vUv.y - 0.5) * 5.0 + 0.5), vec2(0.5)));
+    // // Pattern 30 - stretched pattern 29 on horizontal
+    vec2 lightUv = vec2(
+      vUv.x, 
+      (vUv.y - 0.5) * 5.0 + 0.5
+    );
+    float strength = 0.15 / (distance(lightUv, vec2(0.5)));
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 31
     // float strength = 0.15 / (distance(vec2(vUv.x, (vUv.y - 0.5) * 5.0 + 0.5), vec2(0.5)));
