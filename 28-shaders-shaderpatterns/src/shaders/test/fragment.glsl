@@ -137,12 +137,12 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 16 - using positive values with absolute - results in horizontal gradient with white on left/right with 0 alpha at center
-    float strength = abs(vUv.x - 0.5);
-    gl_FragColor = (vec4(vec3(strength), 1));
-
-    // // Pattern 17
-    // float strength = min(abs(vUv.x - 0.5), abs(vUv.y - 0.5));
+    // float strength = abs(vUv.x - 0.5);
     // gl_FragColor = (vec4(vec3(strength), 1));
+
+    // // Pattern 17 - variation of pattern 16 - horizontal + vertical gradient (white side and center alpha 0) - min value of horizontal and vertical
+    float strength = min(abs(vUv.x - 0.5), abs(vUv.y - 0.5));   //min (x, y)
+    gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 18
     // float strength = max(abs(vUv.x - 0.5), abs(vUv.y - 0.5));
