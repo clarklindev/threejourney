@@ -180,15 +180,16 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 25 - similar-to-pattern24 with tilt by offsetting vUv.y depending on vUv.x
-    vec2 gridUv = vec2(
-      floor(vUv.x * 10.0) / 10.0, //x
-      floor((vUv.y + vUv.x * 0.5) * 10.0) / 10.0  //y
-    );
-    float strength = random(gridUv);
-    gl_FragColor = (vec4(vec3(strength), 1)); 
+    // vec2 gridUv = vec2(
+    //   floor(vUv.x * 10.0) / 10.0, //x
+    //   floor((vUv.y + vUv.x * 0.5) * 10.0) / 10.0  //y
+    // );
+    // float strength = random(gridUv);
+    // gl_FragColor = (vec4(vec3(strength), 1)); 
 
-    // // Pattern 26
-    // float strength = length(vUv);
+    // Pattern 26 - gradient from bottom-left (0 alpha) to top-right (white) - using length of vUv (0 to 1 from 0,0 axis)
+    float strength = length(vUv);
+    gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 27
     // float strength = distance(vUv, vec2(0.5));
