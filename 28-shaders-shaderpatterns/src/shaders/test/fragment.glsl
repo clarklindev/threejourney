@@ -325,14 +325,16 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 44 - radial using sin() with angle
-    float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
-    float strength = sin(angle * 100.0);
-    gl_FragColor = vec4(vec3(strength), 1);   
-
-    // // Pattern 45
     // float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
-    // float radius = 0.25 + sin(angle * 100.0) * 0.02;
-    // float strength = 1.0 - step(0.01, abs(distance(vUv, vec2(0.5)) - radius));
+    // float strength = sin(angle * 100.0);
+    // gl_FragColor = vec4(vec3(strength), 1);   
+
+    // // Pattern 45 - circle (pattern36) with adjustment to radius depending on the angle from (pattern 44) - radial using sin() with angle
+    float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
+    float sinusoid = sin(angle * 100.0);
+    float radius = 0.25 + sinusoid * 0.02;
+    float strength = 1.0 - step(0.01, abs(distance(vUv, vec2(0.5)) - radius));
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 46
     // float strength = cnoise(vUv * 10.0);
