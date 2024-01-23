@@ -199,11 +199,12 @@ void main()
       // gl_FragColor = vec4(vec3(strength), 1);   
  
     // // Pattern 28 - opposite of pattern 27 (switch white/black) 
-    float strength = 1.0 - distance(vUv, vec2(0.5));
-    gl_FragColor = vec4(vec3(strength), 1);   
+    // float strength = 1.0 - distance(vUv, vec2(0.5));
+    // gl_FragColor = vec4(vec3(strength), 1);   
 
-    // // Pattern 29
-    // float strength = 0.015 / (distance(vUv, vec2(0.5)));
+    // // Pattern 29 - sun effect - start from a really small value and divide it by distance - exponential graph - borders never 0 (color)
+    float strength = 0.015 / (distance(vUv, vec2(0.5)));
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 30
     // float strength = 0.15 / (distance(vec2(vUv.x, (vUv.y - 0.5) * 5.0 + 0.5), vec2(0.5)));
