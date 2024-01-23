@@ -308,13 +308,16 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 41 - variation of pattern40 with offset on x-axis AND y-axis (-0.5 moves towards center)
-    float angle = atan(vUv.x - 0.5, vUv.y - 0.5);
+    // float angle = atan(vUv.x - 0.5, vUv.y - 0.5);
+    // float strength = angle;
+    // gl_FragColor = vec4(vec3(strength), 1);   
+
+    // // Pattern 42 - full rotation going from 0 to 1 in color 
+    //- divide by PI x2 for full 360 (but values are -0.5 to 0.5), so we add 0.5 to offset to get 0 to 1
+    //
+    float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
     float strength = angle;
     gl_FragColor = vec4(vec3(strength), 1);   
-
-    // // Pattern 42
-    // float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
-    // float strength = angle;
 
     // // Pattern 43
     // float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
