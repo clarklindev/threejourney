@@ -352,11 +352,12 @@ void main()
 
     // // Pattern 48 - abs() with perlin noise
     //when you need to invert, use (1 - value)
-    float strength = 1.0 - abs(cnoise(vUv * 10.0));
-    gl_FragColor = vec4(vec3(strength), 1);   
+    // float strength = 1.0 - abs(cnoise(vUv * 10.0));
+    // gl_FragColor = vec4(vec3(strength), 1);   
 
-    // // Pattern 49
-    // float strength = sin(cnoise(vUv * 10.0) * 20.0);
+    // // Pattern 49 - perlin noise with sin()
+    float strength = sin(cnoise(vUv * 10.0) * 200.0);
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // Pattern 50
     //float strength = step(0.9, sin(cnoise(vUv * 10.0) * 20.0));
