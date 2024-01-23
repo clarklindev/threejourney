@@ -361,13 +361,14 @@ void main()
 
     // Pattern 50 - perlin noise with sin() - no gradient - using step()
     float strength = step(0.9, sin(cnoise(vUv * 10.0) * 20.0));
-    gl_FragColor = vec4(vec3(strength), 1);   
 
-    // Final color
-    // vec3 blackColor = vec3(0.0);
-    // vec3 uvColor = vec3(vUv, 1.0);
-    // vec3 mixedColor = mix(blackColor, uvColor, strength);
+    // mixing colors with patterns and clamp to restrict value ranges
+    strength = clamp(strength, 0.0, 1.0);   //clamp for examples pattern: 11,14,15 
 
-    // // gl_FragColor = vec4(vec3(strength), 1.0);
-    // gl_FragColor = vec4(mixedColor, 1.0);
+    vec3 blackColor = vec3(0.0);
+    vec3 uvColor = vec3(vUv, 1.0);
+    vec3 mixedColor = mix(blackColor, uvColor, strength);   //depending on strength value, pick from mix(option1, option2)
+
+    // gl_FragColor = vec4(vec3(strength), 1.0);  //black and white
+    gl_FragColor = vec4(mixedColor, 1.0);
 }
