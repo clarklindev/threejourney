@@ -145,11 +145,12 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1));
 
     // // Pattern 18 - variation of pattern 17 BUT instead using max() 
-    float strength = max(abs(vUv.x - 0.5), abs(vUv.y - 0.5));
-    gl_FragColor = (vec4(vec3(strength), 1));
+    // float strength = max(abs(vUv.x - 0.5), abs(vUv.y - 0.5));
+    // gl_FragColor = (vec4(vec3(strength), 1));
 
-    // // Pattern 19
-    // float strength = step(0.2, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5)));
+    // // Pattern 19 - square frame (white) with square alpha 0 center - with step() 
+    float strength = step(0.2, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5)));
+    gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 20
     // float strength = step(0.2, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5)));
