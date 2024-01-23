@@ -356,11 +356,12 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 49 - perlin noise with sin()
-    float strength = sin(cnoise(vUv * 10.0) * 200.0);
-    gl_FragColor = vec4(vec3(strength), 1);   
+    // float strength = sin(cnoise(vUv * 10.0) * 200.0);
+    // gl_FragColor = vec4(vec3(strength), 1);   
 
-    // Pattern 50
-    //float strength = step(0.9, sin(cnoise(vUv * 10.0) * 20.0));
+    // Pattern 50 - perlin noise with sin() - no gradient - using step()
+    float strength = step(0.9, sin(cnoise(vUv * 10.0) * 20.0));
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // Final color
     // vec3 blackColor = vec3(0.0);
