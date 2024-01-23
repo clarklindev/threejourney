@@ -269,11 +269,12 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 35 - cutout circle - variation of pattern 34 (with step())
-    float strength = step(0.01, abs(distance(vUv, vec2(0.5)) - 0.25));
-    gl_FragColor = vec4(vec3(strength), 1);   
+    // float strength = step(0.01, abs(distance(vUv, vec2(0.5)) - 0.25));
+    // gl_FragColor = vec4(vec3(strength), 1);   
 
-    // // Pattern 36
-    // float strength = 1.0 - step(0.01, abs(distance(vUv, vec2(0.5)) - 0.25));
+    // // Pattern 36 - invert circle (invert of pattern35)
+    float strength = 1.0 - step(0.01, abs(distance(vUv, vec2(0.5)) - 0.25));
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 37
     // vec2 wavedUv = vec2(
