@@ -265,11 +265,12 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 34 - radial gradient with white-alpha-white pattern uses abs() to make the part thats negative (value-0.25) always positive 
-    float strength = abs(distance(vUv, vec2(0.5)) - 0.25);
-    gl_FragColor = vec4(vec3(strength), 1);   
+    // float strength = abs(distance(vUv, vec2(0.5)) - 0.25);
+    // gl_FragColor = vec4(vec3(strength), 1);   
 
-    // // Pattern 35
-    // float strength = step(0.01, abs(distance(vUv, vec2(0.5)) - 0.25));
+    // // Pattern 35 - cutout circle - variation of pattern 34 (with step())
+    float strength = step(0.01, abs(distance(vUv, vec2(0.5)) - 0.25));
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 36
     // float strength = 1.0 - step(0.01, abs(distance(vUv, vec2(0.5)) - 0.25));
