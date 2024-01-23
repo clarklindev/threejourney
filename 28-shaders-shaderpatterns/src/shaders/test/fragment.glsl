@@ -242,22 +242,27 @@ void main()
     // gl_FragColor = vec4(vec3(strength), 1);  
 
     //ANSWER- METHOD2
-    vec2 rotatedUv = rotate(vUv, PI * 0.25, vec2(0.5)); //rotate(point, angle, pivotpoint)
-    vec2 lightUvX = vec2(
-      rotatedUv.x, 
-      (rotatedUv.y - 0.5) * 5.0 + 0.5
-    );
-    float lightX = 0.15 / (distance(lightUvX, vec2(0.5)));
-    vec2 lightUvY = vec2(
-      rotatedUv.y, 
-      (rotatedUv.x - 0.5) * 5.0 + 0.5
-    );
-    float lightY = 0.15 / (distance(lightUvY, vec2(0.5)));
-    float strength = lightX * lightY;
-    gl_FragColor = vec4(vec3(strength), 1);   
+    // vec2 rotatedUv = rotate(vUv, PI * 0.25, vec2(0.5)); //rotate(point, angle, pivotpoint)
+    // vec2 lightUvX = vec2(
+    //   rotatedUv.x, 
+    //   (rotatedUv.y - 0.5) * 5.0 + 0.5
+    // );
+    // float lightX = 0.15 / (distance(lightUvX, vec2(0.5)));
+    // vec2 lightUvY = vec2(
+    //   rotatedUv.y, 
+    //   (rotatedUv.x - 0.5) * 5.0 + 0.5
+    // );
+    // float lightY = 0.15 / (distance(lightUvY, vec2(0.5)));
+    // float strength = lightX * lightY;
+    // gl_FragColor = vec4(vec3(strength), 1);   
 
-    // // Pattern 33
+    // Pattern 33 - hollow circle at center with step() - variation of Pattern 27 
+    //SOLUTION 1
     // float strength = step(0.5, distance(vUv, vec2(0.5)) + 0.25);
+    //SOLUTION 2
+    float strength = step(0.25, distance(vUv, vec2(0.5)));
+
+    gl_FragColor = vec4(vec3(strength), 1);   
 
     // // Pattern 34
     // float strength = abs(distance(vUv, vec2(0.5)) - 0.25);
