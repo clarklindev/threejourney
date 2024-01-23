@@ -153,13 +153,14 @@ void main()
     // gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 20 - variation of pattern 19 - with 2 squares, 2nd square is inverted and slightly bigger - then you take the difference by multiplying the two.
-    float square1 = step(0.2, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5)));
-    float square2 = 1.0 - step(0.25, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5))); //slightly bigger than square1
-    float strength = square1 * square2; //difference between 2 - union only takes where both intersect
-    gl_FragColor = (vec4(vec3(strength), 1)); 
+    // float square1 = step(0.2, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5)));
+    // float square2 = 1.0 - step(0.25, max(abs(vUv.x - 0.5), abs(vUv.y - 0.5))); //slightly bigger than square1
+    // float strength = square1 * square2; //difference between 2 - union only takes where both intersect
+    // gl_FragColor = (vec4(vec3(strength), 1)); 
 
-    // // Pattern 21
-    // float strength = floor(vUv.x * 10.0) / 10.0;
+    // // Pattern 21 - gradient left to right segmented steps created with floor() creating vertical stripes
+    float strength = floor(vUv.x * 10.0) / 10.0; //value always a whole number
+    gl_FragColor = (vec4(vec3(strength), 1)); 
 
     // // Pattern 22
     // float strength = floor(vUv.x * 10.0) / 10.0 * floor(vUv.y * 10.0) / 10.0;
