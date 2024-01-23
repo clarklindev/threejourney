@@ -302,14 +302,15 @@ void main()
 
     //ANGLES
     // // Pattern 40 - gradient at angle - getting angle of (vUv vec2) using atan()
+    //note: angle is going from 0 on y axis towards x-axis
+    // float angle = atan(vUv.x, vUv.y);
+    // float strength = angle;
+    // gl_FragColor = vec4(vec3(strength), 1);   
 
-    float angle = atan(vUv.x, vUv.y);
+    // // Pattern 41 - variation of pattern40 with offset on x-axis AND y-axis (-0.5 moves towards center)
+    float angle = atan(vUv.x - 0.5, vUv.y - 0.5);
     float strength = angle;
     gl_FragColor = vec4(vec3(strength), 1);   
-
-    // // Pattern 41
-    // float angle = atan(vUv.x - 0.5, vUv.y - 0.5);
-    // float strength = angle;
 
     // // Pattern 42
     // float angle = atan(vUv.x - 0.5, vUv.y - 0.5) / (PI * 2.0) + 0.5;
