@@ -97,23 +97,32 @@ float cnoise(vec3 P)
 
 void main()
 {
-    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-
-    // Elevation
-    float elevation = sin(modelPosition.x * uBigWavesFrequency.x + uTime * uBigWavesSpeed) *
-                      sin(modelPosition.z * uBigWavesFrequency.y + uTime * uBigWavesSpeed) *
-                      uBigWavesElevation;
-
-    for(float i = 1.0; i <= uSmallIterations; i++)
-    {
-        elevation -= abs(cnoise(vec3(modelPosition.xz * uSmallWavesFrequency * i, uTime * uSmallWavesSpeed)) * uSmallWavesElevation / i);
-    }
     
-    modelPosition.y += elevation;
 
+    // vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+    // // Elevation
+    // float elevation = sin(modelPosition.x * uBigWavesFrequency.x + uTime * uBigWavesSpeed) *
+    //                   sin(modelPosition.z * uBigWavesFrequency.y + uTime * uBigWavesSpeed) *
+    //                   uBigWavesElevation;
+
+    // for(float i = 1.0; i <= uSmallIterations; i++)
+    // {
+    //     elevation -= abs(cnoise(vec3(modelPosition.xz * uSmallWavesFrequency * i, uTime * uSmallWavesSpeed)) * uSmallWavesElevation / i);
+    // }
+    
+    // modelPosition.y += elevation;
+
+    // vec4 viewPosition = viewMatrix * modelPosition;
+    // vec4 projectedPosition = projectionMatrix * viewPosition;
+    // gl_Position = projectedPosition;
+
+    // vElevation = elevation;
+
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
     vec4 viewPosition = viewMatrix * modelPosition;
-    vec4 projectedPosition = projectionMatrix * viewPosition;
+    vec4 projectedPosition = projectionMatrix * viewPosition; 
+
     gl_Position = projectedPosition;
 
-    vElevation = elevation;
 }
