@@ -123,8 +123,8 @@ void main()
 
 
     float elevation =  
-      sin(modelPosition.x * uBigWavesFrequency.x) *   //on the x
-      sin(modelPosition.z * uBigWavesFrequency.y) *   //on the y
+      sin(modelPosition.x * uBigWavesFrequency.x + uTime * uBigWavesSpeed) *   //on the x
+      sin(modelPosition.z * uBigWavesFrequency.y + uTime * uBigWavesSpeed) *   //on the y
       uBigWavesElevation; //lower the elevation with small uBigWavesElevation value
 
     modelPosition.y += elevation;
