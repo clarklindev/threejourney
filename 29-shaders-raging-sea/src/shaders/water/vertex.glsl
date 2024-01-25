@@ -1,6 +1,6 @@
 uniform float uTime;
 uniform float uBigWavesElevation;
-uniform vec2 uBigWavesFrequency;
+uniform vec2 uBigWavesFrequency; //vec2
 uniform float uBigWavesSpeed;
 
 uniform float uSmallWavesElevation;
@@ -122,7 +122,11 @@ void main()
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
 
-    float elevation =  sin(modelPosition.x) * uBigWavesElevation; //lower the elevation with small uBigWavesElevation value
+    float elevation =  
+      sin(modelPosition.x * uBigWavesFrequency.x) *   //on the x
+      sin(modelPosition.z * uBigWavesFrequency.y) *   //on the y
+      uBigWavesElevation; //lower the elevation with small uBigWavesElevation value
+
     modelPosition.y += elevation;
 
     vec4 viewPosition = viewMatrix * modelPosition;

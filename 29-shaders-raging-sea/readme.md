@@ -27,6 +27,11 @@ npm run build
 - lower the elevation - retrieve and use the uBigWavesElevation uniform in the vertex shader (makes values go from -0.2 to 0.2)
 - create a elevation variable in order to use it later to colorize the waves.
 - add uBigWavesElevation to Dat.GUI
+- FREQUENCY - we want to control the frequency on the x AND z axes
+  - create a uBigWavesFrequency uniform with a Vector2.
+- retrieve the uniform and apply it in the sin() with only the x
+- use the y property of uBigWavesFrequency to add waves on the z axis, we are going to multiply them.
+- add the x and y properties of uBigWavesFrequency to Dat.GUI
 
 ### Shaders .glsl
 /src/shaders/water/vertex.glsl
@@ -42,7 +47,10 @@ void main(){
   vec4 projectedPosition = projectionMatrix * viewPosition; 
 
   //elevation
-  float elevation = sin(modelPosition.x) * uBigWavesElevation; //lower the elevation with small uBigWavesElevation value
+  float elevation = sin(modelPosition.x * uBigWavesFrequency.x) *     //on the x
+                    sin(modelPosition.z * uBigWavesFrequency.y) *     //on the y
+                    uBigWavesElevation;                               //lower the elevation with small uBigWavesElevation value
+  
   modelPosition.y += elevation;
   
   gl_Position = projectedPosition;
@@ -74,7 +82,8 @@ const waterMaterial = new THREE.ShaderMaterial({
   vertexShader: waterVertexShader,
   fragmentShader: waterFragmentShader,
   uniforms:{
-    uBigWavesElevation: {value: 0.2}
+    uBigWavesElevation: {value: 0.2},
+    uBigWavesFrequency: {value: new THREE.Vector2( 4, 1.5) } //x,y (x,z)
   }
 });
 
