@@ -33,30 +33,29 @@ const waterGeometry = new THREE.PlaneGeometry(2, 2, 512, 512);
 
 // Material
 const waterMaterial = new THREE.ShaderMaterial({
-    vertexShader: waterVertexShader,
-    fragmentShader: waterFragmentShader,
-    // wireframe:true,
-    // uniforms:
-    // {
-    //     uTime: { value: 0 },
-        
-    //     uBigWavesElevation: { value: 0.2 },
-    //     uBigWavesFrequency: { value: new THREE.Vector2(4, 1.5) },
-    //     uBigWavesSpeed: { value: 0.75 },
+  vertexShader: waterVertexShader,
+  fragmentShader: waterFragmentShader,
+  // wireframe:true,
+  uniforms:
+  {
+  //  uTime: { value: 0 },
+    uBigWavesElevation: { value: 0.2 },
+  //  uBigWavesFrequency: { value: new THREE.Vector2(4, 1.5) },
+  //  uBigWavesSpeed: { value: 0.75 },
 
-    //     uSmallWavesElevation: { value: 0.15 },
-    //     uSmallWavesFrequency: { value: 3 },
-    //     uSmallWavesSpeed: { value: 0.2 },
-    //     uSmallIterations: { value: 4 },
+  //  uSmallWavesElevation: { value: 0.15 },
+  //  uSmallWavesFrequency: { value: 3 },
+  //  uSmallWavesSpeed: { value: 0.2 },
+  //  uSmallIterations: { value: 4 },
 
-    //     uDepthColor: { value: new THREE.Color(debugObject.depthColor) },
-    //     uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
-    //     uColorOffset: { value: 0.08 },
-    //     uColorMultiplier: { value: 5 }
-    // }
-})
+  //  uDepthColor: { value: new THREE.Color(debugObject.depthColor) },
+  //  uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
+  //  uColorOffset: { value: 0.08 },
+  //  uColorMultiplier: { value: 5 }
+  }
+});
 
-// gui.add(waterMaterial.uniforms.uBigWavesElevation, 'value').min(0).max(1).step(0.001).name('uBigWavesElevation')
+gui.add(waterMaterial.uniforms.uBigWavesElevation, 'value').min(0).max(1).step(0.001).name('uBigWavesElevation');
 // gui.add(waterMaterial.uniforms.uBigWavesFrequency.value, 'x').min(0).max(10).step(0.001).name('uBigWavesFrequencyX')
 // gui.add(waterMaterial.uniforms.uBigWavesFrequency.value, 'y').min(0).max(10).step(0.001).name('uBigWavesFrequencyY')
 // gui.add(waterMaterial.uniforms.uBigWavesSpeed, 'value').min(0).max(4).step(0.001).name('uBigWavesSpeed')
@@ -72,30 +71,30 @@ const waterMaterial = new THREE.ShaderMaterial({
 
 // Mesh
 const water = new THREE.Mesh(waterGeometry, waterMaterial);
-water.rotation.x = - Math.PI * 0.5;
+water.rotation.x = -Math.PI * 0.5;
 scene.add(water);
 
 /**
  * Sizes
  */
 const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
+  width: window.innerWidth,
+  height: window.innerHeight
 };
 
 window.addEventListener('resize', () =>
 {
-    // Update sizes
-    sizes.width = window.innerWidth;
-    sizes.height = window.innerHeight;
+  // Update sizes
+  sizes.width = window.innerWidth;
+  sizes.height = window.innerHeight;
 
-    // Update camera
-    camera.aspect = sizes.width / sizes.height;
-    camera.updateProjectionMatrix();
+  // Update camera
+  camera.aspect = sizes.width / sizes.height;
+  camera.updateProjectionMatrix();
 
-    // Update renderer
-    renderer.setSize(sizes.width, sizes.height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // Update renderer
+  renderer.setSize(sizes.width, sizes.height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
 /**
@@ -126,19 +125,19 @@ const clock = new THREE.Clock();
 
 const tick = () =>
 {
-    const elapsedTime = clock.getElapsedTime();
+  const elapsedTime = clock.getElapsedTime();
 
-    // Water
-    // waterMaterial.uniforms.uTime.value = elapsedTime
+  // Water
+  // waterMaterial.uniforms.uTime.value = elapsedTime
 
-    // Update controls
-    controls.update();
+  // Update controls
+  controls.update();
 
-    // Render
-    renderer.render(scene, camera);
+  // Render
+  renderer.render(scene, camera);
 
-    // Call tick again on the next frame
-    window.requestAnimationFrame(tick);
+  // Call tick again on the next frame
+  window.requestAnimationFrame(tick);
 }
 
 tick();

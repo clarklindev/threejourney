@@ -120,6 +120,11 @@ void main()
     // vElevation = elevation;
 
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+
+    float elevation =  sin(modelPosition.x) * uBigWavesElevation; //lower the elevation with small uBigWavesElevation value
+    modelPosition.y += elevation;
+
     vec4 viewPosition = viewMatrix * modelPosition;
     vec4 projectedPosition = projectionMatrix * viewPosition; 
 
