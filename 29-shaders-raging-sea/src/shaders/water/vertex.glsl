@@ -117,7 +117,7 @@ void main()
     // vec4 projectedPosition = projectionMatrix * viewPosition;
     // gl_Position = projectedPosition;
 
-    // vElevation = elevation;
+
 
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
@@ -126,8 +126,10 @@ void main()
       sin(modelPosition.x * uBigWavesFrequency.x + uTime * uBigWavesSpeed) *   //on the x
       sin(modelPosition.z * uBigWavesFrequency.y + uTime * uBigWavesSpeed) *   //on the y
       uBigWavesElevation; //lower the elevation with small uBigWavesElevation value
-
+    
     modelPosition.y += elevation;
+    
+    vElevation = elevation;
 
     vec4 viewPosition = viewMatrix * modelPosition;
     vec4 projectedPosition = projectionMatrix * viewPosition; 
