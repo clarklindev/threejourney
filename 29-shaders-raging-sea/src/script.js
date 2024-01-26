@@ -35,15 +35,17 @@ const waterMaterial = new THREE.ShaderMaterial({
   // wireframe:true,
   uniforms:
   {
+    //big waves
     uTime: { value: 0 },  //updates from tick()
     uBigWavesElevation: { value: 0.2 },
     uBigWavesFrequency: { value: new THREE.Vector2(4, 1.5) },
     uBigWavesSpeed: { value: 0.75 },
 
-  //  uSmallWavesElevation: { value: 0.15 },
-  //  uSmallWavesFrequency: { value: 3 },
-  //  uSmallWavesSpeed: { value: 0.2 },
-  //  uSmallIterations: { value: 4 },
+    //small wave
+   uSmallWavesElevation: { value: 0.15 },
+   uSmallWavesFrequency: { value: 3 },
+   uSmallWavesSpeed: { value: 0.2 },
+   uSmallWavesIterations: { value: 4 },
 
    uDepthColor: { value: new THREE.Color(debugObject.depthColor) },
    uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
@@ -59,10 +61,10 @@ gui.add(waterMaterial.uniforms.uBigWavesSpeed, 'value').min(0).max(4).step(0.001
 gui.addColor(debugObject, 'depthColor').onChange(() => { waterMaterial.uniforms.uDepthColor.value.set(debugObject.depthColor) });
 gui.addColor(debugObject, 'surfaceColor').onChange(() => { waterMaterial.uniforms.uSurfaceColor.value.set(debugObject.surfaceColor) });
 
-// gui.add(waterMaterial.uniforms.uSmallWavesElevation, 'value').min(0).max(1).step(0.001).name('uSmallWavesElevation')
-// gui.add(waterMaterial.uniforms.uSmallWavesFrequency, 'value').min(0).max(30).step(0.001).name('uSmallWavesFrequency')
-// gui.add(waterMaterial.uniforms.uSmallWavesSpeed, 'value').min(0).max(4).step(0.001).name('uSmallWavesSpeed')
-// gui.add(waterMaterial.uniforms.uSmallIterations, 'value').min(0).max(5).step(1).name('uSmallIterations')
+gui.add(waterMaterial.uniforms.uSmallWavesElevation, 'value').min(0).max(1).step(0.001).name('uSmallWavesElevation');
+gui.add(waterMaterial.uniforms.uSmallWavesFrequency, 'value').min(0).max(30).step(0.001).name('uSmallWavesFrequency');
+gui.add(waterMaterial.uniforms.uSmallWavesSpeed, 'value').min(0).max(4).step(0.001).name('uSmallWavesSpeed');
+gui.add(waterMaterial.uniforms.uSmallWavesIterations, 'value').min(0).max(5).step(1).name('uSmallWavesIterations');
 
 gui.add(waterMaterial.uniforms.uColorOffset, 'value').min(0).max(1).step(0.001).name('uColorOffset');
 gui.add(waterMaterial.uniforms.uColorMultiplier, 'value').min(0).max(10).step(0.001).name('uColorMultiplier');

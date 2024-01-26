@@ -6,7 +6,7 @@ uniform float uBigWavesSpeed;
 uniform float uSmallWavesElevation;
 uniform float uSmallWavesFrequency;
 uniform float uSmallWavesSpeed;
-uniform float uSmallIterations;
+uniform float uSmallWavesIterations;
 
 varying float vElevation;
 
@@ -97,28 +97,6 @@ float cnoise(vec3 P)
 
 void main()
 {
-    
-
-    // vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-
-    // // Elevation
-    // float elevation = sin(modelPosition.x * uBigWavesFrequency.x + uTime * uBigWavesSpeed) *
-    //                   sin(modelPosition.z * uBigWavesFrequency.y + uTime * uBigWavesSpeed) *
-    //                   uBigWavesElevation;
-
-    // for(float i = 1.0; i <= uSmallIterations; i++)
-    // {
-    //     elevation -= abs(cnoise(vec3(modelPosition.xz * uSmallWavesFrequency * i, uTime * uSmallWavesSpeed)) * uSmallWavesElevation / i);
-    // }
-    
-    // modelPosition.y += elevation;
-
-    // vec4 viewPosition = viewMatrix * modelPosition;
-    // vec4 projectedPosition = projectionMatrix * viewPosition;
-    // gl_Position = projectedPosition;
-
-
-
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
 
@@ -127,8 +105,12 @@ void main()
       sin(modelPosition.z * uBigWavesFrequency.y + uTime * uBigWavesSpeed) *   //on the y
       uBigWavesElevation; //lower the elevation with small uBigWavesElevation value
     
+     
+    for(float i = 1.0; i <= uSmallWavesIterations; i++){
+        elevation -= abs(cnoise(vec3(modelPosition.xz * uSmallWavesFrequency * i, uTime * uSmallWavesSpeed)) * uSmallWavesElevation / i); //make move on (x and z) modelposition.xz change with time, increase frequency, and lower wave height
+    }
+
     modelPosition.y += elevation;
-    
     vElevation = elevation;
 
     vec4 viewPosition = viewMatrix * modelPosition;

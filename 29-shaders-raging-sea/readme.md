@@ -62,7 +62,7 @@ npm run build
 - in the vertext shader, create a vElevation varying - its "sent" to the fragment shader
 - in fragment shader, retrieve the varying and create a color variable that mixes the "uDepthColor" and the "uSurfaceColor" according to the vElevation.
 - we cant see much because vElevation goes from -0.2 to +0.2
-- add uColorOffset and uColorMultiplier uniforms. (46min17sec)
+- add uColorOffset and uColorMultiplier uniforms. (raging sea - 46min17sec)
 - add them to Dat.GUI
 - retrieve the uColorOffset and uColorMultiplier uniforms in the fragment shader
   - create a mixStrength variable and use it in the mix() function - 
@@ -71,10 +71,44 @@ npm run build
     float mixStrength = (vElevation + uColorOffset) * uColorMultiplier;
     vec3 color = mix(uDepthColor, uSurfaceColor, mixStrength);
   ```
+### SMALL WAVES
+- more detail
+- using perlin noise to make waves change in time
+- classic perlin 3d noise - by stefan gustavson (https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83)
+- this is vec3 perlin noise - make it also change in time
+- add the functions to vertex.glsl: cnoise(), permute(), fade() etc 
+- use the cnoise with a vec3
+- the wavespeed is too fast, multiply the uTime by 0.2
+- increase the frequency - multiply modelPosition.xz by 3.0
+- decrease wave height - Multiply the noise by 0.15
+- realistic waves have rounded troughs and high crests - use abs() - make positives negative and invert values
+- invert the shape by replacing + by -
+
+### unpredictable frequencies
+- in a raging sea, the waves look more chaotic with different and unpredictable frequencies
+- add more noises at higher frequencies 
+- apply more perlin noise at different (when at higher) frequencies and more perlin noise at higher levels
+- use a for loop and move teh small waves formula inside it
+- then use i from for-loop to decrease the elevation and increase the frequency
+- we cant see the smallest waves, increase the subdivisions to 512x512 (script.js)
+- add uniforms to control the small waves:
+
+```
+uniform float uSmallWavesElevation;
+uniform float uSmallWavesFrequency;
+uniform float uSmallWavesSpeed;
+uniform float uSmallWavesIterations;
+```
 
 ### Shaders .glsl
 /src/shaders/water/vertex.glsl
+
 ```js 
+
+//add perlin noise functions...
+const cnoise = ()=>{}
+const permute = ()=>{} 
+//...etc
 
 varying float vElevation;
 
@@ -94,6 +128,10 @@ void main(){
                     sin(modelPosition.z * uBigWavesFrequency.y + uTime * uBigWavesSpeed) *     //on the y
                     uBigWavesElevation;                               //lower the elevation with small uBigWavesElevation value
   
+  for(float i = 1.0; i <= 3.0; i++){
+    elevation -= abs(cnoise(vec3(modelPosition.xz * 3.0 * i, uTime * 0.2)) * 0.15 / i); //make move on (x and z) modelposition.xz change with time, increase frequency, and lower wave height
+  }
+
   vElevation = elevation;
 
   modelPosition.y += elevation;
@@ -164,6 +202,10 @@ gui.addColor(debugObject, 'surfaceColor').onChange(() => { waterMaterial.uniform
 gui.add(waterMaterial.uniforms.uColorOffset, 'value').min(0).max(1).step(0.001).name('uColorOffset');
 gui.add(waterMaterial.uniforms.uColorMultiplier, 'value').min(0).max(10).step(0.001).name('uColorMultiplier');
 
+gui.add(waterMaterial.uniforms.uSmallWavesElevation, 'value').min(0).max(1).step(0.001).name('uSmallWavesElevation');
+gui.add(waterMaterial.uniforms.uSmallWavesFrequency, 'value').min(0).max(30).step(0.001).name('uSmallWavesFrequency');
+gui.add(waterMaterial.uniforms.uSmallWavesSpeed, 'value').min(0).max(4).step(0.001).name('uSmallWavesSpeed');
+gui.add(waterMaterial.uniforms.uSmallWavesIterations, 'value').min(0).max(5).step(1).name('uSmallWavesIterations');
 /**
  * Animate
  */
