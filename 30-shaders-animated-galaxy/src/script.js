@@ -121,27 +121,26 @@ const generateGalaxy = () => {
    * Material
    */
 
-  material = new THREE.PointsMaterial({
-    size: parameters.size,
-    sizeAttenuation: true,
+//   material = new THREE.PointsMaterial({
+//     size: parameters.size,   //pointsMaterial only props
+//     sizeAttenuation: true,   //pointsMaterial only props
+//     depthWrite: false,
+//     blending: THREE.AdditiveBlending,
+//     vertexColors: true
+// })
+
+  //switch to shader material
+  material = new THREE.ShaderMaterial({
     depthWrite: false,
     blending: THREE.AdditiveBlending,
-    vertexColors: true
-})
-
-  // material = new THREE.ShaderMaterial({
-  //   size: parameters.size, //PointsMaterial
-  //   sizeAttenuation: true, //PointsMaterial
-  //   depthWrite: false,
-  //   blending: THREE.AdditiveBlending,
-  //   vertexColors: true,
+    vertexColors: true,
   //   vertexShader: galaxyVertexShader,
   //   fragmentShader: galaxyFragmentShader,
   //   uniforms: {
   //     uTime: { value: 0 },
   //     uSize: { value: 30 * renderer.getPixelRatio() },
   //   },
-  // });
+  });
 
   /**
    * Points
