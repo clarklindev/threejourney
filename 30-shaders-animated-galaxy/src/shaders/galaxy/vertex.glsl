@@ -11,7 +11,7 @@ void main()
     /**
     *  Position
      */
-    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0); //"position" is the attribute
     
     // // Rotate - get angle by atan
     // float angle = atan(modelPosition.x, modelPosition.z);

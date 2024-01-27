@@ -2,8 +2,8 @@ import './style.css';
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
-// import galaxyVertexShader from "./shaders/galaxy/vertex.glsl";
-// import galaxyFragmentShader from "./shaders/galaxy/fragment.glsl";
+import galaxyVertexShader from "./shaders/galaxy/vertex.glsl";
+import galaxyFragmentShader from "./shaders/galaxy/fragment.glsl";
 
 //THREE.ColorManagement.enabled = false;
 
@@ -134,8 +134,8 @@ const generateGalaxy = () => {
     depthWrite: false,
     blending: THREE.AdditiveBlending,
     vertexColors: true,
-  //   vertexShader: galaxyVertexShader,
-  //   fragmentShader: galaxyFragmentShader,
+    vertexShader: galaxyVertexShader,
+    fragmentShader: galaxyFragmentShader,
   //   uniforms: {
   //     uTime: { value: 0 },
   //     uSize: { value: 30 * renderer.getPixelRatio() },

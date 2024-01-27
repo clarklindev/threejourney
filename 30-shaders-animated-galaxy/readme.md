@@ -11,3 +11,4 @@
 - size of particles starts at 0 (some see this as red dot/ some dont see anything)
 - add the classic vertexShader and set gl_PointSize to 2.0  
 
+
