@@ -121,14 +121,6 @@ const generateGalaxy = () => {
    * Material
    */
 
-//   material = new THREE.PointsMaterial({
-//     size: parameters.size,   //pointsMaterial only props
-//     sizeAttenuation: true,   //pointsMaterial only props
-//     depthWrite: false,
-//     blending: THREE.AdditiveBlending,
-//     vertexColors: true
-// })
-
   //switch to shader material
   material = new THREE.ShaderMaterial({
     depthWrite: false,
