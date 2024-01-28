@@ -82,4 +82,47 @@ void main(){
 
 ```
 
-### Drawing our particle pattern
+### Drawing our particles pattern (33min 24sec)
+
+- draw our pattern instead of the square particles
+- to draw patterns on plane, we use uv - by sending from vertex, uv coordinate as varying vUv and use them inside the plane
+- we cannot send the uv as a varying because each vertex is a particle (ie each vertex is a full plane geometry) but we can use gl_PointCoord
+- if you want the uv of a plane, you can get it inside the fragment shader with gl_PointCoord
+- test it in fragment shader to see the result
+
+```
+gl_FragColor = vec4(gl_PointCoord, 1.0, 1.0);
+```
+
+### Disc Pattern
+- drawing a circle - center filled
+- get the distance between gl_PointCoord (point we want to color) and the center of geometry
+- apply a step function (with step limit 0.5) to get 0.0 if the distance is below 0.5 and 1.0 if the distance is above 0.5.
+- invert the value
+
+### Difuse point pattern
+- get the distance between gl_PointCoord (point we want to color) and the center of geometry
+- multiply it by 2.0 so it reaches 1.0 before touching the edge
+- invert the value
+
+```js
+//fragment shader
+void main(){
+
+  // disc pattern
+  float strength = distance(gl_PointCoord, vec2(0.5));    //gl_PointCoord vs center point (0.5, 0.5), note: gl_PointCoord x,y would start at 0,0 but with the geometry layed ontop of it, the centerpoint of the circle geometry is x: 0.5, y: 0.5
+  strength = step(0.5, strength);   //apply step(limit, value) 
+  strength = 1 - strength;   //inver
+
+  //diffuse point pattern
+  // float strength = distance(gl_PointCoord, vec2(0.5));    //gl_PointCoord vs center point (0.5, 0.5), note: gl_PointCoord x,y would start at 0,0 but with the geometry layed ontop of it, the centerpoint of the circle geometry is x: 0.5, y: 0.5
+  // strength = step(0.5, strength);   //apply step(limit, value) 
+  // strength = 1 - strength;   //inver
+
+  //apply color
+  gl_FragColor = vec4(vec3(strength), 1.0);
+
+
+}
+
+```
