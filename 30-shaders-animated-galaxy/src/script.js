@@ -133,7 +133,7 @@ const generateGalaxy = () => {
       uSize: { value: 30 * renderer.getPixelRatio() }, //send to vertex - dont use window.devicePixelRatio, we set it earlier in renderer.setPixelRatio()
     },
   });
-
+  
   /**
    * Points
    */

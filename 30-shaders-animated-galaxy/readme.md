@@ -136,3 +136,31 @@ void main(){
 }
 
 ```
+### Handling Color
+- to retrieve the color attribute, we should have written something like this in the vertex shader
+- but its not needed because we using ShaderMaterial
+- in shaderMaterial - properties if you add vertexColors: true, it automatically adds the below
+- we dont have access to attributes in fragment, only "varying", so in vertex create a varying named vColor
+- in fragment, create a varying called vColor
+- retrieve it in the fragment shader and mix() it with a black color according to the strength
+
+```js
+//vertex shader
+// attribute vec3 color;  //given
+
+varying vec3 vColor;
+
+void main(){
+  vColor = color; //gives fragment shader access to vColor
+}
+```
+
+```js
+//fragment shader
+varying vec3 vColor;
+
+void main(){
+  vColor = color;
+}
+
+```

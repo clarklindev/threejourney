@@ -17,6 +17,8 @@ void main()
     strength = 1.0 - strength;   //invert
     strength = pow(strength, 10.0);
 
-    //apply color
-    gl_FragColor = vec4(vec3(strength), 1.0);
+    //final color
+    vec3 color = mix(vec3(0.0), vColor, strength);
+
+    gl_FragColor = vec4(color, 1.0);
 }
