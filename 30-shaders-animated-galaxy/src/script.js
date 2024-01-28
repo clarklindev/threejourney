@@ -52,7 +52,7 @@ const generateGalaxy = () => {
   const positions = new Float32Array(parameters.count * 3);
   //const randomness = new Float32Array(parameters.count * 3);
   const colors = new Float32Array(parameters.count * 3);
-  //const scales = new Float32Array(parameters.count * 1);
+  const scales = new Float32Array(parameters.count * 1);
 
   const insideColor = new THREE.Color(parameters.insideColor);
   const outsideColor = new THREE.Color(parameters.outsideColor);
@@ -106,7 +106,7 @@ const generateGalaxy = () => {
     colors[i3 + 2] = mixedColor.b;
 
     // Scales
-    // scales[i] = Math.random();
+    scales[i] = Math.random();
   }
 
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -115,7 +115,7 @@ const generateGalaxy = () => {
   //   new THREE.BufferAttribute(randomness, 3)
   // );
   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-  // geometry.setAttribute("aScale", new THREE.BufferAttribute(scales, 1));
+  geometry.setAttribute("aScale", new THREE.BufferAttribute(scales, 1));
 
   /**
    * Material
@@ -128,10 +128,10 @@ const generateGalaxy = () => {
     vertexColors: true,
     vertexShader: galaxyVertexShader,
     fragmentShader: galaxyFragmentShader,
-  //   uniforms: {
-  //     uTime: { value: 0 },
-  //     uSize: { value: 30 * renderer.getPixelRatio() },
-  //   },
+    uniforms: {
+      // uTime: { value: 0 },
+      uSize: { value: 8 * renderer.getPixelRatio() }, //send to vertex - dont use window.devicePixelRatio, we set it earlier in renderer.setPixelRatio()
+    },
   });
 
   /**
@@ -234,7 +234,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 /**
  * Generate Galaxy
  */
-generateGalaxy();
+generateGalaxy(); //THIS NEEDS TO BE AFTER renderer 
 
 /**
  * Animate

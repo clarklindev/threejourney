@@ -1,5 +1,5 @@
 uniform float uTime;
-uniform float uSize;
+uniform float uSize; //retrieve uSize from script.js
 
 attribute vec3 aRandomness;
 attribute float aScale;
@@ -11,7 +11,7 @@ void main()
     /**
     *  Position
      */
-    vec4 modelPosition = modelMatrix * vec4(position, 1.0); //"position" is the attribute
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0); //"position" is the attribute //modelMatrix property given in ShaderMaterial
     
     // // Rotate - get angle by atan
     // float angle = atan(modelPosition.x, modelPosition.z);
@@ -24,18 +24,17 @@ void main()
     //  // Randomness
     // modelPosition.xyz += aRandomness;
 
-     vec4 viewPosition = viewMatrix * modelPosition;
-    vec4 projectedPosition = projectionMatrix * viewPosition;
-    gl_Position = projectedPosition; 
+     vec4 viewPosition = viewMatrix * modelPosition;        //viewMatrix property given in ShaderMaterial
+    vec4 projectedPosition = projectionMatrix * viewPosition; //projectionMatrix property given in ShaderMaterial
+    gl_Position = projectedPosition;  
 
     /**
     *  Size
     */
-    gl_PointSize = 2.0;
+    gl_PointSize = uSize * aScale;  
 
-    // gl_PointSize = uSize * aScale;
-    // // size attenuation - /node_modules/three/src/renderers/shaders/ShaderLib/point_vert.glsl.js
-    // gl_PointSize *= ( 1.0 / - viewPosition.z );
+    // cater for size attenuation - /node_modules/three/src/renderers/shaders/ShaderLib/point_vert.glsl.js
+    gl_PointSize *= ( 1.0 / - viewPosition.z );//fragment size
 
     /**
     *  Color
