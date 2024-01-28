@@ -160,7 +160,72 @@ void main(){
 varying vec3 vColor;
 
 void main(){
-  vColor = color;
+  float strength = distance(gl_PointCoord, vec2(0.5));    //gl_PointCoord vs center point (0.5, 0.5), note: gl_PointCoord x,y would start at 0,0 but with the geometry layed ontop of it, the centerpoint of the circle geometry is x: 0.5, y: 0.5
+  strength = 1.0 - strength;   //invert
+  strength = pow(strength, 10.0);
+
+  //final color
+  vec3 color = mix(vec3(0.0), vColor, strength);
+
+  gl_FragColor = vec4(color, 1.0);
 }
 
 ```
+
+### Animate (54:48)
+- create a uTime uniform - send time to vertex shader
+- update this uTime in tick()
+- retrieve it in the vertex
+- because a galaxy looks flat, we can rotate the vertices only on the x and z
+- we calculate the particle angle and its distance to the center
+- we increase that angle according to uTime and the distance (bigger the utime, more the particle will rotate)
+  - speed of rotation depends on the distance away from center , closer to center will rotate faster
+- we update the position according to that new angle
+- retrieve the angle using atan()
+  - float angle = atan(modelPosition.x, modelPosition.z)
+  - atan stands for arc-tangent
+- retrieve the distance using length()
+  - float distanceToCenter = length(modelPosition.xz);
+- calculate offset angle (how much particle should have spinned "rotated") 
+- add that angleOffset to the base angle
+- update the modelPosition on the x and z axis, with cos() and sin() - this is how to position something on a circle
+- all the particles seem to rotate on a cylinder because when using sin() and cos() to get position on a circle, the circle radius is 1.
+- multiply cos() and sin() by distanceToCenter()
+
+```js
+//script.js
+tick (){
+  const elapsedTime = clock.getElapsedTime();
+
+  // Update material
+  material.uniforms.uTime.value = elapsedTime;
+}
+```
+
+```js
+//vertex shader
+uniform float uTime;
+
+void main(){
+
+  //spin
+  float angle = atan(modelPosition.x, modelPosition.z);
+  float distanceToCenter = length(modelPosition.xz);
+  float angleOffset = (1.0 / distanceToCenter) * uTime * 0.2; // as further, it slows down.
+  angle += angleOffset;
+
+  modelPosition.x = cos(angle) * distanceToCenter;    
+  modelPosition.z = sin(angle) * distanceToCenter;
+
+}
+
+```
+
+### Fix the randomness
+- after some time, the particles are being stretched like on a ribbon
+- remove the randomness from the position attribute, save it in a new attribute named aRandomness, apply it after rotating the stars in the vertex shader
+- create the attribute "randomness" and store the randomness in it.
+- dont forget to remove the randomness from the positions
+- retrieve the attribute and apply it on the xyz of the modelPosition after the rotation
+- reduce the randomness parameter: parameters.randomness = 0.2
+

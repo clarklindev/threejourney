@@ -5,7 +5,7 @@ import * as dat from "dat.gui";
 import galaxyVertexShader from "./shaders/galaxy/vertex.glsl";
 import galaxyFragmentShader from "./shaders/galaxy/fragment.glsl";
 
-//THREE.ColorManagement.enabled = false;
+THREE.ColorManagement.enabled = false;  //fixes color issues
 
 /**
  * Base
@@ -28,7 +28,7 @@ parameters.size = 0.005;
 parameters.radius = 5;
 parameters.branches = 3;
 parameters.spin = 1;
-parameters.randomness = 0.5;
+parameters.randomness = 0.2;
 parameters.randomnessPower = 3;
 parameters.insideColor = "#ff6030";
 parameters.outsideColor = "#1b3984";
@@ -50,7 +50,7 @@ const generateGalaxy = () => {
   geometry = new THREE.BufferGeometry();
 
   const positions = new Float32Array(parameters.count * 3);
-  //const randomness = new Float32Array(parameters.count * 3);
+  const randomness = new Float32Array(parameters.count * 3);
   const colors = new Float32Array(parameters.count * 3);
   const scales = new Float32Array(parameters.count * 1);
 
@@ -66,9 +66,9 @@ const generateGalaxy = () => {
     const branchAngle =
       ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
 
-    // positions[i3] = Math.cos(branchAngle) * radius;
-    // positions[i3 + 1] = 0;
-    // positions[i3 + 2] = Math.sin(branchAngle) * radius;
+    positions[i3    ] = Math.cos(branchAngle) * radius
+    positions[i3 + 1] = 0.0
+    positions[i3 + 2] = Math.sin(branchAngle) * radius
 
     //Randomness - position this after position to avoid ribbon effects
     const randomX =
@@ -89,13 +89,11 @@ const generateGalaxy = () => {
       parameters.randomness *
       radius;
 
-      positions[i3    ] = Math.cos(branchAngle) * radius + randomX
-        positions[i3 + 1] = randomY
-        positions[i3 + 2] = Math.sin(branchAngle) * radius + randomZ
 
-    // randomness[i3] = randomX;
-    // randomness[i3 + 1] = randomY;
-    // randomness[i3 + 2] = randomZ;
+    //randomness
+    randomness[i3] = randomX;
+    randomness[i3 + 1] = randomY;
+    randomness[i3 + 2] = randomZ;
 
     // Color
     const mixedColor = insideColor.clone();
@@ -110,10 +108,10 @@ const generateGalaxy = () => {
   }
 
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  // geometry.setAttribute(
-  //   "aRandomness",
-  //   new THREE.BufferAttribute(randomness, 3)
-  // );
+  geometry.setAttribute(
+    "aRandomness",
+    new THREE.BufferAttribute(randomness, 3)
+  );
   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
   geometry.setAttribute("aScale", new THREE.BufferAttribute(scales, 1));
 
@@ -129,7 +127,7 @@ const generateGalaxy = () => {
     vertexShader: galaxyVertexShader,
     fragmentShader: galaxyFragmentShader,
     uniforms: {
-      // uTime: { value: 0 },
+      uTime: { value: 0 },
       uSize: { value: 30 * renderer.getPixelRatio() }, //send to vertex - dont use window.devicePixelRatio, we set it earlier in renderer.setPixelRatio()
     },
   });
@@ -245,7 +243,7 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
   // Update material
-  //material.uniforms.uTime.value = elapsedTime;
+  material.uniforms.uTime.value = elapsedTime;
 
   // Update controls
   controls.update();

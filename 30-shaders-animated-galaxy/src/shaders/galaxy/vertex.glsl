@@ -13,16 +13,18 @@ void main()
      */
     vec4 modelPosition = modelMatrix * vec4(position, 1.0); //"position" is the attribute //modelMatrix property given in ShaderMaterial
     
-    // // Rotate - get angle by atan
-    // float angle = atan(modelPosition.x, modelPosition.z);
-    // float distanceToCenter = length(modelPosition.xz);
-    // float angleOffset = (1.0 / distanceToCenter) * uTime * 0.2; // as further, it slows down.
-    // angle += angleOffset;
-    // modelPosition.x = cos(angle) * distanceToCenter;
-    // modelPosition.z = sin(angle) * distanceToCenter;
+    // SPIN
+    // Rotate - get angle by atan
+    float angle = atan(modelPosition.x, modelPosition.z);
+    float distanceToCenter = length(modelPosition.xz);
+    float angleOffset = (1.0 / distanceToCenter) * uTime * 0.2; // as further, it slows down.
+    angle += angleOffset;
 
-    //  // Randomness
-    // modelPosition.xyz += aRandomness;
+    modelPosition.x = cos(angle) * distanceToCenter;    
+    modelPosition.z = sin(angle) * distanceToCenter;
+
+    //  Randomness
+    modelPosition.xyz += aRandomness;
 
      vec4 viewPosition = viewMatrix * modelPosition;        //viewMatrix property given in ShaderMaterial
     vec4 projectedPosition = projectionMatrix * viewPosition; //projectionMatrix property given in ShaderMaterial
