@@ -106,20 +106,30 @@ gl_FragColor = vec4(gl_PointCoord, 1.0, 1.0);
 - invert the value
 
 ### Light Point Pattern (45min 20sec)
+- get the distance between gl_PointCoord (point we want to color) and the center of geometry
+- invert the value
+- apply a power on it with a high number
+- increase uSize in script
 
 ```js
 //fragment shader
 void main(){
 
-  // disc pattern
+  //OPTION1: disc pattern
   float strength = distance(gl_PointCoord, vec2(0.5));    //gl_PointCoord vs center point (0.5, 0.5), note: gl_PointCoord x,y would start at 0,0 but with the geometry layed ontop of it, the centerpoint of the circle geometry is x: 0.5, y: 0.5
   strength = step(0.5, strength);   //apply step(limit, value) 
   strength = 1 - strength;   //inver
 
-  //diffuse point pattern
+  //OPTION2: diffuse point pattern - linear diffuse
   float strength = distance(gl_PointCoord, vec2(0.5));    //gl_PointCoord vs center point (0.5, 0.5), note: gl_PointCoord x,y would start at 0,0 but with the geometry layed ontop of it, the centerpoint of the circle geometry is x: 0.5, y: 0.5
   strength *= 2.0; 
   strength = 1.0 - strength;   //invert
+
+  //OPTION3: light point pattern - exponential diffuse light fades fast quickly from center
+  float strength = distance(gl_PointCoord, vec2(0.5));    //gl_PointCoord vs center point (0.5, 0.5), note: gl_PointCoord x,y would start at 0,0 but with the geometry layed ontop of it, the centerpoint of the circle geometry is x: 0.5, y: 0.5
+  strength = 1.0 - strength;   //invert
+  strength = pow(strength, 10.0);
+
 
   //apply color
   gl_FragColor = vec4(vec3(strength), 1.0);

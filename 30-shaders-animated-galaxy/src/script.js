@@ -130,7 +130,7 @@ const generateGalaxy = () => {
     fragmentShader: galaxyFragmentShader,
     uniforms: {
       // uTime: { value: 0 },
-      uSize: { value: 8 * renderer.getPixelRatio() }, //send to vertex - dont use window.devicePixelRatio, we set it earlier in renderer.setPixelRatio()
+      uSize: { value: 30 * renderer.getPixelRatio() }, //send to vertex - dont use window.devicePixelRatio, we set it earlier in renderer.setPixelRatio()
     },
   });
 
