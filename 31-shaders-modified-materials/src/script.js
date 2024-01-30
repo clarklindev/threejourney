@@ -76,20 +76,21 @@ const material = new THREE.MeshStandardMaterial( {
 //     depthPacking: THREE.RGBADepthPacking
 // })
 
-// const customUniforms = {
-//     uTime: { value: 0 }
-// }
+const customUniforms = {
+    uTime: { value: 0 }
+}
 
 material.onBeforeCompile = (shader) =>
 {
-//     shader.uniforms.uTime = customUniforms.uTime
+    // shader.uniforms.uTime = {value:0} //remove: use customUniforms obj instead
+    shader.uniforms.uTime = customUniforms.uTime;
 
     shader.vertexShader = shader.vertexShader.replace(
         '#include <common>',
         `
             #include <common>
 
-//             uniform float uTime;
+            uniform float uTime;
 
             mat2 get2dRotateMatrix(float _angle)
             {
@@ -109,12 +110,14 @@ material.onBeforeCompile = (shader) =>
 //             objectNormal.xz = objectNormal.xz * rotateMatrix;
 //         `
 //     )
+
     shader.vertexShader = shader.vertexShader.replace(
         '#include <begin_vertex>',
         `
             #include <begin_vertex>
 
-            float angle = 0.9;
+            float angle = (position.y + uTime) * 0.2;
+
             mat2 rotateMatrix = get2dRotateMatrix(angle);
             transformed.xz = rotateMatrix * transformed.xz;
         `
@@ -254,7 +257,7 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
 
     // // Update material
-    // customUniforms.uTime.value = elapsedTime
+    customUniforms.uTime.value = elapsedTime;
 
     // Update controls
     controls.update()
