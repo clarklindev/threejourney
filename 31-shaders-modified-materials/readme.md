@@ -132,3 +132,104 @@ const tick = ()=>{
     customUniforms.uTime.value = elapsedTime;
 }
 ```
+
+### Fixing the shadows (31min 24sec)
+- threejs does shadows renders from the lights point of view called shadow maps.
+- when those renders occur, all the materials are replaced by another set of materials (shadow depth material)
+- but the problem here is we are rotating vertex
+-  and this depth material does not twist
+
+#### example to confirm the depth material not twisting
+- place a plane behind the head to see the depth material not twisting
+- Shadows - 2 types: core (geometry shadow), drop shadow
+- need to twist drop shadow material
+
+```js
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(15, 15, 15),
+    new THREE.MeshStandardMaterial()
+);
+
+plane.rotation.y = Math.PI
+plane.position.y = - 5
+plane.position.z = 5
+scene.add(plane)
+```
+#### fixing the drop shadow
+- the material used for shadows is MeshDepthMaterial
+- we cannot access it easily but we can override it with our own mesh depth material *(which we twist)- the property customDepthMaterial
+
+- create a depthMaterial with MeshDepthMaterial class.
+- we use THREE.RGBADepthPacking as depthPacking to follow Three.js code
+- use that depthMaterial on the customDepthMaterial property
+
+```js
+const depthMaterial = new THREE.MeshDepthMaterial({depthPacking: THREE.RGBADepthPacking});
+
+gltfLoader.load('/models/LePerrySmith/LeePerrySmith.glb', (gltf)=>{
+  mesh.material = material; //update the material
+  mesh.customDepthMaterial = depthMaterial; //update the depth material
+});
+
+```
+- we can do the same twist we did with onBeforeCompile but on the depthMaterial
+
+```js
+depthMaterial.onBeforeCompile = (shader) =>
+{
+    shader.uniforms.uTime = customUniforms.uTime
+    shader.vertexShader = shader.vertexShader.replace(
+        '#include <common>',
+        `
+            #include <common>
+
+            uniform float uTime;
+
+            mat2 get2dRotateMatrix(float _angle)
+            {
+                return mat2(cos(_angle), - sin(_angle), sin(_angle), cos(_angle));
+            }
+        `
+    )
+    shader.vertexShader = shader.vertexShader.replace(
+        '#include <begin_vertex>',
+
+        `
+        #include <begin_vertex>
+
+        float angle = (sin(position.y + uTime)) * 0.4;
+
+        mat2 rotateMatrix = get2dRotateMatrix(angle);
+
+        transformed.xz = rotateMatrix * transformed.xz;
+        `
+    ) 
+}
+```
+### FIXING NORMALS
+#### fixing the core shadow on the object itself
+- we fixed the dropshadow,
+- now we deal with core shadow, its a normals problem. the vertices rotate but the normals are still pointing in old direction
+- the normals are data associated with the vertices that tell in which direction is the outside to be used for lights, shadows, reflection and stuff like that.
+- we only rotated the vertices, not the normals (normals are still facing old direction)
+- the shadow is only applied on the default material not the depthMaterial
+  - there is no core shadow on the depth material
+- the chunk handling the normals first is called beginnormal_vertex
+- the normal variable name is "objectNormal"
+- we can try the same rotation we did before
+
+```js
+material.onBeforeCompile = (shader)=>{
+  shader.vertexShader = shader.vertexShader.replace(
+      '#include <beginnormal_vertex>',
+      `
+          #include <beginnormal_vertex>
+
+          float angle = (sin(position.y + uTime)) * 0.4;
+          mat2 rotateMatrix = get2dRotateMatrix(angle);
+
+          objectNormal.xz = objectNormal.xz * rotateMatrix;
+      `
+  )
+}
+```
