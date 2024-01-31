@@ -51,3 +51,16 @@ dotScreenPass.enabled = false;
 effectComposer.addPass(dotScreenPass);
 
 ``` 
+
+### GlitchPass
+- import GlitchPass, instantiate it and add it.
+- there is a .goWild property (to constantly glitch)
+
+```js
+import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
+const glitchPass = new GlitchPass();
+glitchPass.goWild = true;
+glitchPass.enabled = false;
+effectComposer.addPass(glitchPass);
+
+```

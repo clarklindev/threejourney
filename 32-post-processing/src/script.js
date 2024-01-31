@@ -6,7 +6,7 @@ import * as dat from "dat.gui";
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js'
-// import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
+import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
 // import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 // import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
 // import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
@@ -188,10 +188,10 @@ dotScreenPass.enabled = false;
 effectComposer.addPass(dotScreenPass);
 
 // // Glitch pass
-// const glitchPass = new GlitchPass()
-// glitchPass.goWild = true
-// glitchPass.enabled = false
-// effectComposer.addPass(glitchPass)
+const glitchPass = new GlitchPass();
+glitchPass.goWild = true;
+glitchPass.enabled = true;
+effectComposer.addPass(glitchPass); 
 
 // // RGB Shift pass
 // const rgbShiftPass = new ShaderPass(RGBShiftShader)
