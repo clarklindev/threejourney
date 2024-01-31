@@ -3,12 +3,12 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as dat from "dat.gui";
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js'
-import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
-// import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
-// import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js';
+import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js';
 // import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
 // import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
 
@@ -190,13 +190,13 @@ effectComposer.addPass(dotScreenPass);
 // // Glitch pass
 const glitchPass = new GlitchPass();
 glitchPass.goWild = true;
-glitchPass.enabled = true;
+glitchPass.enabled = false;
 effectComposer.addPass(glitchPass); 
 
 // // RGB Shift pass
-// const rgbShiftPass = new ShaderPass(RGBShiftShader)
-// rgbShiftPass.enabled = false
-// effectComposer.addPass(rgbShiftPass)
+const rgbShiftPass = new ShaderPass(RGBShiftShader);
+rgbShiftPass.enabled = true;
+effectComposer.addPass(rgbShiftPass);
 
 // // Antialias pass
 // if(renderer.getPixelRatio() === 1 && !renderer.capabilities.isWebGL2)

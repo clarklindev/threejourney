@@ -64,3 +64,21 @@ glitchPass.enabled = false;
 effectComposer.addPass(glitchPass);
 
 ```
+
+### RGBShift pass
+
+- some passes require extra work like RGBSHift pass
+- RGBShiftShader  is only available as a shader, need to use it with a ShaderPass
+- import the ShaderPass and the RGBShiftShader
+- can offset R, G or B
+- the shaderPass receives a shader
+- instantiate the ShaderPass with the RGBShiftShader as parameter and add it to effectComposer
+
+```js
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js';
+
+const rgbShiftPass = new ShaderPass(RGBShiftShader);
+effectComposer.addPass(rgbShiftPass);
+
+```
