@@ -3,9 +3,9 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as dat from "dat.gui";
-// import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-// import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-// import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js'
 // import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
 // import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 // import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
@@ -172,18 +172,20 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // )
 
 // // Effect composer
-// const effectComposer = new EffectComposer(renderer, renderTarget)
-// effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-// effectComposer.setSize(sizes.width, sizes.height)
+const effectComposer = new EffectComposer(renderer);
+// const effectComposer = new EffectComposer(renderer, renderTarget);
+
+effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+effectComposer.setSize(sizes.width, sizes.height);
 
 // // Render pass
-// const renderPass = new RenderPass(scene, camera)
-// effectComposer.addPass(renderPass)
+const renderPass = new RenderPass(scene, camera);
+effectComposer.addPass(renderPass);
 
 // // Dot screen pass
-// const dotScreenPass = new DotScreenPass()
-// dotScreenPass.enabled = false
-// effectComposer.addPass(dotScreenPass)
+const dotScreenPass = new DotScreenPass()
+dotScreenPass.enabled = false;
+effectComposer.addPass(dotScreenPass);
 
 // // Glitch pass
 // const glitchPass = new GlitchPass()
@@ -320,8 +322,8 @@ const tick = () => {
   controls.update();
 
   // Render
-  renderer.render(scene, camera);
-  // effectComposer.render()
+  //renderer.render(scene, camera);
+  effectComposer.render(); //use effectComposer.render() instead of renderer.render(scene, camera )
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
