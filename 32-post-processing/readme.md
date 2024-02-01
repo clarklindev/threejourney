@@ -211,7 +211,7 @@ else
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 const unrealBloomPass = new UnrealBloomPass();
-unrealBloomPass.enabled = true;
+unrealBloomPass.enabled = false;
 
 unrealBloomPass.strength = 0.3;
 unrealBloomPass.radius = 1;
@@ -222,5 +222,74 @@ gui.add(unrealBloomPass, 'enabled');
 gui.add(unrealBloomPass, 'strength').min(0).max(2).step(0.001);
 gui.add(unrealBloomPass, 'radius').min(0).max(2).step(0.001);
 gui.add(unrealBloomPass, 'threshold').min(0).max(1).step(0.001);
+
+```
+
+### creating our own pass (57min 48sec)
+- its like creating our own shader
+
+#### CUSTOM Tint pass
+- create a shader which is an object with the following properties:
+  - uniforms - same format as the uniforms we are used to 
+  - vertexShader - This one has almost always the same code and will put the plane in front of the view
+  - fragmentShader - the fragment shader that will do the post-processing effect
+- effectComposer will check your shader, and will put previous pass texture on this
+- we need the texture from the previous pass, 
+- set a tDiffuse uniform to null and EffectComposer will update it automatically
+- in order to pick the right pixel colors on that tDiffuse texture, we need to use texture2D() and provide the uvCoordinates.
+- create a vUv varying and use it in the fragment shader.
+- play with r,g,b properties of color
+- create a uTint uniform to control the tint
+- we set the default value to null befcause we are going to change it once we instantiate the ShaderPass
+- add tweaks to Dat.GUI
+
+- NOTES: create the pass with ShaderPass and add it to our effectComposer 
+-the pass is auto added by effectComposer as "tDiffuse" uniform, 
+- then fragmentShader will be able to use this tDiffuse
+- vUv is coordinates sent from vertexShader of where to pick the color from 
+- then update it vUv = uv; (note uv is an existing given attribute)
+ 
+```js
+// Tin pass
+const TintShader = {
+    uniforms:
+    {
+        tDiffuse: { value: null },
+        uTint: { value: null }
+    },
+    vertexShader: `
+        varying vec2 vUv;
+
+        void main()
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+            vUv = uv;
+        }
+    `,
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform vec3 uTint;
+
+        varying vec2 vUv; 
+
+        void main()
+        {
+            vec4 color = texture2D(tDiffuse, vUv);
+            color.rgb += uTint;
+
+            gl_FragColor = color;
+        }
+    `
+}
+
+const tintPass = new ShaderPass(TintShader);
+tintPass.material.uniforms.uTint.value = new THREE.Vector3();
+effectComposer.addPass(tintPass);
+
+gui.add(tintPass.material.uniforms.uTint.value, 'x').min(- 1).max(1).step(0.001).name('red')
+gui.add(tintPass.material.uniforms.uTint.value, 'y').min(- 1).max(1).step(0.001).name('green')
+gui.add(tintPass.material.uniforms.uTint.value, 'z').min(- 1).max(1).step(0.001).name('blue')
+
 
 ```
