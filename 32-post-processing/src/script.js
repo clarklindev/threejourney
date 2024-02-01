@@ -3,14 +3,16 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as dat from "dat.gui";
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js';
-import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js';
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass.js";
+import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js";
 // import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
 // import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
+
+THREE.ColorManagement.enabled = false;
 
 /**
  * Base
@@ -40,7 +42,7 @@ const updateAllMaterials = () => {
       child instanceof THREE.Mesh &&
       child.material instanceof THREE.MeshStandardMaterial
     ) {
-      child.material.envMapIntensity = 5;
+      child.material.envMapIntensity = 2.5;
       child.material.needsUpdate = true;
       child.castShadow = true;
       child.receiveShadow = true;
@@ -59,7 +61,8 @@ const environmentMap = cubeTextureLoader.load([
   "/textures/environmentMaps/0/pz.jpg",
   "/textures/environmentMaps/0/nz.jpg",
 ]);
-environmentMap.encoding = THREE.sRGBEncoding;
+// environmentMap.encoding = THREE.sRGBEncoding; //DEPRECATED
+environmentMap.colorSpace = THREE.SRGBColorSpace;
 
 scene.background = environmentMap;
 scene.environment = environmentMap;
@@ -138,7 +141,8 @@ const renderer = new THREE.WebGLRenderer({
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.physicallyCorrectLights = true;
-renderer.outputEncoding = THREE.sRGBEncoding;
+// renderer.outputEncoding = THREE.sRGBEncoding; //DEPRECATED
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ReinhardToneMapping;
 renderer.toneMappingExposure = 1.5;
 renderer.setSize(sizes.width, sizes.height);
@@ -160,21 +164,21 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 //     console.log('Using WebGLRenderTarget')
 // }
 
-// const renderTarget = new RenderTargetClass(
-//     800,
-//     600,
-//     {
-//         minFilter: THREE.LinearFilter,
-//         magFilter: THREE.LinearFilter,
-//         format: THREE.RGBAFormat,
-//         encoding: THREE.sRGBEncoding
-//     }
-// )
+const renderTarget = new THREE.WebGLRenderTarget(
+  800, 
+  600, 
+  {
+    minFilter: THREE.LinearFilter,
+    magFilter: THREE.LinearFilter,
+    format: THREE.RGBAFormat,
+    // encoding: THREE.sRGBEncoding, //DEPRECATED THREE.sRGBEncoding
+    // encoding: THREE.SRGBColorSpace, //DEPRECATED encoding
+    colorSpace: THREE.SRGBColorSpace, 
+  }
+);
 
-// // Effect composer
-const effectComposer = new EffectComposer(renderer);
-// const effectComposer = new EffectComposer(renderer, renderTarget);
-
+//Composer
+const effectComposer = new EffectComposer(renderer, renderTarget);
 effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 effectComposer.setSize(sizes.width, sizes.height);
 
@@ -183,19 +187,19 @@ const renderPass = new RenderPass(scene, camera);
 effectComposer.addPass(renderPass);
 
 // // Dot screen pass
-const dotScreenPass = new DotScreenPass()
-dotScreenPass.enabled = false;
+const dotScreenPass = new DotScreenPass();
+dotScreenPass.enabled = true;
 effectComposer.addPass(dotScreenPass);
 
 // // Glitch pass
 const glitchPass = new GlitchPass();
 glitchPass.goWild = true;
 glitchPass.enabled = false;
-effectComposer.addPass(glitchPass); 
+effectComposer.addPass(glitchPass);
 
 // // RGB Shift pass
 const rgbShiftPass = new ShaderPass(RGBShiftShader);
-rgbShiftPass.enabled = true;
+rgbShiftPass.enabled = false;
 effectComposer.addPass(rgbShiftPass);
 
 // // Antialias pass

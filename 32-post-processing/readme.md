@@ -82,3 +82,24 @@ const rgbShiftPass = new ShaderPass(RGBShiftShader);
 effectComposer.addPass(rgbShiftPass);
 
 ```
+### Fixing the color
+- using Effect composer - colors are darker
+- the renderer.outputEncoding = THREE.sRGBEncoding doesnt work anymore because the render targets of EffectComposer encoding is not set right.
+- but we can provide our own render targets
+- this is because if you only have a single pass (or the last render), effect composer doesnt render in render target1 or 2, it renders directly to the screen.
+- but if we get into the EffectComposer ping-pong between render targets, the colors start going wrong because outputEncoding doesnt work.
+- renderer.outputEncoding = THREE.sRGBEncoding //not working when using render target...
+- in node_modules/three/examples/jsm/postprocessing/EffectComposer.js we can see how the renderTarget is made and we can copy this code.
+- The width and height are not important because setSize() will update them
+- but default is LinearEncoding and we need to change this...
+
+```js
+const renderTarget = new RenderTargetClass(800, 600, {
+  minFilter: THREE.LinearFilter,
+  magFilter: THREE.LinearFilter,
+  format: THREE.RGBAFormat,
+  // encoding: THREE.sRGBEncoding, //default is LinearEncoding //DEPRECATED
+  encoding: THREE.SRGBColorSpace, 
+
+});
+```
