@@ -250,7 +250,6 @@ const DisplacementShader = {
     uniforms:
     {
         tDiffuse: { value: null },
-        uTime: { value: null },
         uNormalMap: { value: null }
     },
     vertexShader: `
@@ -265,30 +264,24 @@ const DisplacementShader = {
     `,
     fragmentShader: `
         uniform sampler2D tDiffuse;
-        uniform float uTime;
-        // uniform sampler2D uNormalMap;
+        uniform sampler2D uNormalMap;
 
         varying vec2 vUv;
 
         void main()
         {
-            vec2 newUv = vec2(vUv.x, vUv.y + sin(vUv.x * 10.0 + uTime) * 0.1);
+            vec3 normalColor = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
+            vec2 newUv = vUv + normalColor.xy * 0.1;
             vec4 color = texture2D(tDiffuse, newUv);
+            vec3 lightDirection = normalize(vec3(- 1.0, 1.0, 0.0));
+            float lightness = clamp(dot(normalColor, lightDirection), 0.0, 1.0);
+            color.rgb += lightness * 2.0;
             gl_FragColor = color;
-
-            // vec3 normalColor = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
-            // vec2 newUv = vUv + normalColor.xy * 0.1;
-            // vec4 color = texture2D(tDiffuse, newUv);
-            // vec3 lightDirection = normalize(vec3(- 1.0, 1.0, 0.0));
-            // float lightness = clamp(dot(normalColor, lightDirection), 0.0, 1.0);
-            // color.rgb += lightness * 2.0;
-            //gl_FragColor = color;
         }
     `
 }
 
 const displacementPass = new ShaderPass(DisplacementShader);
-displacementPass.material.uniforms.uTime.value = 0;
 displacementPass.material.uniforms.uNormalMap.value = textureLoader.load('/textures/interfaceNormalMap.png');
 effectComposer.addPass(displacementPass);
 
@@ -330,9 +323,6 @@ const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
-
-  // Update passes
-  displacementPass.material.uniforms.uTime.value = elapsedTime;
 
   // Update controls
   controls.update();

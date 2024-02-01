@@ -363,3 +363,12 @@ const tick = ()=>{
 }
 
 ```
+
+### Futuristic interface displacement
+- instead of a sinus displacement, we can use a texture
+/static/textures/interfaceNormalMap.png
+- first load the texture
+
+- remove uTime uniform
+- add a uNormalMap uniform
+
