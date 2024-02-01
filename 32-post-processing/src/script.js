@@ -10,7 +10,7 @@ import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js";
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
-// import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
 
 THREE.ColorManagement.enabled = false;
 
@@ -192,24 +192,25 @@ effectComposer.addPass(rgbShiftPass);
 if(renderer.getPixelRatio() === 1 && !renderer.capabilities.isWebGL2)
 {
     const smaaPass = new SMAAPass();
+    smaaPass.enabled = false;
     effectComposer.addPass(smaaPass);
 
-  console.log('Using SMAA')
+  console.log('Using SMAA');
 }
 
 // // Unreal Bloom pass
-// const unrealBloomPass = new UnrealBloomPass()
-// unrealBloomPass.enabled = false
-// effectComposer.addPass(unrealBloomPass)
+const unrealBloomPass = new UnrealBloomPass();
+unrealBloomPass.enabled = true;
+effectComposer.addPass(unrealBloomPass);
 
-// unrealBloomPass.strength = 0.3
-// unrealBloomPass.radius = 1
-// unrealBloomPass.threshold = 0.6
+unrealBloomPass.strength = 0.3;
+unrealBloomPass.radius = 1;
+unrealBloomPass.threshold = 0.6;
 
-// gui.add(unrealBloomPass, 'enabled')
-// gui.add(unrealBloomPass, 'strength').min(0).max(2).step(0.001)
-// gui.add(unrealBloomPass, 'radius').min(0).max(2).step(0.001)
-// gui.add(unrealBloomPass, 'threshold').min(0).max(1).step(0.001)
+gui.add(unrealBloomPass, 'enabled');
+gui.add(unrealBloomPass, 'strength').min(0).max(2).step(0.001);
+gui.add(unrealBloomPass, 'radius').min(0).max(2).step(0.001);
+gui.add(unrealBloomPass, 'threshold').min(0).max(1).step(0.001);
 
 // // Tin pass
 // const TintShader = {

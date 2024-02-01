@@ -200,3 +200,27 @@ else
 
 
 ```
+
+### UnrealBloomPass
+- 3 main parameters
+  - strength - how strong is the glow
+  - radius - how far that brightness can spread
+  - threshold - at what luminosity limit things start to glow
+
+```js
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+
+const unrealBloomPass = new UnrealBloomPass();
+unrealBloomPass.enabled = true;
+
+unrealBloomPass.strength = 0.3;
+unrealBloomPass.radius = 1;
+unrealBloomPass.threshold = 0.6;
+effectComposer.addPass(unrealBloomPass);
+
+gui.add(unrealBloomPass, 'enabled');
+gui.add(unrealBloomPass, 'strength').min(0).max(2).step(0.001);
+gui.add(unrealBloomPass, 'radius').min(0).max(2).step(0.001);
+gui.add(unrealBloomPass, 'threshold').min(0).max(1).step(0.001);
+
+```
