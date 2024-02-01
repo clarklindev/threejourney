@@ -293,3 +293,55 @@ gui.add(tintPass.material.uniforms.uTint.value, 'z').min(- 1).max(1).step(0.001)
 
 
 ```
+### Displacement Pass
+- displacing pixels
+- deform the uv to create a displacement effect (wave effect)
+- create a new shader named DisplacementShader, then add a new pass named displacementPass from the ShaderPass and add it to effectComposer
+- create a newUV based on vUv, but with some distortion.
+
+```js
+const DisplacementShader = {
+    uniforms:
+    {
+        tDiffuse: { value: null },
+        uTime: { value: null },
+        uNormalMap: { value: null }
+    },
+    vertexShader: `
+        varying vec2 vUv;
+
+        void main()
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+            vUv = uv;
+        }
+    `,
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform float uTime;
+        uniform sampler2D uNormalMap;
+
+        varying vec2 vUv;
+
+        void main()
+        {
+            vec3 normalColor = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
+            
+            vec2 newUv = vUv + normalColor.xy * 0.1;
+            vec4 color = texture2D(tDiffuse, newUv);
+
+            vec3 lightDirection = normalize(vec3(- 1.0, 1.0, 0.0));
+            float lightness = clamp(dot(normalColor, lightDirection), 0.0, 1.0);
+            color.rgb += lightness * 2.0;
+
+            gl_FragColor = color;
+        }
+    `
+}
+
+const displacementPass = new ShaderPass(DisplacementShader);
+displacementPass.material.uniforms.uTime.value = 0;
+displacementPass.material.uniforms.uNormalMap.value = textureLoader.load('/textures/interfaceNormalMap.png');
+effectComposer.addPass(displacementPass);
+```
