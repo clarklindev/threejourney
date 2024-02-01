@@ -110,8 +110,10 @@ window.addEventListener("resize", () => {
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  // // Update effect composer
-  // effectComposer.setSize(sizes.width, sizes.height)
+  // Update effect composer
+  effectComposer.setSize(sizes.width, sizes.height);
+  effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
 });
 
 /**
@@ -188,7 +190,7 @@ effectComposer.addPass(renderPass);
 
 // // Dot screen pass
 const dotScreenPass = new DotScreenPass();
-dotScreenPass.enabled = true;
+dotScreenPass.enabled = false;
 effectComposer.addPass(dotScreenPass);
 
 // // Glitch pass

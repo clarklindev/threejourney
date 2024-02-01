@@ -92,6 +92,7 @@ effectComposer.addPass(rgbShiftPass);
 - in node_modules/three/examples/jsm/postprocessing/EffectComposer.js we can see how the renderTarget is made and we can copy this code.
 - The width and height are not important because setSize() will update them
 - but default is LinearEncoding and we need to change this...
+- send the renderTarget to effectComposer
 
 ```js
 const renderTarget = new RenderTargetClass(800, 600, {
@@ -100,6 +101,28 @@ const renderTarget = new RenderTargetClass(800, 600, {
   format: THREE.RGBAFormat,
   // encoding: THREE.sRGBEncoding, //default is LinearEncoding //DEPRECATED
   encoding: THREE.SRGBColorSpace, 
+
+});
+
+//Composer
+const effectComposer = new EffectComposer(renderer, renderTarget);
+```
+
+### Resizing screen
+- render target not resizing because of: effectComposer.setSize(sizes.width, sizes.height); not resizing with window
+- move code -> need to handle resize in window.addEventListener('resize', ()=>{});
+
+```js
+
+
+// effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+// effectComposer.setSize(sizes.width, sizes.height);
+
+
+window.addEventListener('resize', ()=>{
+  //update effect composer
+  effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  effectComposer.setSize(sizes.width, sizes.height);
 
 });
 ```
