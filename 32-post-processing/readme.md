@@ -358,7 +358,14 @@ const tick = ()=>{
 - first load the texture
 
 - remove uTime uniform
-- add a uNormalMap uniform
+- add a uNormalMap uniform with null value 
+- this will allow us to send our own texture to vertex shader
+- Load the texture with the TextureLoader and use it directly on the uNormalMap uniform:
+
+displacementPass.material.uniforms.uNormalMap.value = textureLoader.load('/textures/interfaceNormalMap.png');
+
+- update the fragmentShader of the DisplacementShader
+- make values between -1 to 1
 
 ```js
 const DisplacementShader = {
@@ -385,7 +392,7 @@ const DisplacementShader = {
 
       void main()
       {
-        vec3 normalColor = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
+        vec3 normalColor = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;    //make values between -1 to 1
         
         vec2 newUv = vUv + normalColor.xy * 0.1;
         vec4 color = texture2D(tDiffuse, newUv); 
@@ -397,3 +404,9 @@ const DisplacementShader = {
         gl_FragColor = color;
       }`
 }
+
+const displacementPass = new ShaderPass(DisplacementShader);
+displacementPass.material.uniforms.uNormalMap.value = textureLoader.load('/textures/interfaceNormalMap.png');
+effectComposer.addPass(displacementPass);
+
+```
