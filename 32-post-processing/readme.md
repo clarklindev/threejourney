@@ -112,7 +112,8 @@ const effectComposer = new EffectComposer(renderer, renderTarget);
 - render target not resizing because of: effectComposer.setSize(sizes.width, sizes.height); not resizing with window
 - move code -> need to handle resize in window.addEventListener('resize', ()=>{});
 
-```js
+```js 
+//script.js
 
 
 // effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -125,4 +126,77 @@ window.addEventListener('resize', ()=>{
   effectComposer.setSize(sizes.width, sizes.height);
 
 });
+```
+
+### fixing initial anti-aliasing
+- with effectComposer - the anti aliasing also isnt working, 
+- if you only have the renderPass available,  you wont see the problem because
+the render is done in the canvas with anti-alias support
+- WebGLRenderTarget does not support the default antialias
+- NB: https://github.com/mrdoob/three.js/wiki/Migration-Guide - WebGLMultisampleRenderTarget (threejs 138)
+- WebGLMultisampleRenderTarget has been removed. To use multisampling as before, use WebGLRenderTarget 
+  - set the new samples property to a value greater 0.
+
+#### SOLUTION
+1. ignore anti-aliasing
+2. use a particular type of render target (WebGLMultisampleRenderTarget) that handles antialiasing (not working on all modern browsers)
+3. add a new pass for anti-alias (bad for performance)
+4. *PICKED SOLUTION - combination of 2 and 3 (test if browser supports this specific type of render target - if not, use antialias pass)
+
+- using webgl multisample render target (WebGLMultisampleRenderTarget) - supports anti-alias (DEPRECATED)
+- WebGLMultisampleRenderTarget is like WebGLRenderTarget but with support for multisample antialias (MSAA)
+
+- add an antialias pass: 
+    - FXAA - performant - but the result is just ok and can be blurry
+    - SMAA - better than FXAA but less performant **pick**
+    - SSAA - best quality but the worst performance
+    - TAA - performant but limited result
+    - other passes
+- import the SMAAPass, instantiate it and add it to effectComposer
+- combine the two solutions
+
+#### pixelRatio > 1
+  - if the pixel ratio is above 1, we use the WebGLRenderTarget and no antialias pass  //wont need anti-alias as no issues due to higher resolution ratio
+
+#### pixelRatio === 1
+  - if the pixel ratio is 1 and the browser supports WebGL2, we use WebGLMultisampleRenderTarget
+  - if the pixel ratio is 1 but the browser doesnt support WebGL2, we use the WebGLRenderTarget and enable the SMAPass
+
+- to get pixel ratio we use getPixelRatio() on the renderer
+- to know if the browser supports WebGL2 we can use the capabilities property on the renderer (renderer.capabilities - isWebGL2 === true ?)
+
+```js
+
+//use WebGLMutlisampleRenderTarget
+// const renderTarget = new THREE.WebGLMultisampleRenderTarget({}); //DEPRECATED WebGLMultisampleRenderTarget
+const renderTarget = new THREE.WebGLRenderTarget({});
+renderTarget.samples = 4;
+
+//add an antialias pass
+//using SMAA
+import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
+
+if(renderer.getPixelRatio() === 1 && !renderer.capabilities.isWebGL2)
+{
+    const smaaPass = new SMAAPass();
+    effectComposer.addPass(smaaPass);
+
+  console.log('Using SMAA')
+}
+
+
+//render target
+let RenderTargetClass = null
+if(renderer.getPixelRatio() === 1 && renderer.capabilities.isWebGL2)
+{
+    RenderTargetClass = THREE.WebGLMultisampleRenderTarget;   //DEPRECATED -> use THREE.WebGLRenderTarget and .samples
+    console.log('Using WebGLMultisampleRenderTarget');
+}
+else
+{
+    RenderTargetClass = THREE.WebGLRenderTarget
+    console.log('Using WebGLRenderTarget')
+}
+
+
 ```

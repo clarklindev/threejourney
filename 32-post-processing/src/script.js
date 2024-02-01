@@ -9,8 +9,8 @@ import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass.j
 import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js";
+import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
 // import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
-// import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
 
 THREE.ColorManagement.enabled = false;
 
@@ -97,24 +97,7 @@ const sizes = {
   height: window.innerHeight,
 };
 
-window.addEventListener("resize", () => {
-  // Update sizes
-  sizes.width = window.innerWidth;
-  sizes.height = window.innerHeight;
 
-  // Update camera
-  camera.aspect = sizes.width / sizes.height;
-  camera.updateProjectionMatrix();
-
-  // Update renderer
-  renderer.setSize(sizes.width, sizes.height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  // Update effect composer
-  effectComposer.setSize(sizes.width, sizes.height);
-  effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-});
 
 /**
  * Camera
@@ -153,18 +136,18 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 /**
  * Post processing
  */
-// let RenderTargetClass = null
+let RenderTargetClass = null
 
-// if(renderer.getPixelRatio() === 1 && renderer.capabilities.isWebGL2)
-// {
-//     RenderTargetClass = THREE.WebGLMultisampleRenderTarget
-//     console.log('Using WebGLMultisampleRenderTarget')
-// }
-// else
-// {
-//     RenderTargetClass = THREE.WebGLRenderTarget
-//     console.log('Using WebGLRenderTarget')
-// }
+if(renderer.getPixelRatio() === 1 && renderer.capabilities.isWebGL2)
+{
+    RenderTargetClass = THREE.WebGLMultisampleRenderTarget;
+    console.log('Using WebGLMultisampleRenderTarget');
+}
+else
+{
+    RenderTargetClass = THREE.WebGLRenderTarget;
+    console.log('Using WebGLRenderTarget');
+}
 
 const renderTarget = new THREE.WebGLRenderTarget(
   800, 
@@ -178,6 +161,7 @@ const renderTarget = new THREE.WebGLRenderTarget(
     colorSpace: THREE.SRGBColorSpace, 
   }
 );
+renderTarget.samples = 4;
 
 //Composer
 const effectComposer = new EffectComposer(renderer, renderTarget);
@@ -205,13 +189,13 @@ rgbShiftPass.enabled = false;
 effectComposer.addPass(rgbShiftPass);
 
 // // Antialias pass
-// if(renderer.getPixelRatio() === 1 && !renderer.capabilities.isWebGL2)
-// {
-//     const smaaPass = new SMAAPass()
-//     effectComposer.addPass(smaaPass)
+if(renderer.getPixelRatio() === 1 && !renderer.capabilities.isWebGL2)
+{
+    const smaaPass = new SMAAPass();
+    effectComposer.addPass(smaaPass);
 
-//     console.log('Using SMAA')
-// }
+  console.log('Using SMAA')
+}
 
 // // Unreal Bloom pass
 // const unrealBloomPass = new UnrealBloomPass()
@@ -312,6 +296,27 @@ effectComposer.addPass(rgbShiftPass);
 // displacementPass.material.uniforms.uTime.value = 0
 // displacementPass.material.uniforms.uNormalMap.value = textureLoader.load('/textures/interfaceNormalMap.png')
 // effectComposer.addPass(displacementPass)
+
+//window resize
+window.addEventListener("resize", () => {
+  // Update sizes
+  sizes.width = window.innerWidth;
+  sizes.height = window.innerHeight;
+
+  // Update camera
+  camera.aspect = sizes.width / sizes.height;
+  camera.updateProjectionMatrix();
+
+  // Update renderer
+  renderer.setSize(sizes.width, sizes.height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  // Update effect composer
+  effectComposer.setSize(sizes.width, sizes.height);
+  effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+});
+
 
 /**
  * Animate
