@@ -298,6 +298,9 @@ gui.add(tintPass.material.uniforms.uTint.value, 'z').min(- 1).max(1).step(0.001)
 - deform the uv to create a displacement effect (wave effect)
 - create a new shader named DisplacementShader, then add a new pass named displacementPass from the ShaderPass and add it to effectComposer
 - create a newUV based on vUv, but with some distortion.
+- add a uTime uniform and use it in the fragment
+- set its value to 0 after creating the pass
+- update it in the tick() function
 
 ```js
 const DisplacementShader = {
@@ -320,28 +323,43 @@ const DisplacementShader = {
     fragmentShader: `
         uniform sampler2D tDiffuse;
         uniform float uTime;
-        uniform sampler2D uNormalMap;
+        // uniform sampler2D uNormalMap;
 
         varying vec2 vUv;
 
         void main()
         {
-            vec3 normalColor = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
-            
-            vec2 newUv = vUv + normalColor.xy * 0.1;
+
+            vec2 newUv = vec2(vUv.x, vUv.y + sin(vUv.x * 10.0 + uTime) * 0.1);
             vec4 color = texture2D(tDiffuse, newUv);
-
-            vec3 lightDirection = normalize(vec3(- 1.0, 1.0, 0.0));
-            float lightness = clamp(dot(normalColor, lightDirection), 0.0, 1.0);
-            color.rgb += lightness * 2.0;
-
             gl_FragColor = color;
+
+            // vec3 normalColor = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0;
+            
+            // vec2 newUv = vUv + normalColor.xy * 0.1;
+            // vec4 color = texture2D(tDiffuse, newUv); 
+
+            // vec3 lightDirection = normalize(vec3(- 1.0, 1.0, 0.0));
+            // float lightness = clamp(dot(normalColor, lightDirection), 0.0, 1.0);
+            // color.rgb += lightness * 2.0;
+
+            // gl_FragColor = color;
         }
     `
 }
 
 const displacementPass = new ShaderPass(DisplacementShader);
 displacementPass.material.uniforms.uTime.value = 0;
-displacementPass.material.uniforms.uNormalMap.value = textureLoader.load('/textures/interfaceNormalMap.png');
+// displacementPass.material.uniforms.uNormalMap.value = textureLoader.load('/textures/interfaceNormalMap.png');
 effectComposer.addPass(displacementPass);
+
+const tick = ()=>{
+  const elapsedTime = clock.getElapsedTime();
+
+// Update passes
+  displacementPass.material.uniforms.uTime.value = elapsedTime;
+
+  ...
+}
+
 ```
