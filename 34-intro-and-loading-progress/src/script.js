@@ -2,44 +2,60 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { gsap }from  'gsap';
+import { gsap } from "gsap";
 
 /**
  * Loaders
  */
 
-//REPLACED WITH LoadingManager method
+//REPLACED WITH LoadingManager method below
 // const gltfLoader = new GLTFLoader();
 // const cubeTextureLoader = new THREE.CubeTextureLoader();
 
-// const loadingBarElement = document.querySelector('.loading-bar')
+const loadingBarElement = document.querySelector('.loading-bar');
 const loadingManager = new THREE.LoadingManager(
-// Loaded
-    () =>
-    {
-//         // Wait a little
-//         window.setTimeout(() =>
-//         {
-//             // Animate overlay
-            gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
+  // Loaded
 
-//             // Update loadingBarElement
-//             loadingBarElement.classList.add('ended')
-//             loadingBarElement.style.transform = ''
-//         }, 500)
-    },
+      //Update loadingBarElement
 
-// Progress
-    (itemUrl, itemsLoaded, itemsTotal) =>
-    {
-//         // Calculate the progress and update the loadingBarElement
-//         const progressRatio = itemsLoaded / itemsTotal
-//         loadingBarElement.style.transform = `scaleX(${progressRatio})`
-    },
+      
+  () => {
+    // Wait a little
+    
+    //OPTION 1
+    // window.setTimeout(() =>
+    // {
+    // //Animate overlay
+    //   gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
 
-    //error
-    ()=>{}
+    //   //Update loadingBarElement
+    //   loadingBarElement.classList.add('ended');
+    //   loadingBarElement.style.transform = '';
+    // }, 500)
+
+    
+    //OPTION 2 - using gsap
+    gsap.delayedCall(0.5, ()=>{
+      gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
+      loadingBarElement.classList.add('ended');
+      loadingBarElement.style.transform = '';
+    
+    });
+
+  },
+
+  // Progress
+  (itemUrl, itemsLoaded, itemsTotal) => {
+    // Calculate the progress and update the loadingBarElement
+    const progressRatio = itemsLoaded / itemsTotal;
+    loadingBarElement.style.transform = `scaleX(${progressRatio})`;
+  },
+
+  //error
+  () => {}
+
 );
+
 const gltfLoader = new GLTFLoader(loadingManager);
 const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager);
 
@@ -58,15 +74,14 @@ const scene = new THREE.Scene();
 /**
  * Overlay
  */
-const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1);    //fill the scene
+const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1); //fill the scene
 const overlayMaterial = new THREE.ShaderMaterial({
-    // wireframe: true,
-    transparent: true,
-    uniforms:
-    {
-        uAlpha: { value: 1 }
-    },
-    vertexShader: `
+  // wireframe: true,
+  transparent: true,
+  uniforms: {
+    uAlpha: { value: 1 },
+  },
+  vertexShader: `
         void main()
         {
             // gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
@@ -75,7 +90,7 @@ const overlayMaterial = new THREE.ShaderMaterial({
             gl_Position = vec4(position, 1.0);
         }
     `,
-    fragmentShader: `
+  fragmentShader: `
         uniform float uAlpha;
 
         void main()
@@ -83,7 +98,7 @@ const overlayMaterial = new THREE.ShaderMaterial({
             // gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
             gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
         }
-    `
+    `,
 });
 
 const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial);
