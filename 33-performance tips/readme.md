@@ -70,3 +70,43 @@ cube.material.dispose()
 renderer.shadowMap.autoUpdate = false
 renderer.shadowMap.needsUpdate = true //allows render shadow on first render
 ```
+
+### see script.js
+
+#### tip 30 - power preferences
+- set gpu usage - giving hints on what power is required when instantiating the WebGLRenderer via .powerPreference
+
+```js
+const renderer = new THREE.WebGLRenderer({
+  canvas: canvas,
+  powerPreference: 'high-performance'
+});
+
+```
+
+
+### use DEFINE for constants 
+
+```js
+#define uDisplacementStrength 1.5
+```
+
+- or in defines property of the ShaderMaterial
+
+```js
+const shaderMaterial = new THREE.ShaderMaterial({
+
+  defines:{
+    uDisplacementStrength: 1.5
+  }
+})
+```
+
+### 35 - do calculations in the vertex shader
+
+- better to do calculations in vertex shader and send values to fragment shader using "varying"
+- move whats possible out of fragment shader into vertex shader
+
+```js
+
+```

@@ -70,7 +70,7 @@ controls.enableDamping = true;
  */
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
-  powerPreference: "high-performance",
+  powerPreference: "high-performance",    //hint power required - remove if not required
   antialias: true,
 });
 renderer.shadowMap.enabled = true;
@@ -81,52 +81,52 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 /**
  * Test meshes
  */
-const cube = new THREE.Mesh(
-  new THREE.BoxGeometry(2, 2, 2),
-  new THREE.MeshStandardMaterial()
-);
-cube.castShadow = true;
-cube.receiveShadow = true;
-cube.position.set(-5, 0, 0);
-scene.add(cube);
+// const cube = new THREE.Mesh(
+//   new THREE.BoxGeometry(2, 2, 2),
+//   new THREE.MeshStandardMaterial()
+// );
+// cube.castShadow = true;
+// cube.receiveShadow = true;
+// cube.position.set(-5, 0, 0);
+// scene.add(cube);
 
-const torusKnot = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(1, 0.4, 128, 32),
-  new THREE.MeshStandardMaterial()
-);
-torusKnot.castShadow = true;
-torusKnot.receiveShadow = true;
-scene.add(torusKnot);
+// const torusKnot = new THREE.Mesh(
+//   new THREE.TorusKnotGeometry(1, 0.4, 128, 32),
+//   new THREE.MeshStandardMaterial()
+// );
+// torusKnot.castShadow = true;
+// torusKnot.receiveShadow = true;
+// scene.add(torusKnot);
 
-const sphere = new THREE.Mesh(
-  new THREE.SphereGeometry(1, 32, 32),
-  new THREE.MeshStandardMaterial()
-);
-sphere.position.set(5, 0, 0);
-sphere.castShadow = true;
-sphere.receiveShadow = true;
-scene.add(sphere);
+// const sphere = new THREE.Mesh(
+//   new THREE.SphereGeometry(1, 32, 32),
+//   new THREE.MeshStandardMaterial()
+// );
+// sphere.position.set(5, 0, 0);
+// sphere.castShadow = true;
+// sphere.receiveShadow = true;
+// scene.add(sphere);
 
-const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(10, 10),
-  new THREE.MeshStandardMaterial()
-);
-floor.position.set(0, -2, 0);
-floor.rotation.x = -Math.PI * 0.5;
-floor.castShadow = true;
-floor.receiveShadow = true;
-scene.add(floor);
+// const floor = new THREE.Mesh(
+//   new THREE.PlaneGeometry(10, 10),
+//   new THREE.MeshStandardMaterial()
+// );
+// floor.position.set(0, -2, 0);
+// floor.rotation.x = -Math.PI * 0.5;
+// floor.castShadow = true;
+// floor.receiveShadow = true;
+// scene.add(floor);
 
 // /**
 //  * Lights
 //  */
-const directionalLight = new THREE.DirectionalLight("#ffffff", 1);
-directionalLight.castShadow = true;
-directionalLight.shadow.mapSize.set(1024, 1024);
-directionalLight.shadow.camera.far = 15;
-directionalLight.shadow.normalBias = 0.05;
-directionalLight.position.set(0.25, 3, 2.25);
-scene.add(directionalLight);
+// const directionalLight = new THREE.DirectionalLight("#ffffff", 1);
+// directionalLight.castShadow = true;
+// directionalLight.shadow.mapSize.set(1024, 1024);
+// directionalLight.shadow.camera.far = 15;
+// directionalLight.shadow.normalBias = 0.05;
+// directionalLight.position.set(0.25, 3, 2.25);
+// scene.add(directionalLight);
 
 /**
  * Animate
@@ -139,7 +139,7 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
   // Update test mesh
-  torusKnot.rotation.y = elapsedTime * 0.1;
+  // torusKnot.rotation.y = elapsedTime * 0.1;
 
   // Update controls
   controls.update();
@@ -163,38 +163,38 @@ tick();
 console.log(renderer.info);
 
 // // Tip 6
-scene.remove(cube);
-cube.geometry.dispose();
-cube.material.dispose();
+// scene.remove(cube);
+// cube.geometry.dispose();
+// cube.material.dispose();
 
 // // Tip 10
-directionalLight.shadow.camera.top = 3;
-directionalLight.shadow.camera.right = 6;
-directionalLight.shadow.camera.left = -6;
-directionalLight.shadow.camera.bottom = -3;
-directionalLight.shadow.camera.far = 10;
-directionalLight.shadow.mapSize.set(1024, 1024); //optimize map size
+// directionalLight.shadow.camera.top = 3;
+// directionalLight.shadow.camera.right = 6;
+// directionalLight.shadow.camera.left = -6;
+// directionalLight.shadow.camera.bottom = -3;
+// directionalLight.shadow.camera.far = 10;
+// directionalLight.shadow.mapSize.set(1024, 1024); //optimize map size
 
-const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-scene.add(cameraHelper);
+// const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// scene.add(cameraHelper);
 
 // // Tip 11 - use castShadow and receiveShadow wisely
-cube.castShadow = true;
-cube.receiveShadow = false;
+// cube.castShadow = true;
+// cube.receiveShadow = false;
 
-torusKnot.castShadow = true;
-torusKnot.receiveShadow = false;
+// torusKnot.castShadow = true;
+// torusKnot.receiveShadow = false;
 
-sphere.castShadow = true;
-sphere.receiveShadow = false;
+// sphere.castShadow = true;
+// sphere.receiveShadow = false;
 
-floor.castShadow = false;
-floor.receiveShadow = true;
+// floor.castShadow = false;
+// floor.receiveShadow = true;
 
 // // Tip 12 - deactivate shadow auto-update - eg if object is still (not moving)
 //shadow maps get updated before each render - we can deactivate this auto-update and alert Three.js that shadow maps needs update only when necessary
-renderer.shadowMap.autoUpdate = false;
-renderer.shadowMap.needsUpdate = true; //ensure first render
+// renderer.shadowMap.autoUpdate = false;
+// renderer.shadowMap.needsUpdate = true; //ensure first render
 
 //Tip 13
 //Textures take a lot of space in the GPU memory especially with the mipmaps.
@@ -281,81 +281,125 @@ renderer.shadowMap.needsUpdate = true; //ensure first render
 // matrix has to be Matrix4, can apply any transformation by using the various available methods.
 // if you intend to change these matrices in the tick function, add this to the instancedMesh: mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); 
 
-const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5)
-const material = new THREE.MeshNormalMaterial();
+// const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5)
+// const material = new THREE.MeshNormalMaterial();
 
-const mesh = new THREE.InstancedMesh(geometry, material, 50); //create instanced mesh with how many instances to add
+// const mesh = new THREE.InstancedMesh(geometry, material, 50); //create instanced mesh with how many instances to add
 
-mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); //changing matrix? include this...
-scene.add(mesh);
+// mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); //changing matrix? include this...
+// scene.add(mesh);
 
-for (let i = 0; i < 50; i++) {
-  const position = new THREE.Vector3(
-    (Math.random() - 0.5) * 10,
-    (Math.random() - 0.5) * 10,
-    (Math.random() - 0.5) * 10
-  );
+// for (let i = 0; i < 50; i++) {
+//   const position = new THREE.Vector3(
+//     (Math.random() - 0.5) * 10,
+//     (Math.random() - 0.5) * 10,
+//     (Math.random() - 0.5) * 10
+//   );
 
-  const quaternion = new THREE.Quaternion();
-  quaternion.setFromEuler(
-    new THREE.Euler(
-      (Math.random() - 0.5) * Math.PI * 2,
-      (Math.random() - 0.5) * Math.PI * 2,
-      0
-    )
-  );
+//   const quaternion = new THREE.Quaternion();
+//   quaternion.setFromEuler(
+//     new THREE.Euler(
+//       (Math.random() - 0.5) * Math.PI * 2,
+//       (Math.random() - 0.5) * Math.PI * 2,
+//       0
+//     )
+//   );
 
-  const matrix = new THREE.Matrix4();               //create transformation Matrix for each instance
-  matrix.makeRotationFromQuaternion(quaternion);
-  matrix.setPosition(position);
-  mesh.setMatrixAt(i, matrix);
-}
+//   const matrix = new THREE.Matrix4();               //create transformation Matrix for each instance
+//   matrix.makeRotationFromQuaternion(quaternion);
+//   matrix.setPosition(position);
+//   mesh.setMatrixAt(i, matrix);
+// } 
+//tip 23 - MODELS - use low poly models
+//few polygons, better
+//details - use normal maps
+
+//tip24 - DRACO COMPRESSION
+//loading Draco libraries - files are compressed
+
+//tip25 - Gzip
+//use gzip, compression on server side - content-encoding: gzip
+
+//Tip26 - field of view
+//objects not in field of view wont be rendered - fustrum culling
+//so just reduce the cameras field of view
+
+//tip27 - near and far
+//can also reduce near and far proprties of the camera
 
 // // Tip 29
-// renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+// renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) //correct method to set pixel ratio with max at 2
 
-// Tip 31, 32, 34 and 35
-// const shaderGeometry = new THREE.PlaneGeometry(10, 10, 256, 256);
+// Tip 31 Anti-alias
+//the default anti-alias is performant, but less performant than no anti-alias , only add if you have visible aliasing and no performance issues
 
-// const shaderMaterial = new THREE.ShaderMaterial({
-//   precision: "lowp",
-//   uniforms: {
-//     uDisplacementTexture: { value: displacementTexture },
-//   },
-//   defines: {
-//     DISPLACMENT_STRENGH: 1.5,
-//   },
-//   vertexShader: `
-//         uniform sampler2D uDisplacementTexture;
+//32 post processing - limit passes
+//if you have 1920x1080 resolution with (4 passes) and a pixel ratio of 2, that makes:
+//1920 x 2 * 1080 * 2 * 4 = 33 177 600 pixels to render
+//try regroup your passes into one.
 
-//         varying vec3 vColor;
+//33 - shaders - specify the shader precision
+// you can force the precision of the shaders in the materials by changing their precision property
+//  precision: "lowp",
+//keep code simple 
+  //use clamp() , max() without if()
+  //use "mix" to optimize code
 
-//         void main()
-//         {
-//             // Position
-//             vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-//             float elevation = texture2D(uDisplacementTexture, uv).r;
-//             modelPosition.y += max(elevation, 0.5) * DISPLACMENT_STRENGH;
-//             gl_Position = projectionMatrix * viewMatrix * modelPosition;
 
-//             // Color
-//             float colorElevation = max(elevation, 0.25);
-//             vec3 color = mix(vec3(1.0, 0.1, 0.1), vec3(0.1, 0.0, 0.5), colorElevation);
+const shaderGeometry = new THREE.PlaneGeometry(10, 10, 256, 256);
 
-//             // Varying
-//             vColor = color;
-//         }
-//     `,
-//   fragmentShader: `
-//         varying vec3 vColor;
+const shaderMaterial = new THREE.ShaderMaterial({
+  precision: "lowp",
+  uniforms: {
+    uDisplacementTexture: { value: displacementTexture },
+  },
+  defines: {
+    DISPLACMENT_STRENGH: 1.5,
+  },
+  vertexShader: `
+        uniform sampler2D uDisplacementTexture;
+        uniform float uDisplacementStrength;
 
-//         void main()
-//         {
-//             gl_FragColor = vec4(vColor, 1.0);
-//         }
-//     `,
-// });
+        varying vec3 vColor;    //sending vColor
 
-// const shaderMesh = new THREE.Mesh(shaderGeometry, shaderMaterial);
-// shaderMesh.rotation.x = -Math.PI * 0.5;
-// scene.add(shaderMesh);
+        void main()
+        {
+            // Position
+            vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+            float elevation = texture2D(uDisplacementTexture, uv).r;
+            modelPosition.y += max(elevation, 0.5) * DISPLACMENT_STRENGH;
+            gl_Position = projectionMatrix * viewMatrix * modelPosition;
+
+            //color 
+            float colorElevation = max(elevation, 0.25);
+            // vec3 depthColor = vec3(1.0, 0.1, 0.1);
+            // vec3 surfaceColor = vec3(0.1, 0.0, 0.5);
+            //replace with mix
+            // vec3 finalColor = vec3(0.0);
+            // finalColor.r += depthColor.r + (surfaceColor.r - depthColor.r) * elevation;
+            // finalColor.g += depthColor.g + (surfaceColor.g - depthColor.g) * elevation;
+            // finalColor.b += depthColor.b + (surfaceColor.b - depthColor.b) * elevation;
+            vec3 color = mix(vec3(1.0, 0.1, 0.1), vec3(0.1, 0.0, 0.5), elevation); //pick between 2 color depending on elevation
+
+            //varying
+            vColor = color;
+
+        }
+    `,
+  fragmentShader: `
+        varying vec3 vColor;    //receiving vColor
+
+        void main()
+        {
+          gl_FragColor = vec4(vColor, 1.0);
+        }
+    `,
+});
+
+const shaderMesh = new THREE.Mesh(shaderGeometry, shaderMaterial);
+shaderMesh.rotation.x = -Math.PI * 0.5;
+scene.add(shaderMesh);
+
+// instead of perlin noise function, can maybe get better performance with textures
+
+// uniforms - beneficial because they can be tweaked with DAT.ui
