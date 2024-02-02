@@ -2,14 +2,15 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import Stats from "stats.js";
+// import {BufferGeometryUtils} from "three/examples/jsm/utils/BufferGeometryUtils.js"; //CANT IMPORT LIKE THIS AS THERE IS NO EXPORTED CLASS
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
-
 /**
  * Stats
  */
 const stats = new Stats();
 stats.showPanel(0);
 document.body.appendChild(stats.dom);
+
 
 /**
  * Base
@@ -229,11 +230,12 @@ renderer.shadowMap.needsUpdate = true; //ensure first render
 // // Tip 19 - merge geometries - draw same amount of triangles in one draw call (reduce the draw calls)
 //merge non-moving geometries with BufferGeometryUtils
 //first import BufferGeometryUtils: import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils.js";
-
+//use one array to hold 50 geometries - and call mergeGeometries to create one objec
 const geometries = [];
-const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 
 for (let i = 0; i < 50; i++) {
+  const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+
   geometry.rotateX((Math.random() - 0.5) * Math.PI * 2);
   geometry.rotateY((Math.random() - 0.5) * Math.PI * 2);
 
