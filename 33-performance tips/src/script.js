@@ -2,7 +2,7 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import Stats from "stats.js";
-import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 /**
  * Stats
@@ -212,43 +212,44 @@ renderer.shadowMap.needsUpdate = true; //ensure first render
 //if you need to animate the vertices do it with a vertex shader
 
 // // Tip 18 mutualize geometries (shared geometries - outside function)
-const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+// const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 
-const material = new THREE.MeshNormalMaterial();
-for (let i = 0; i < 50; i++) {
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.position.x = (Math.random() - 0.5) * 10;
-  mesh.position.y = (Math.random() - 0.5) * 10;
-  mesh.position.z = (Math.random() - 0.5) * 10;
-  mesh.rotation.x = (Math.random() - 0.5) * Math.PI * 2;
-  mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 2;
+// const material = new THREE.MeshNormalMaterial();
+// for (let i = 0; i < 50; i++) {
+//   const mesh = new THREE.Mesh(geometry, material);
+//   mesh.position.x = (Math.random() - 0.5) * 10;
+//   mesh.position.y = (Math.random() - 0.5) * 10;
+//   mesh.position.z = (Math.random() - 0.5) * 10;
+//   mesh.rotation.x = (Math.random() - 0.5) * Math.PI * 2;
+//   mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 2;
 
-  scene.add(mesh);
-}
-
-// // Tip 19 - merge geometries
-// const geometries = []
-
-// for(let i = 0; i < 50; i++)
-// {
-//     const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5)
-
-//     geometry.rotateX((Math.random() - 0.5) * Math.PI * 2)
-//     geometry.rotateY((Math.random() - 0.5) * Math.PI * 2)
-
-//     geometry.translate(
-//         (Math.random() - 0.5) * 10,
-//         (Math.random() - 0.5) * 10,
-//         (Math.random() - 0.5) * 10
-//     )
-
-//     geometries.push(geometry)
+//   scene.add(mesh);
 // }
 
-// const mergedGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
-// const material = new THREE.MeshNormalMaterial()
-// const mesh = new THREE.Mesh(mergedGeometry, material)
-// scene.add(mesh)
+// // Tip 19 - merge geometries - draw same amount of triangles in one draw call (reduce the draw calls)
+//merge non-moving geometries with BufferGeometryUtils
+//first import BufferGeometryUtils: import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+
+const geometries = [];
+const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+
+for (let i = 0; i < 50; i++) {
+  geometry.rotateX((Math.random() - 0.5) * Math.PI * 2);
+  geometry.rotateY((Math.random() - 0.5) * Math.PI * 2);
+
+  geometry.translate(
+    (Math.random() - 0.5) * 10,
+    (Math.random() - 0.5) * 10,
+    (Math.random() - 0.5) * 10
+  );
+
+  geometries.push(geometry);
+}
+
+const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries); //merge non-moving geometries: DEPRECATED mergeBufferGeometries use mergeGeometries
+const material = new THREE.MeshNormalMaterial();
+const mesh = new THREE.Mesh(mergedGeometry, material);
+scene.add(mesh);
 
 // // Tip 20
 // const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
