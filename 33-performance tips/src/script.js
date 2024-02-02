@@ -255,56 +255,61 @@ renderer.shadowMap.needsUpdate = true; //ensure first render
 // // Tip 20 - mutualize materials - use shared materials
 //if you are using the same type of material for multiple meshses , create only one and use it multiple times
 
-const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-const material = new THREE.MeshNormalMaterial();
+// const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+// const material = new THREE.MeshNormalMaterial();
 
-for (let i = 0; i < 50; i++) {
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.position.x = (Math.random() - 0.5) * 10;
-  mesh.position.y = (Math.random() - 0.5) * 10;
-  mesh.position.z = (Math.random() - 0.5) * 10;
-  mesh.rotation.x = (Math.random() - 0.5) * Math.PI * 2;
-  mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 2;
+// for (let i = 0; i < 50; i++) {
+//   const mesh = new THREE.Mesh(geometry, material);
+//   mesh.position.x = (Math.random() - 0.5) * 10;
+//   mesh.position.y = (Math.random() - 0.5) * 10;
+//   mesh.position.z = (Math.random() - 0.5) * 10;
+//   mesh.rotation.x = (Math.random() - 0.5) * Math.PI * 2;
+//   mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 2;
 
-  scene.add(mesh);
-}
+//   scene.add(mesh);
+// }
 
 //TIP 21
 //use cheap materials - MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial
 //heavier materials - MeshStandardMaterial, MeshPhysicalMaterial
 //try use cheapest materials
 
-// Tip 22 - use InstancedMesh - after merging, cannot move individual cube 
-// create one instance mesh, but create a transformation matrix for each "instance" of that mesh.
+// Tip 22 - use InstancedMesh - after merging, cannot move individual cube so to fix:
+
+// - create one InstancedMesh
+// - but create a transformation matrix for each "instance" of that mesh.
 // matrix has to be Matrix4, can apply any transformation by using the various available methods.
+// if you intend to change these matrices in the tick function, add this to the instancedMesh: mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); 
 
-// const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5)
-// const material = new THREE.MeshNormalMaterial()
+const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5)
+const material = new THREE.MeshNormalMaterial();
 
-// const mesh = new THREE.InstancedMesh(geometry, material, 50)
-// mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
-// scene.add(mesh)
+const mesh = new THREE.InstancedMesh(geometry, material, 50); //create instanced mesh with how many instances to add
 
-// for(let i = 0; i < 50; i++)
-// {
-//     const position = new THREE.Vector3(
-//         (Math.random() - 0.5) * 10,
-//         (Math.random() - 0.5) * 10,
-//         (Math.random() - 0.5) * 10
-//     )
+mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); //changing matrix? include this...
+scene.add(mesh);
 
-//     const quaternion = new THREE.Quaternion()
-//     quaternion.setFromEuler(new THREE.Euler(
-//         (Math.random() - 0.5) * Math.PI * 2,
-//         (Math.random() - 0.5) * Math.PI * 2,
-//         0
-//     ))
+for (let i = 0; i < 50; i++) {
+  const position = new THREE.Vector3(
+    (Math.random() - 0.5) * 10,
+    (Math.random() - 0.5) * 10,
+    (Math.random() - 0.5) * 10
+  );
 
-//     const matrix = new THREE.Matrix4()
-//     matrix.makeRotationFromQuaternion(quaternion)
-//     matrix.setPosition(position)
-//     mesh.setMatrixAt(i, matrix)
-// }
+  const quaternion = new THREE.Quaternion();
+  quaternion.setFromEuler(
+    new THREE.Euler(
+      (Math.random() - 0.5) * Math.PI * 2,
+      (Math.random() - 0.5) * Math.PI * 2,
+      0
+    )
+  );
+
+  const matrix = new THREE.Matrix4();               //create transformation Matrix for each instance
+  matrix.makeRotationFromQuaternion(quaternion);
+  matrix.setPosition(position);
+  mesh.setMatrixAt(i, matrix);
+}
 
 // // Tip 29
 // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
