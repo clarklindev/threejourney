@@ -88,7 +88,7 @@ const cube = new THREE.Mesh(
 cube.castShadow = true;
 cube.receiveShadow = true;
 cube.position.set(-5, 0, 0);
-// scene.add(cube)
+scene.add(cube);
 
 const torusKnot = new THREE.Mesh(
   new THREE.TorusKnotGeometry(1, 0.4, 128, 32),
@@ -96,7 +96,7 @@ const torusKnot = new THREE.Mesh(
 );
 torusKnot.castShadow = true;
 torusKnot.receiveShadow = true;
-// scene.add(torusKnot)
+scene.add(torusKnot);
 
 const sphere = new THREE.Mesh(
   new THREE.SphereGeometry(1, 32, 32),
@@ -105,7 +105,7 @@ const sphere = new THREE.Mesh(
 sphere.position.set(5, 0, 0);
 sphere.castShadow = true;
 sphere.receiveShadow = true;
-// scene.add(sphere)
+scene.add(sphere);
 
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(10, 10),
@@ -115,18 +115,18 @@ floor.position.set(0, -2, 0);
 floor.rotation.x = -Math.PI * 0.5;
 floor.castShadow = true;
 floor.receiveShadow = true;
-// scene.add(floor)
+scene.add(floor);
 
 // /**
 //  * Lights
 //  */
-// const directionalLight = new THREE.DirectionalLight('#ffffff', 1)
-// directionalLight.castShadow = true
-// directionalLight.shadow.mapSize.set(1024, 1024)
-// directionalLight.shadow.camera.far = 15
-// directionalLight.shadow.normalBias = 0.05
-// directionalLight.position.set(0.25, 3, 2.25)
-// scene.add(directionalLight)
+const directionalLight = new THREE.DirectionalLight("#ffffff", 1);
+directionalLight.castShadow = true;
+directionalLight.shadow.mapSize.set(1024, 1024);
+directionalLight.shadow.camera.far = 15;
+directionalLight.shadow.normalBias = 0.05;
+directionalLight.position.set(0.25, 3, 2.25);
+scene.add(directionalLight);
 
 /**
  * Animate
@@ -160,59 +160,73 @@ tick();
  */
 
 // // Tip 4
-// console.log(renderer.info)
+console.log(renderer.info);
 
 // // Tip 6
-// scene.remove(cube)
-// cube.geometry.dispose()
-// cube.material.dispose()
+scene.remove(cube);
+cube.geometry.dispose();
+cube.material.dispose();
 
 // // Tip 10
-// directionalLight.shadow.camera.top = 3
-// directionalLight.shadow.camera.right = 6
-// directionalLight.shadow.camera.left = - 6
-// directionalLight.shadow.camera.bottom = - 3
-// directionalLight.shadow.camera.far = 10
-// directionalLight.shadow.mapSize.set(1024, 1024)
+directionalLight.shadow.camera.top = 3;
+directionalLight.shadow.camera.right = 6;
+directionalLight.shadow.camera.left = -6;
+directionalLight.shadow.camera.bottom = -3;
+directionalLight.shadow.camera.far = 10;
+directionalLight.shadow.mapSize.set(1024, 1024); //optimize map size
 
-// const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera)
-// scene.add(cameraHelper)
+const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+scene.add(cameraHelper);
 
-// // Tip 11
-// cube.castShadow = true
-// cube.receiveShadow = false
+// // Tip 11 - use castShadow and receiveShadow wisely
+cube.castShadow = true;
+cube.receiveShadow = false;
 
-// torusKnot.castShadow = true
-// torusKnot.receiveShadow = false
+torusKnot.castShadow = true;
+torusKnot.receiveShadow = false;
 
-// sphere.castShadow = true
-// sphere.receiveShadow = false
+sphere.castShadow = true;
+sphere.receiveShadow = false;
 
-// floor.castShadow = false
-// floor.receiveShadow = true
+floor.castShadow = false;
+floor.receiveShadow = true;
 
-// // Tip 12
-// renderer.shadowMap.autoUpdate = false
-// renderer.shadowMap.needsUpdate = true
+// // Tip 12 - deactivate shadow auto-update - eg if object is still (not moving)
+//shadow maps get updated before each render - we can deactivate this auto-update and alert Three.js that shadow maps needs update only when necessary
+renderer.shadowMap.autoUpdate = false;
+renderer.shadowMap.needsUpdate = true; //ensure first render
 
-// // Tip 18
-// const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5)
+//Tip 13
+//Textures take a lot of space in the GPU memory especially with the mipmaps.
+//The texture file weight has nothing to do with that, and only the resolution matters
+//try reduce the resolution to the minimum while keeping a decent result.
+//keep a power of 2 resolution - not neccesary to be square
+//use the right file format jpg vs png
+//TinyPNG optimize images
 
-// for(let i = 0; i < 50; i++)
-// {
-//     const material = new THREE.MeshNormalMaterial()
+//16 use buffer geometries
+//DEPRECATED - only normal geometries since threejs update
 
-//     const mesh = new THREE.Mesh(geometry, material)
-//     mesh.position.x = (Math.random() - 0.5) * 10
-//     mesh.position.y = (Math.random() - 0.5) * 10
-//     mesh.position.z = (Math.random() - 0.5) * 10
-//     mesh.rotation.x = (Math.random() - 0.5) * Math.PI * 2
-//     mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 2
+//17 do not update vertices
+//updating vertices is bad for performance
+//if you need to animate the vertices do it with a vertex shader
 
-//     scene.add(mesh)
-// }
+// // Tip 18 mutualize geometries (shared geometries - outside function)
+const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 
-// // Tip 19
+const material = new THREE.MeshNormalMaterial();
+for (let i = 0; i < 50; i++) {
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.x = (Math.random() - 0.5) * 10;
+  mesh.position.y = (Math.random() - 0.5) * 10;
+  mesh.position.z = (Math.random() - 0.5) * 10;
+  mesh.rotation.x = (Math.random() - 0.5) * Math.PI * 2;
+  mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 2;
+
+  scene.add(mesh);
+}
+
+// // Tip 19 - merge geometries
 // const geometries = []
 
 // for(let i = 0; i < 50; i++)
@@ -237,11 +251,12 @@ tick();
 // scene.add(mesh)
 
 // // Tip 20
-// const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5)
-// const material = new THREE.MeshNormalMaterial()
+// const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 
 // for(let i = 0; i < 50; i++)
 // {
+//   const material = new THREE.MeshNormalMaterial();
+
 //     const mesh = new THREE.Mesh(geometry, material)
 //     mesh.position.x = (Math.random() - 0.5) * 10
 //     mesh.position.y = (Math.random() - 0.5) * 10
@@ -285,47 +300,47 @@ tick();
 // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 // Tip 31, 32, 34 and 35
-const shaderGeometry = new THREE.PlaneGeometry(10, 10, 256, 256);
+// const shaderGeometry = new THREE.PlaneGeometry(10, 10, 256, 256);
 
-const shaderMaterial = new THREE.ShaderMaterial({
-  precision: "lowp",
-  uniforms: {
-    uDisplacementTexture: { value: displacementTexture },
-  },
-  defines: {
-    DISPLACMENT_STRENGH: 1.5,
-  },
-  vertexShader: `
-        uniform sampler2D uDisplacementTexture;
+// const shaderMaterial = new THREE.ShaderMaterial({
+//   precision: "lowp",
+//   uniforms: {
+//     uDisplacementTexture: { value: displacementTexture },
+//   },
+//   defines: {
+//     DISPLACMENT_STRENGH: 1.5,
+//   },
+//   vertexShader: `
+//         uniform sampler2D uDisplacementTexture;
 
-        varying vec3 vColor;
+//         varying vec3 vColor;
 
-        void main()
-        {
-            // Position
-            vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-            float elevation = texture2D(uDisplacementTexture, uv).r;
-            modelPosition.y += max(elevation, 0.5) * DISPLACMENT_STRENGH;
-            gl_Position = projectionMatrix * viewMatrix * modelPosition;
+//         void main()
+//         {
+//             // Position
+//             vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+//             float elevation = texture2D(uDisplacementTexture, uv).r;
+//             modelPosition.y += max(elevation, 0.5) * DISPLACMENT_STRENGH;
+//             gl_Position = projectionMatrix * viewMatrix * modelPosition;
 
-            // Color
-            float colorElevation = max(elevation, 0.25);
-            vec3 color = mix(vec3(1.0, 0.1, 0.1), vec3(0.1, 0.0, 0.5), colorElevation);
+//             // Color
+//             float colorElevation = max(elevation, 0.25);
+//             vec3 color = mix(vec3(1.0, 0.1, 0.1), vec3(0.1, 0.0, 0.5), colorElevation);
 
-            // Varying
-            vColor = color;
-        }
-    `,
-  fragmentShader: `
-        varying vec3 vColor;
+//             // Varying
+//             vColor = color;
+//         }
+//     `,
+//   fragmentShader: `
+//         varying vec3 vColor;
 
-        void main()
-        {
-            gl_FragColor = vec4(vColor, 1.0);
-        }
-    `,
-});
+//         void main()
+//         {
+//             gl_FragColor = vec4(vColor, 1.0);
+//         }
+//     `,
+// });
 
-const shaderMesh = new THREE.Mesh(shaderGeometry, shaderMaterial);
-shaderMesh.rotation.x = -Math.PI * 0.5;
-scene.add(shaderMesh);
+// const shaderMesh = new THREE.Mesh(shaderGeometry, shaderMaterial);
+// shaderMesh.rotation.x = -Math.PI * 0.5;
+// scene.add(shaderMesh);
