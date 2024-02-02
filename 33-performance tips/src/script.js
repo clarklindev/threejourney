@@ -11,7 +11,6 @@ const stats = new Stats();
 stats.showPanel(0);
 document.body.appendChild(stats.dom);
 
-
 /**
  * Base
  */
@@ -231,46 +230,54 @@ renderer.shadowMap.needsUpdate = true; //ensure first render
 //merge non-moving geometries with BufferGeometryUtils
 //first import BufferGeometryUtils: import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 //use one array to hold 50 geometries - and call mergeGeometries to create one objec
-const geometries = [];
+// const geometries = [];
 
-for (let i = 0; i < 50; i++) {
-  const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+// for (let i = 0; i < 50; i++) {
+//   const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 
-  geometry.rotateX((Math.random() - 0.5) * Math.PI * 2);
-  geometry.rotateY((Math.random() - 0.5) * Math.PI * 2);
+//   geometry.rotateX((Math.random() - 0.5) * Math.PI * 2);
+//   geometry.rotateY((Math.random() - 0.5) * Math.PI * 2);
 
-  geometry.translate(
-    (Math.random() - 0.5) * 10,
-    (Math.random() - 0.5) * 10,
-    (Math.random() - 0.5) * 10
-  );
+//   geometry.translate(
+//     (Math.random() - 0.5) * 10,
+//     (Math.random() - 0.5) * 10,
+//     (Math.random() - 0.5) * 10
+//   );
 
-  geometries.push(geometry);
-}
-
-const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries); //merge non-moving geometries: DEPRECATED mergeBufferGeometries use mergeGeometries
-const material = new THREE.MeshNormalMaterial();
-const mesh = new THREE.Mesh(mergedGeometry, material);
-scene.add(mesh);
-
-// // Tip 20
-// const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-
-// for(let i = 0; i < 50; i++)
-// {
-//   const material = new THREE.MeshNormalMaterial();
-
-//     const mesh = new THREE.Mesh(geometry, material)
-//     mesh.position.x = (Math.random() - 0.5) * 10
-//     mesh.position.y = (Math.random() - 0.5) * 10
-//     mesh.position.z = (Math.random() - 0.5) * 10
-//     mesh.rotation.x = (Math.random() - 0.5) * Math.PI * 2
-//     mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 2
-
-//     scene.add(mesh)
+//   geometries.push(geometry);
 // }
 
-// // Tip 22
+// const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries); //merge non-moving geometries: DEPRECATED mergeBufferGeometries use mergeGeometries
+// const material = new THREE.MeshNormalMaterial();
+// const mesh = new THREE.Mesh(mergedGeometry, material);
+// scene.add(mesh);
+
+// // Tip 20 - mutualize materials - use shared materials
+//if you are using the same type of material for multiple meshses , create only one and use it multiple times
+
+const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+const material = new THREE.MeshNormalMaterial();
+
+for (let i = 0; i < 50; i++) {
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.x = (Math.random() - 0.5) * 10;
+  mesh.position.y = (Math.random() - 0.5) * 10;
+  mesh.position.z = (Math.random() - 0.5) * 10;
+  mesh.rotation.x = (Math.random() - 0.5) * Math.PI * 2;
+  mesh.rotation.y = (Math.random() - 0.5) * Math.PI * 2;
+
+  scene.add(mesh);
+}
+
+//TIP 21
+//use cheap materials - MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial
+//heavier materials - MeshStandardMaterial, MeshPhysicalMaterial
+//try use cheapest materials
+
+// Tip 22 - use InstancedMesh - after merging, cannot move individual cube 
+// create one instance mesh, but create a transformation matrix for each "instance" of that mesh.
+// matrix has to be Matrix4, can apply any transformation by using the various available methods.
+
 // const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5)
 // const material = new THREE.MeshNormalMaterial()
 
