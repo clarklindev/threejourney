@@ -16,7 +16,7 @@
 - change cursor to help icon
 - we want the point to be hidden when its not supposed to visible, 
 - hide it and only show it if there is a "visible" class on it.
-- add the visible class in order to see the label
+- add the visible class in order to see the label (we will remove later)
 
 ```html
 <canvas class="webgl"></canvas>
@@ -84,6 +84,71 @@
   pointer-events: none; 
   /* border: 1px solid #ffffff77;
   */
+}
+
+```
+
+### JS - storing the points
+- use array of objects - each object corresponding to one point
+- each point: 
+    - 3d position
+    - reference to html element
+- create the points array with one point inside
+
+```js
+const points = [
+  {
+    position: new THREE.Vector3(1.55, 0.3, -0.6),
+    element: document.querySelector(".point-0"),
+  }
+]
+
+```
+
+### Updating the point position
+- we are going to update the points elements on each frame in the tick function
+- after updating the controls, loop through each element in the points array.
+- we need to get the 2D screen position (x,y) of the 3D scene position (x,y,z) of the point.
+- to do this, we are going to use the position of the point...
+- clone the points position because we are going to convert it to screen coordinates and we dont want to mess with the initial position: const screenPosition = point.position.clone();
+
+- Use project() method of Vector3 with the camera as parameter.
+- project() -> projects this vector from world space into the camera's normalized device coordinate (NDC) space
+  ie. 0 is center -1 is left of screen 1 is right of screen
+- BUT we need pixel coordinates...
+
+
+#### update html point element 
+- Multiply by half the size of the render
+- horizontal position: 
+  const translateX = screenPosition.x * sizes.width * 0.5;
+- update the point element with the transform CSS property and translateX
+- do the same for vertical axis with translateY (*but we need to negate (invert) value )
+- shorthand syntax: 
+  <!-- point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`; -->
+  point.element.style.transform = `translate( ${translateX}px, ${translateY}px)`; //shorthand syntax
+
+```js
+const tick = ()=>{
+  controls.update() //update the camera then...
+
+  // Go through each point
+  for (const point of points) {
+    const screenPosition = point.position.clone();
+    screenPosition.project(camera);
+
+    //horizontal position
+    const translateX = screenPosition.x * sizes.width * 0.5;
+    const translateY = -screenPosition.y * sizes.height * 0.5;
+
+    point.element.style.transform = `
+    translateX(${translateX}px) 
+    translateY(${translateY}px)`;
+
+    console.log(screenPosition.x);
+    console.log(screenPosition.y);
+  }
+
 }
 
 ```

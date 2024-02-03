@@ -136,11 +136,11 @@ gltfLoader.load("/models/DamagedHelmet/glTF/DamagedHelmet.gltf", (gltf) => {
  * Points of interest
  */
 // const raycaster = new THREE.Raycaster();
-// const points = [
-//   {
-//     position: new THREE.Vector3(1.55, 0.3, -0.6),
-//     element: document.querySelector(".point-0"),
-//   },
+const points = [
+  {
+    position: new THREE.Vector3(1.55, 0.3, -0.6),
+    element: document.querySelector(".point-0"),
+  },
 //   {
 //     position: new THREE.Vector3(0.5, 0.8, -1.6),
 //     element: document.querySelector(".point-1"),
@@ -149,7 +149,7 @@ gltfLoader.load("/models/DamagedHelmet/glTF/DamagedHelmet.gltf", (gltf) => {
 //     position: new THREE.Vector3(1.6, -1.3, -0.7),
 //     element: document.querySelector(".point-2"),
 //   },
-// ];
+];
 
 /**
  * Lights
@@ -230,10 +230,10 @@ const tick = () => {
   // Update points only when the scene is ready
 //   if (sceneReady) {
 //     // Go through each point
-//     for (const point of points) {
+    for (const point of points) {
 //       // Get 2D screen position
-//       const screenPosition = point.position.clone();
-//       screenPosition.project(camera);
+      const screenPosition = point.position.clone();
+      screenPosition.project(camera);
 
 //       // Set the raycaster
 //       raycaster.setFromCamera(screenPosition, camera);
@@ -263,11 +263,10 @@ const tick = () => {
 //         }
 //       }
 
-//       const translateX = screenPosition.x * sizes.width * 0.5;
-//       const translateY = -screenPosition.y * sizes.height * 0.5;
-//       point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`;
-//     }
-//   }
+      const translateX = screenPosition.x * sizes.width * 0.5;
+      const translateY = -screenPosition.y * sizes.height * 0.5;
+      point.element.style.transform = `translate( ${translateX}px, ${translateY}px )`;
+  }
 
   // Render
   renderer.render(scene, camera);
