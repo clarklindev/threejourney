@@ -26,7 +26,7 @@ const loadingManager = new THREE.LoadingManager(
     // window.setTimeout(() =>
     // {
     // //Animate overlay
-    //   gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
+    //   gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0, delay:1 });
 
     //   //Update loadingBarElement
     //   loadingBarElement.classList.add('ended');
@@ -36,7 +36,7 @@ const loadingManager = new THREE.LoadingManager(
     
     //OPTION 2 - using gsap
     gsap.delayedCall(0.5, ()=>{
-      gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 });
+      gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0, delay:1 });
       loadingBarElement.classList.add('ended');
       loadingBarElement.style.transform = '';
     
