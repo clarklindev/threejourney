@@ -45,7 +45,7 @@ body
     /* pointer-events: none; */
 }
 
-.point .label
+/* .point .label
 {
     position: absolute;
     top: -20px;
@@ -89,7 +89,7 @@ body
 .point:hover .text
 {
     opacity: 1;
-}
+} */
 
 .point.visible .label
 {
