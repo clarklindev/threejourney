@@ -38,5 +38,18 @@
 - preview render - Z and select RENDERER
 - renderer - CYCLES
 - render - F12 (or F3 (search) -> render)
+- / key - focus on object and hide everything else
 
-### tree trunks (35min.31sec)
+### tree trunks (36min.22sec)
+- cylinder 
+
+### tree cutting / logs (41min.39sec)
+- NEW cylinder -> cap fill type -> triangle fan (this is regarding how the faces that make up the ends of log are shaped)
+- select vertices and F (to complete the face)
+
+### Axe (54min)
+loop cut to create subdivision - vertices mode -> select one vertice on the object -> CTRL + R -> use mouse to adjust number of divisions -> left click + move to OFFSET -> SET with right click
+- edit mode -> (B + drag select) bottom left + bottom right vertices to multi-select on X axis (front and back vertices).
+- move the remaining inner vertices slightly up 
+
+### street light (65min.14sec)

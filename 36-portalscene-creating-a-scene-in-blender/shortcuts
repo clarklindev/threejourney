@@ -1,0 +1,7 @@
+- create plane (SHIFT+A -> mesh -> plane)
+- render - F12 (or F3 (search) -> render)
+- / key - focus on object and hide everything else
+- select vertices and F (to complete the face)
+- loop cut to create subdivision - CTRL + R -> use mouse to adjust number of divisions
+- edit mode -> (B + drag select) to multi-select
+- E - extrude from object
