@@ -52,4 +52,13 @@ loop cut to create subdivision - vertices mode -> select one vertice on the obje
 - edit mode -> (B + drag select) bottom left + bottom right vertices to multi-select on X axis (front and back vertices).
 - move the remaining inner vertices slightly up 
 
-### street light (65min.14sec)
+### street light (64min.50sec)
+inssets -> select faces then press "i" (i for insets) - DONT MOVE THE MOUSE - then click again 
+- note the inset window
+- select "individual" to do inset on each individual face
+- e + rightclick to show the extrude menu
+  - 1. change orientation -> normal
+  - 2. also change transform pivot point -> individual origins
+- separate the lamp from lamp frame
+
+

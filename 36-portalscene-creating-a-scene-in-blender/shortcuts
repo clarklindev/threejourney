@@ -5,3 +5,7 @@
 - loop cut to create subdivision - CTRL + R -> use mouse to adjust number of divisions
 - edit mode -> (B + drag select) to multi-select
 - E - extrude from object
+- CTRL + L - select the object linked to selection
+- when in object mode -> select the object -> F3 search "origin to geometry" - sets the origin to the geometry
+- create inset with "i"
+- ALT + D - linked duplicate
