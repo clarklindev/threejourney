@@ -21,8 +21,7 @@
 - use Blender (currently 4.0.3) to create our scene, bake it and export it.
 
 ### Setup
-
-- create a basic scene - object, light, camera
+- create a basic scene - object, light, camera  
 - point light - change renderer engine to CYCLES (from Eevee): render properties -> CYCLES
 - delete the cube
 
@@ -30,3 +29,14 @@
 - create plane (SHIFT+A -> mesh -> plane)
 - scene properties tab -> units -> unit system -> none
 - 4 x 4
+
+### Gates (20min.25sec)
+- create one geometry and then duplicate 6x
+
+### first render (27min)
+- SEE WHAT CAMERA SEES - on the view (NUM 0)
+- preview render - Z and select RENDERER
+- renderer - CYCLES
+- render - F12 (or F3 (search) -> render)
+
+### tree trunks (35min.31sec)
