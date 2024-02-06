@@ -61,4 +61,21 @@ inssets -> select faces then press "i" (i for insets) - DONT MOVE THE MOUSE - th
   - 2. also change transform pivot point -> individual origins
 - separate the lamp from lamp frame
 
+### Rocks (82min 53sec)
+- start with cube
+- set origin to base - so its level with the floor
+- cut shape using bisect tool: tools -> bisect
+OR
+- (in edit mode)... F3 (search: Bisect)
+OR
+- menu -> mesh -> bisect
+
+- in edit mode, select EVERTHING ie all vertex of geometry (once in edit mode, press A)
+- drag and drop while bisect tool is active
+- "clear outer" OR "clear inner"
+- fill
+- before doing another bisect have to select everything again
+
+
+
 

@@ -9,3 +9,4 @@
 - when in object mode -> select the object -> F3 search "origin to geometry" - sets the origin to the geometry
 - create inset with "i"
 - ALT + D - linked duplicate
+- in edit mode, press A to select everything part of object
