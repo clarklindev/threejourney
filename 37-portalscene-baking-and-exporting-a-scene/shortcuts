@@ -1,0 +1,18 @@
+- create plane (SHIFT+A -> mesh -> plane)
+- render - F12 (or F3 (search) -> render)
+- / key - focus on object and hide everything else
+- select vertices and F (to complete the face)
+- loop cut to create subdivision - CTRL + R -> use mouse to adjust number of divisions
+- edit mode -> (B + drag select) to multi-select
+- E - extrude from object
+- CTRL + L - select the object linked to selection
+- when in object mode -> select the object -> F3 search "origin to geometry" - sets the origin to the geometry
+- create inset with "i"
+- ALT + D - linked duplicate
+- in edit mode, press A to select everything part of object
+- F3 (search "repeat last") or (Shift + R)
+- select original one, and edit the original's width
+- window-tab full-screen -> CTRL + SPACE
+- camera -> F3 ("track") (with constraint) makes camera follow object on scene
+- select all you want to color 
+    AND THEN select one with the color to get from -> apply material from active one to selected CTRL + L -> LINK MATERIALS
