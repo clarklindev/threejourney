@@ -95,4 +95,5 @@ OR
   -> material -> surface -> emission 
   -> strength -> 80
 
-  
+### ambient light
+- remove excess noise -> render-> denoising -> render -> NLM 
