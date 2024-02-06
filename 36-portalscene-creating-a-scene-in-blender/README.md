@@ -76,6 +76,23 @@ OR
 - fill
 - before doing another bisect have to select everything again
 
+### Portal (95min 51sec)
+- create cube - make brick origin far above geometry so it can span like clock around circumference
+- OBJECT MODE -> ALT + D (LINKED duplicate) AND (R) to rotate at same time + Y (ONLT ON Y)
+- F3 (search "repeat last") or (Shift + R)
 
+### the actual portal
+- create circle -> CTRL+A -> mesh -> circle -> fill type: triangle fan
+- create a constraint on the camera to track plane
+- material view on main window -> viewport shading
+- select plane, material -> base color
+- roughness-> max
 
+### Material
+- select all you want to color 
+    AND THEN select one with the color to get from -> apply material from active one to selected CTRL + L -> LINK MATERIALS
+- light 
+  -> material -> surface -> emission 
+  -> strength -> 80
 
+  

@@ -10,3 +10,9 @@
 - create inset with "i"
 - ALT + D - linked duplicate
 - in edit mode, press A to select everything part of object
+- F3 (search "repeat last") or (Shift + R)
+- select original one, and edit the original's width
+- window-tab full-screen -> CTRL + SPACE
+- camera -> F3 ("track") (with constraint) makes camera follow object on scene
+- select all you want to color 
+    AND THEN select one with the color to get from -> apply material from active one to selected CTRL + L -> LINK MATERIALS
