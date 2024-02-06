@@ -16,3 +16,4 @@
 - camera -> F3 ("track") (with constraint) makes camera follow object on scene
 - select all you want to color 
     AND THEN select one with the color to get from -> apply material from active one to selected CTRL + L -> LINK MATERIALS
+
