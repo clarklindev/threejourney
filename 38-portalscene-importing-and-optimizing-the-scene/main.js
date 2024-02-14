@@ -50,19 +50,18 @@ gltfLoader.setDRACOLoader(dracoLoader);
 // spotlight.position.set(0, 10, 0);
 // scene.add(spotlight);
 
-
-const cube = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial()
-)
-
-scene.add(cube)
+// REMOVED CUBE CODE
+// const cube = new THREE.Mesh(
+//   new THREE.BoxGeometry(1, 1, 1),
+//   new THREE.MeshBasicMaterial()
+// )
+// scene.add(cube)
 
 /**
  * Materials
  */
 // Pole light material
-// const poleLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffe5 });
+const poleLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffe5 });
 
 // const poleLightMaterial = new THREE.ShaderMaterial({
 //   fragmentShader: lightsFragmentShader,
@@ -75,7 +74,8 @@ scene.add(cube)
 // })
 
 // Portal light material
-// const portalLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff })
+const portalLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
 // debugObject.portalColorInner = "#6e6cd5";
 // debugObject.portalColorOuter = "#e6a2d8";
 
@@ -102,57 +102,63 @@ scene.add(cube)
 // });
 
 // // Baked material
-
-// const bakedTexture = textureLoader.load("resources/portal_baked.jpg");
+const bakedTexture = textureLoader.load("resources/portal_baked.jpg");
 // // const normalMap = textureLoader.load('resources/portal_comp_normal.jpg')
 // // const aoMap = textureLoader.load('resources/portal_ambient_occlusion.jpg')
-// bakedTexture.flipY = false;
-// bakedTexture.colorSpace = THREE.SRGBColorSpace;
+bakedTexture.flipY = false;
+bakedTexture.colorSpace = THREE.SRGBColorSpace; //replaces bakedTexture.encoding = THREE.sRGBEncoding
 // // bakedTexture.anisotropy = 16
 // // bakedTexture.repeat.set(1, 1)
 // // bakedTexture.wrapS = THREE.RepeatWrapping
 // // bakedTexture.wrapT = THREE.RepeatWrapping
 
-// const bakedMaterial = new THREE.MeshBasicMaterial({
-//   map: bakedTexture,
-//   // normalMap: normalMap,
-//   // aoMap: aoMap,
-// });
+const bakedMaterial = new THREE.MeshBasicMaterial(
+  {
+    // color: 0xFF0000, //using "map" instead
+    map: bakedTexture,
+  // normalMap: normalMap,
+  // aoMap: aoMap,
+}
+);
 
 // /**
 //  * Model
 //  */
-// gltfLoader.load("resources/portal.glb", (gltf) => {
-//   // gltf.scene.traverse((child) => {
-//   //   child.material = bakedMaterial
-//   //   console.log(child)
-//   // })
-//   scene.add(gltf.scene);
+gltfLoader.load("resources/portal.glb", (gltf) => {
+  gltf.scene.traverse((child) => {
+    // console.log('child: ', child);
+    
+    child.material = bakedMaterial;
+    scene.add(gltf.scene);
+  })
+
 
 //   // Get each object
 //   const bakedMesh = gltf.scene.children.find((child) => child.name === "Plane");
 
-//   const portalLightMesh = gltf.scene.children.find(
-//     (child) => child.name === "PortalLight"
-//   );
-//   const poleLightAMesh = gltf.scene.children.find(
-//     (child) => child.name === "PoleLightA"
-//   );
-//   const poleLightBMesh = gltf.scene.children.find(
-//     (child) => child.name === "PoleLightB"
-//   );
+  // console.log('gltf: ', gltf);
 
-//   // Apply materials
-//   poleLightAMesh.material = poleLightMaterial;
-//   poleLightBMesh.material = poleLightMaterial;
-//   portalLightMesh.material = portalLightMaterial;
+  const portalLightMesh = gltf.scene.children.find(
+    (child) => child.name === "portalLight"
+  );
+  const poleLightAMesh = gltf.scene.children.find(
+    (child) => child.name === "poleLightA"
+  );
+  const poleLightBMesh = gltf.scene.children.find(
+    (child) => child.name === "poleLightB"
+  );
+
+  // Apply materials
+  poleLightAMesh.material = poleLightMaterial;
+  poleLightBMesh.material = poleLightMaterial;
+  portalLightMesh.material = portalLightMaterial;
 //   bakedMesh.material = bakedMaterial;
 //   bakedMesh.material.side = THREE.DoubleSide;
 
-//   // console.log(portalLightMesh)
-//   // console.log(poleLightAMesh)
-//   // console.log(poleLightBMesh)
-// });
+  // console.log(portalLightMesh);
+  console.log(poleLightAMesh);
+  console.log(poleLightBMesh);
+});
 
 // /**
 //  * Fireflies
@@ -283,7 +289,7 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-// renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 // // Clear color
 // debugObject.clearColor = "#100f10";
