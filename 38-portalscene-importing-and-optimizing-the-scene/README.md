@@ -134,7 +134,7 @@ spector = new SPECTOR.Spector();
 spector.displayUI();
 ```
 
-### Merge the baked objects (BLENDER) (36min50sec)
+### Merge the baked objects (BLENDER - for optimization) (36min50sec)
 - we can merge all of the baked objects into one geometry that will be drawn in one call
 
 #### reorganize BLENDER 
@@ -145,8 +145,9 @@ spector.displayUI();
 - duplicate whole scene (SHIFT + D)
 - right click to keep position
 - press M - move the duplicate into the "merged" collection
-- press CTRL + J - this joins everything into one object 
 - make one object in selection active (SHIFT + click)
+- press CTRL + J - this joins everything into one object 
+- change name to "baked"
 - now you can disable (exclude from selection checkbox) all other scene collections, but keep emissions selected
 - when you export a merged object, it exports/orders the texture by the different materials you created and named (eg. wood, metal, rock)
 - ensure that when export - dont export the material
@@ -166,3 +167,18 @@ spector.displayUI();
   - File -> export -> glTF 2.0
   - geometry -> ensure material -> no export
   - export public/resources/ as "portal.glb"
+- test with Spector.js
+
+- we dont need to traverse whole scene (there is only one object named: "baked")
+- apply the bakedMaterial on it
+
+```js
+gltfLoader.load('portal.glb', (gltf)=>{
+  const bakedMesh = gltf.scene.children.find((child)=> child.name === 'baked')
+  bakedMesh.material = bakedMaterial;
+
+  //...
+  
+  scene.add(gltf.scene);
+})
+```

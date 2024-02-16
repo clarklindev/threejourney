@@ -16,8 +16,8 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 // console.log(lightsFragmentShader);
 
 //spector js
-const spector = new SPECTOR.Spector();
-spector.displayUI();
+// const spector = new SPECTOR.Spector();
+// spector.displayUI();
 
 /**
  * Base
@@ -122,27 +122,25 @@ const bakedMaterial = new THREE.MeshBasicMaterial(
   {
     // color: 0xFF0000, //using "map" instead
     map: bakedTexture,
-  // normalMap: normalMap,
-  // aoMap: aoMap,
-}
+    // normalMap: normalMap,
+    // aoMap: aoMap,
+  }
 );
 
 // /**
 //  * Model
 //  */
 gltfLoader.load("resources/portal.glb", (gltf) => {
-  gltf.scene.traverse((child) => {
-    // console.log('child: ', child);
+  // gltf.scene.traverse((child) => {
+  //   // console.log('child: ', child);
     
-    child.material = bakedMaterial;
-    scene.add(gltf.scene);
-  })
+  //   child.material = bakedMaterial;
+  //   scene.add(gltf.scene);
+  // })
 
 
-//   // Get each object
-//   const bakedMesh = gltf.scene.children.find((child) => child.name === "Plane");
-
-  // console.log('gltf: ', gltf);
+  //Get each object
+  const bakedMesh = gltf.scene.children.find((child) => child.name === "baked");
 
   const portalLightMesh = gltf.scene.children.find(
     (child) => child.name === "portalLight"
@@ -158,12 +156,13 @@ gltfLoader.load("resources/portal.glb", (gltf) => {
   poleLightAMesh.material = poleLightMaterial;
   poleLightBMesh.material = poleLightMaterial;
   portalLightMesh.material = portalLightMaterial;
-//   bakedMesh.material = bakedMaterial;
+  bakedMesh.material = bakedMaterial;
 //   bakedMesh.material.side = THREE.DoubleSide;
 
   // console.log(portalLightMesh);
-  console.log(poleLightAMesh);
-  console.log(poleLightBMesh);
+  // console.log(poleLightAMesh);
+  // console.log(poleLightBMesh);
+  scene.add(gltf.scene);
 });
 
 // /**
