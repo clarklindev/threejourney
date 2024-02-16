@@ -156,5 +156,13 @@ spector.displayUI();
 #### creating a CYCLES look
 - you can create the default cycles look but without materials, this give like a white scene but keeps the shading/shadows
 - materials panel -> remove the materials
+- NOTE: if there is no materials, it gives a default Cycles look (matt white) BUT the floor needs to have a material (even if its the default) 
 - in compositor -> mute the created node and filter 
 - in compositor -> unmute default (AND link image to image of render)
+- ensure emissions is selectable
+- ensure others is selectable
+- ensure non-merged layers is NOT selectable
+- select: merged, emmisions, others
+  - File -> export -> glTF 2.0
+  - geometry -> ensure material -> no export
+  - export public/resources/ as "portal.glb"
