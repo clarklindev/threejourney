@@ -1,6 +1,8 @@
 import "./style.css";
 import * as dat from "lil-gui";
 import * as THREE from "three";
+import * as SPECTOR from "spectorjs";
+
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
@@ -12,6 +14,10 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 // import lightsFragmentShader from "./shaders/lights/frag.glsl";
 // import lightsVertexShader from "./shaders/lights/vert.glsl";
 // console.log(lightsFragmentShader);
+
+//spector js
+const spector = new SPECTOR.Spector();
+spector.displayUI();
 
 /**
  * Base
@@ -74,7 +80,7 @@ const poleLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffe5 });
 // })
 
 // Portal light material
-const portalLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+const portalLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
 
 // debugObject.portalColorInner = "#6e6cd5";
 // debugObject.portalColorOuter = "#e6a2d8";

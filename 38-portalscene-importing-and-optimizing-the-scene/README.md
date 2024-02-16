@@ -121,3 +121,40 @@ const portalLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
 portalLightMesh.material = portalLightMaterial;
 
 ```
+
+### Improving performance (31min27sec)
+- spectre.js can be used for monitoring - monitor steps to render one frame (what you can see in 1 frame)
+- install as chrome extension or npm package
+- npm i spectorjs 
+- click on red button
+
+```js
+const SPECTOR = require('spectorjs');
+spector = new SPECTOR.Spector();
+spector.displayUI();
+```
+
+### Merge the baked objects (BLENDER) (36min50sec)
+- we can merge all of the baked objects into one geometry that will be drawn in one call
+
+#### reorganize BLENDER 
+- open blender
+- TODO: make the emissions collection as unselectable
+- TODO: make the "others" collection as unselectable
+- create an empty "merged" collection - select everything (whole scene) SHIFT CLICK on any object to ensure something is active element -> 
+- duplicate whole scene (SHIFT + D)
+- right click to keep position
+- press M - move the duplicate into the "merged" collection
+- press CTRL + J - this joins everything into one object 
+- make one object in selection active (SHIFT + click)
+- now you can disable (exclude from selection checkbox) all other scene collections, but keep emissions selected
+- when you export a merged object, it exports/orders the texture by the different materials you created and named (eg. wood, metal, rock)
+- ensure that when export - dont export the material
+- save the glb
+- see performance, it reduces the number of renders from 170 something to 4
+
+#### creating a CYCLES look
+- you can create the default cycles look but without materials, this give like a white scene but keeps the shading/shadows
+- materials panel -> remove the materials
+- in compositor -> mute the created node and filter 
+- in compositor -> unmute default (AND link image to image of render)
