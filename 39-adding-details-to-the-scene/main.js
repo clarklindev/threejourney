@@ -7,8 +7,11 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 
-// import firefliesVertexShader from "./shaders/fireflies/vert.glsl";
-// import firefliesFragmentShader from "./shaders/fireflies/frag.glsl";
+import firefliesVertexShader from "./shaders/fireflies/vert.glsl";
+import firefliesFragmentShader from "./shaders/fireflies/frag.glsl";
+// console.log(firefliesVertexShader);
+// console.log(firefliesFragmentShader);
+
 // import portalVertexShader from "./shaders/portal/vert.glsl";
 // import portalFragmentShader from "./shaders/portal/frag.glsl";
 // import lightsFragmentShader from "./shaders/lights/frag.glsl";
@@ -198,24 +201,25 @@ firefliesGeometry.setAttribute(
 // );
 
 // Fireflies material
-const firefliesMaterial = new THREE.PointsMaterial({
-  size: 0.1,
-  sizeAttenuation: true,
-});
+// const firefliesMaterial = new THREE.PointsMaterial({
+//   size: 0.1,
+//   sizeAttenuation: true,
+// });
 
-// const firefliesMaterial = new THREE.ShaderMaterial({
+//replace the PointsMaterial with ShaderMaterial
+const firefliesMaterial = new THREE.ShaderMaterial({
 //   uniforms: {
 //     uTime: { value: 0 },
 //     uSize: { value: 200 },
 //     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
 //     uColor: { value: new THREE.Color("white") },
 //   },
-//   vertexShader: firefliesVertexShader,
-//   fragmentShader: firefliesFragmentShader,
+  vertexShader: firefliesVertexShader,
+  fragmentShader: firefliesFragmentShader,
 //   transparent: true,
 //   depthWrite: false,
 //   blending: THREE.AdditiveBlending,
-// });
+});
 
 // // Fireflies debug
 // gui

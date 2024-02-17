@@ -66,4 +66,73 @@ const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial);
 scene.add(fireflies);
 ```
 
-- 
+### Custom Shader Material
+- create a basic vertex shader in /src/shaders/fireflies/vertex.glsl    (vert.glsl)
+- create a basic fragment shader  /src/shaders/fireflies/fragment.glsl  (frag.glsl)
+
+```js (glsl)
+
+//shaders/fireflies/vert.glsl
+
+uniform float uPixelRatio;
+uniform float uSize;
+uniform float uTime;
+
+attribute float aScale;
+
+void main()
+{
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    // modelPosition.y += sin(uTime);
+    // modelPosition.y += sin(uTime + modelPosition.x * 100.0);
+    // modelPosition.y += sin(uTime + modelPosition.x * 100.0) * aScale * 0.2;
+    // modelPosition.x += sin(uTime + modelPosition.y * 100.0) * aScale * 0.01;
+
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectionPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectionPosition;
+
+    gl_PointSize = 40.0;
+    // gl_PointSize *= (1.0 / - viewPosition.z);
+    // gl_PointSize = uSize * aScale * uPixelRatio; 
+}
+```
+
+```js (glsl)
+//shaders/fireflies/frag.glsl
+
+void main()
+{
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+
+    // vec2 uv = gl_PointCoord.xy / iResolution.xy;
+
+    // float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
+
+    // if (distanceToCenter > 0.5)
+    // {
+    //     discard;
+    // }
+    // float strength = 0.05 / distanceToCenter;
+    // float strength = 0.05 / distanceToCenter - 0.1 ;
+
+
+    // gl_FragColor = vec4(1.0, 1.0, 1.0, strength);
+}
+```
+
+### import those shaders into our script
+- replace the PointsMaterial (size, sizeAttenuation) by a ShaderMaterial 
+- ShaderMaterial with the vertexShader and fragmentShader
+
+```js
+import firefliesVertexShader from "./shaders/fireflies/vert.glsl";
+import firefliesFragmentShader from "./shaders/fireflies/frag.glsl";
+
+const firefliesMaterial = new THREE.ShaderMaterial({
+  vertexShader: firefliesVertexShader,
+  fragmentShader: firefliesFragmentShader,
+});
+
+```
