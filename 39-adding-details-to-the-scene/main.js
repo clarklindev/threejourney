@@ -28,6 +28,7 @@ const gui = new dat.GUI({
   width: 400,
 });
 // gui.close();
+
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -296,12 +297,13 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-// // Clear color
-// debugObject.clearColor = "#100f10";
-// renderer.setClearColor(debugObject.clearColor);
-// gui.addColor(debugObject, "clearColor").onChange(() => {
-//   renderer.setClearColor(debugObject.clearColor);
-// });
+// Clear color
+debugObject.clearColor = "#431e43";
+
+renderer.setClearColor(debugObject.clearColor);
+gui.addColor(debugObject, "clearColor").onChange(() => {
+  renderer.setClearColor(debugObject.clearColor);
+});
 
 /**
  * Animate
