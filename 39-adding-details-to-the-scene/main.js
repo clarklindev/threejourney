@@ -166,38 +166,43 @@ gltfLoader.load("resources/portal.glb", (gltf) => {
   scene.add(gltf.scene);
 });
 
-// /**
-//  * Fireflies
-//  */
-// //Geometry
-// const firefliesGeometry = new THREE.BufferGeometry();
-// const firefliesCount = 30;
-// const positionArray = new Float32Array(firefliesCount * 3);
+/**
+ * Fireflies
+ */
+//Geometry
+const firefliesGeometry = new THREE.BufferGeometry();
+const firefliesCount = 30;
+const positionArray = new Float32Array(firefliesCount * 3); //3 values for each particle
 // const scaleArray = new Float32Array(firefliesCount);
 
-// for (let i = 0; i < firefliesCount; i++) {
-//   // positionArray[i * 3 + 0] = Math.random() * 4 - 2
-//   // positionArray[i * 3 + 1] = Math.random() * 2 + 1
-//   // positionArray[i * 3 + 2] = Math.random() * 4 - 2
-//   positionArray[i * 3 + 0] = (Math.random() - 0.5) * 4;
-//   positionArray[i * 3 + 1] = Math.random() * 2;
-//   positionArray[i * 3 + 2] = (Math.random() - 0.5) * 5;
+//fill positionArray
+for (let i = 0; i < firefliesCount; i++) {
+  // positionArray[i * 3 + 0] = Math.random() * 4;    //x
+  // positionArray[i * 3 + 1] = Math.random() * 4;    //y
+  // positionArray[i * 3 + 2] = Math.random() * 4;    //z
+
+  //improved positions
+  positionArray[i * 3 + 0] = (Math.random() - 0.5) * 4;
+  positionArray[i * 3 + 1] = Math.random() * 1.5;
+  positionArray[i * 3 + 2] = (Math.random() - 0.5) * 4;
 //   scaleArray[i] = Math.random();
-// }
-// firefliesGeometry.setAttribute(
-//   "position",
-//   new THREE.BufferAttribute(positionArray, 3)
-// );
+}
+firefliesGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(positionArray, 3) //send the array as BufferAttribute, specify how many values per vertex
+);
 
 // firefliesGeometry.setAttribute(
 //   "aScale",
 //   new THREE.BufferAttribute(scaleArray, 1)
 // );
-// // Fireflies material
-// // const firefliesMaterial = new THREE.PointsMaterial({
-// //   size: 0.1,
-// //   sizeAttenuation: true,
-// // })
+
+// Fireflies material
+const firefliesMaterial = new THREE.PointsMaterial({
+  size: 0.1,
+  sizeAttenuation: true,
+});
+
 // const firefliesMaterial = new THREE.ShaderMaterial({
 //   uniforms: {
 //     uTime: { value: 0 },
@@ -220,9 +225,9 @@ gltfLoader.load("resources/portal.glb", (gltf) => {
 //   .step(1)
 //   .name("firefliesSize");
 
-// // Points
-// const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial);
-// scene.add(fireflies);
+// Points
+const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial);
+scene.add(fireflies);
 /**
  * Sizes
  */
