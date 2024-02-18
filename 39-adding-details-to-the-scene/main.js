@@ -216,7 +216,7 @@ const firefliesMaterial = new THREE.ShaderMaterial({
   },
   vertexShader: firefliesVertexShader,
   fragmentShader: firefliesFragmentShader,
-//   transparent: true,
+  transparent: true,
 //   depthWrite: false,
 //   blending: THREE.AdditiveBlending,
 });

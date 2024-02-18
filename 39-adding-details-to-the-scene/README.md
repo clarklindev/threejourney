@@ -204,3 +204,37 @@ void main()
     gl_PointSize *= (1.0 / - viewPosition.z);      //for size attenuation
 }
 ```
+
+### firefly pattern
+- increase the particle size to 200 and show the UV coordinates with gl_PointCoord
+- each vertex of the geometry will be a particle
+- we can access the uv coordinates of each square (particle) using gl_PointCoord (from fragment shader)
+- create a "distanceToCenter" variable and calculate the distance between the center (vec2(0.5)) and gl_PointCoord.
+- use this distanceToCenter variable as the alpha of gl_FragColor
+- dont forget to set transparent to "true" on the material
+- to create the pattern, start with a very small value and divide it by the distanceToCenter
+
+```js
+//fragment shader
+void main(){
+  float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
+
+  gl_FragColor = vec4(1.0, 1.0 , 1.0, distanceToCenter);
+}
+```
+
+
+- create a strength variable, divide 0.05 by distanceToCenter and send it to the gl_FragColor: `gl_FragColor = vec4(1.0, 1.0, 1.0, strength);`
+- the value gets low but never reaches 0 , but you still see background on the particle
+- to fix that, we can subtract a small value
+
+```js
+//fragment shader
+void main(){
+  float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
+  float strength = 0.05 / distanceToCenter - 0.1; //(0.05 * 2.0); 
+
+  gl_FragColor = vec4(1.0, 1.0 , 1.0, strength);
+}
+
+```
