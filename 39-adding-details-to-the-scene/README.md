@@ -297,3 +297,49 @@ const firefliesMaterial = new THREE.ShaderMaterial({
 });
 
 ```
+
+### floating animation
+- move fireflies by floating up and down
+- because we are animating with time in shader, we need to provide the time to vertex shader
+- create a uTime uniform and update it in the tick function by using the elapsedTime variable: `firefliesMaterial.uniforms.uTime.value = elapsedTime;`
+- use the uTime uniform in the vertex shader and update the modelPosition.y using sin()
+- we need randomness
+- VERTEX shader: we can use the x axis to offset the value:
+`modelPosition.y += sin(uTime + modelPosition.x * 100.0);`
+- randomize and reduce the amplitude 
+- we can use the aScale 
+- this way, the smaller particles move less, large particles move more
+- 
+
+```js
+const firefliesMaterial = new THREE.ShaderMaterial({
+  //...
+  
+  uniforms:{
+    uTime: {value: 0}
+  },
+
+  blending: THREE.AdditiveBlending
+  
+});
+
+//...
+const tick = ()=>{
+  const elapsedTime = clock.getElapsedTime();
+  firefliesMaterial.uniforms.uTime.value = elapsedTime;
+
+}
+```
+
+```js (glsl)
+//shaders/fireflies/vert.glsl
+
+uniform float uTime;
+void main()
+{
+  //...
+  vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+  modelPosition.y += sin(uTime);
+  //...
+}
+```

@@ -206,7 +206,7 @@ firefliesGeometry.setAttribute(
 //replace the PointsMaterial with ShaderMaterial
 const firefliesMaterial = new THREE.ShaderMaterial({
   uniforms: {
-//     uTime: { value: 0 },
+    uTime: { value: 0 },
     uSize: { value: 100 },
     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) }, //limit pixel ratio to 2
 //     uColor: { value: new THREE.Color("white") },
@@ -326,7 +326,7 @@ const tick = () => {
   renderer.render(scene, camera);
 
   // Update materials
-  // firefliesMaterial.uniforms.uTime.value = elapsedTime;
+  firefliesMaterial.uniforms.uTime.value = elapsedTime;
   // portalLightMaterial.uniforms.uTime.value = elapsedTime;
 
   // Call tick again on the next frame
