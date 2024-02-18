@@ -5,6 +5,7 @@ void main()
     // vec2 uv = gl_PointCoord.xy / iResolution.xy;
 
     float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
+    
     // if (distanceToCenter > 0.5)
     // {
     //     discard;

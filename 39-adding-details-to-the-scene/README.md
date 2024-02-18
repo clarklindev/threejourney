@@ -238,3 +238,62 @@ void main(){
 }
 
 ```
+
+### scale randomness
+- always good to add randomness
+- create an "aScale" attribute and fill it with random values
+- use the attribute in the gl_PointSize formula
+
+```js
+const scaleArray = new Float32Array(firefliesCount);
+
+for (let i = 0; i < firefliesCount; i++) {
+  //...
+  scaleArray[i] = Math.random();
+}
+
+firefliesGeometry.setAttribute(
+  "aScale",
+  new THREE.BufferAttribute(scaleArray, 1)
+);
+```
+
+```js (glsl)
+//shaders/fireflies/vert.glsl
+
+uniform float uPixelRatio;
+uniform float uSize;
+attribute float aScale;
+
+void main()
+{
+    //...
+    // gl_PointSize = 40.0 * uPixelRatio; //replaced with uSize (below)
+    gl_PointSize = uSize * aScale * uPixelRatio; 
+
+    gl_PointSize *= (1.0 / - viewPosition.z);      //for size attenuation
+}
+```
+
+### blending
+- make stars EVEN SHINNIER (like a light)
+- set the blending property of the material to THREE.AdditiveBlending
+
+```js
+const firefliesMaterial = new THREE.ShaderMaterial({blending: THREE.AdditiveBlending});
+```
+
+### Depth Write
+- at some specific angles, you will notice some clipping issues
+eg. larger (closer) particle, hides the one behind it
+
+- meaning the buffer that threejs uses to remind particles of other particles are in front of it and whether it should render, turning depthWrite off is telling threejs to ignore the buffer so render everthing and dont worry about depth and particles obscuring other particles.
+
+- to fix that, deactivate depth writing by setting the depthWrite property to false on the material
+
+```js
+const firefliesMaterial = new THREE.ShaderMaterial({
+  depthWrite: false,
+});
+
+```

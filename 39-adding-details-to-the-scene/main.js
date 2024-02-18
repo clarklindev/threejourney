@@ -163,9 +163,6 @@ gltfLoader.load("resources/portal.glb", (gltf) => {
   bakedMesh.material = bakedMaterial;
 //   bakedMesh.material.side = THREE.DoubleSide;
 
-  // console.log(portalLightMesh);
-  // console.log(poleLightAMesh);
-  // console.log(poleLightBMesh);
   scene.add(gltf.scene);
 });
 
@@ -176,7 +173,7 @@ gltfLoader.load("resources/portal.glb", (gltf) => {
 const firefliesGeometry = new THREE.BufferGeometry();
 const firefliesCount = 30;
 const positionArray = new Float32Array(firefliesCount * 3); //3 values for each particle
-// const scaleArray = new Float32Array(firefliesCount);
+const scaleArray = new Float32Array(firefliesCount * 1); //1 value per vertex
 
 //fill positionArray
 for (let i = 0; i < firefliesCount; i++) {
@@ -188,17 +185,17 @@ for (let i = 0; i < firefliesCount; i++) {
   positionArray[i * 3 + 0] = (Math.random() - 0.5) * 4;
   positionArray[i * 3 + 1] = Math.random() * 1.5;
   positionArray[i * 3 + 2] = (Math.random() - 0.5) * 4;
-//   scaleArray[i] = Math.random();
+  scaleArray[i] = Math.random();
 }
 firefliesGeometry.setAttribute(
   "position",
   new THREE.BufferAttribute(positionArray, 3) //send the array as BufferAttribute, specify how many values per vertex
 );
 
-// firefliesGeometry.setAttribute(
-//   "aScale",
-//   new THREE.BufferAttribute(scaleArray, 1)
-// );
+firefliesGeometry.setAttribute(
+  "aScale",
+  new THREE.BufferAttribute(scaleArray, 1)
+);
 
 // Fireflies material
 // const firefliesMaterial = new THREE.PointsMaterial({
@@ -210,15 +207,15 @@ firefliesGeometry.setAttribute(
 const firefliesMaterial = new THREE.ShaderMaterial({
   uniforms: {
 //     uTime: { value: 0 },
-    uSize: { value: 50 },
+    uSize: { value: 100 },
     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) }, //limit pixel ratio to 2
 //     uColor: { value: new THREE.Color("white") },
   },
   vertexShader: firefliesVertexShader,
   fragmentShader: firefliesFragmentShader,
   transparent: true,
-//   depthWrite: false,
-//   blending: THREE.AdditiveBlending,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
 });
 
 // Fireflies debug
