@@ -210,7 +210,7 @@ firefliesGeometry.setAttribute(
 const firefliesMaterial = new THREE.ShaderMaterial({
   uniforms: {
 //     uTime: { value: 0 },
-//     uSize: { value: 200 },
+    uSize: { value: 50 },
     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) }, //limit pixel ratio to 2
 //     uColor: { value: new THREE.Color("white") },
   },
@@ -221,13 +221,13 @@ const firefliesMaterial = new THREE.ShaderMaterial({
 //   blending: THREE.AdditiveBlending,
 });
 
-// // Fireflies debug
-// gui
-//   .add(firefliesMaterial.uniforms.uSize, "value")
-//   .min(0)
-//   .max(500)
-//   .step(1)
-//   .name("firefliesSize");
+// Fireflies debug
+gui
+  .add(firefliesMaterial.uniforms.uSize, "value")
+  .min(0)
+  .max(500)
+  .step(1)
+  .name("firefliesSize");
 
 // Points
 const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial);

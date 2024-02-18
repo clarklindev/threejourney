@@ -139,7 +139,11 @@ void main()
 use renderer.getPixelRatio()...hardcode `Math.min(window.devicePixelRatio, 2)` //limit pixel ratio to 2
 - add it to the resize callback (assists when screens with different pixelRatio AND a window resize occurs)
 - (27min27sec): the size of the squares is the same regardless of the distance, 
-- ability to control the size of particles
+
+#### JS: ability to control the size of particles
+- create a uSize uniform:  `uSize: {value:100}`
+- which is sent to vertex shader
+- add a tweak to Dat.GUI `gui.add(firefliesMaterial.uniforms.uSize, "value")`
 
 ```js
 
@@ -150,10 +154,19 @@ import firefliesFragmentShader from "./shaders/fireflies/frag.glsl";
 const firefliesMaterial = new THREE.ShaderMaterial({
   uniforms: {
     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+    uSize: {value:100}
   },
   vertexShader: firefliesVertexShader,
   fragmentShader: firefliesFragmentShader,
 });
+
+// Fireflies debug
+gui
+  .add(firefliesMaterial.uniforms.uSize, "value")
+  .min(0)
+  .max(500)
+  .step(1)
+  .name("firefliesSize");
 
 window.addEventListener("resize", () => {
 
@@ -172,17 +185,22 @@ window.addEventListener("resize", () => {
 - use the uPixelRatio uniform in the vertex shaer on the gl_PointSize
 - we need to activate the size attenuation in vertex shader: 
 `gl_PointSize *= (1.0 / - viewPosition.z); `
+- instead of fixed value, we can pass in from js: `uSize: {value:100}`
+- use it in the vertex shader
 
 ```js (glsl)
 
 //shaders/fireflies/vert.glsl
 
 uniform float uPixelRatio;
+uniform float uSize;
 
 void main()
 {
     //...
-    gl_PointSize = 40.0 * uPixelRatio; 
+    // gl_PointSize = 40.0 * uPixelRatio; //replaced with uSize (below)
+    gl_PointSize = uSize * uPixelRatio; 
+
     gl_PointSize *= (1.0 / - viewPosition.z);      //for size attenuation
 }
 ```
