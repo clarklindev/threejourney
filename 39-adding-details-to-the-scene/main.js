@@ -208,12 +208,12 @@ firefliesGeometry.setAttribute(
 
 //replace the PointsMaterial with ShaderMaterial
 const firefliesMaterial = new THREE.ShaderMaterial({
-//   uniforms: {
+  uniforms: {
 //     uTime: { value: 0 },
 //     uSize: { value: 200 },
-//     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+    uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) }, //limit pixel ratio to 2
 //     uColor: { value: new THREE.Color("white") },
-//   },
+  },
   vertexShader: firefliesVertexShader,
   fragmentShader: firefliesFragmentShader,
 //   transparent: true,
@@ -270,10 +270,10 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   // Update fireflies
-  // firefliesMaterial.uniforms.uPixelRatio.value = Math.min(
-  //   window.devicePixelRatio,
-  //   2
-  // );
+  firefliesMaterial.uniforms.uPixelRatio.value = Math.min(
+    window.devicePixelRatio,
+    2
+  );
 });
 
 /**

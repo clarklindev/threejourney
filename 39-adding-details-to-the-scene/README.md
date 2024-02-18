@@ -123,16 +123,66 @@ void main()
 ```
 
 ### import those shaders into our script
-- replace the PointsMaterial (size, sizeAttenuation) by a ShaderMaterial 
-- ShaderMaterial with the vertexShader and fragmentShader
+- replace the PointsMaterial (size, sizeAttenuation) by a ShaderMaterial. 
+- ShaderMaterial with the vertexShader and fragmentShader.
+
+### Point size (22min)
+- it creates the squares with the now ShaderMaterial -> BUT the squares might look smaller on screens with high pixel ratio.
+- ie. the size of particles is different depending on pixel ratio...
+
+#### FIX: 
+- REMINDER: to send values from js to shaders, we need uniforms:{}
+
+- SEND A uPixelRatio uniform with the same formula for renderer.setPixelRatio() to the shader.
+- use the uPixelRatio uniform in the vertex shader on the gl_PointSize: `gl_PointSize = 40.0 * uPixelRatio;`
+- NOTE: Material is being created before the renderer, so we cant
+use renderer.getPixelRatio()...hardcode `Math.min(window.devicePixelRatio, 2)` //limit pixel ratio to 2
+- add it to the resize callback (assists when screens with different pixelRatio AND a window resize occurs)
+- (27min27sec): the size of the squares is the same regardless of the distance, 
+- ability to control the size of particles
 
 ```js
+
+//script
 import firefliesVertexShader from "./shaders/fireflies/vert.glsl";
 import firefliesFragmentShader from "./shaders/fireflies/frag.glsl";
 
 const firefliesMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+  },
   vertexShader: firefliesVertexShader,
   fragmentShader: firefliesFragmentShader,
 });
 
+window.addEventListener("resize", () => {
+
+  //...
+
+  //update fireflies
+  firefliesMaterial.uniforms.uPixelRatio.value = Math.min(
+    window.devicePixelRatio,
+    2
+  );
+});
+
+```
+
+#### Vertex Shader
+- use the uPixelRatio uniform in the vertex shaer on the gl_PointSize
+- we need to activate the size attenuation in vertex shader: 
+`gl_PointSize *= (1.0 / - viewPosition.z); `
+
+```js (glsl)
+
+//shaders/fireflies/vert.glsl
+
+uniform float uPixelRatio;
+
+void main()
+{
+    //...
+    gl_PointSize = 40.0 * uPixelRatio; 
+    gl_PointSize *= (1.0 / - viewPosition.z);      //for size attenuation
+}
 ```

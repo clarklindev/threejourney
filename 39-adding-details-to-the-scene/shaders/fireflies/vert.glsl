@@ -1,4 +1,4 @@
-//uniform float uPixelRatio;
+uniform float uPixelRatio;
 //uniform float uSize;
 //uniform float uTime;
 
@@ -17,7 +17,9 @@ void main()
 
     gl_Position = projectionPosition;
     
-    gl_PointSize = 40.0;
+    //gl_PointSize = 40.0;
     //gl_PointSize = uSize * aScale * uPixelRatio;
-    //gl_PointSize *= (1.0 / - viewPosition.z);
+
+    gl_PointSize = 40.0 * uPixelRatio;
+    gl_PointSize *= (1.0 / - viewPosition.z); //size attenuation depending on distance away
 }
