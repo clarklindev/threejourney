@@ -1,8 +1,6 @@
 uniform float uTime;
 uniform vec3 uColorInner;
 uniform vec3 uColorOuter;
-
-
 varying vec2 vUv;
 
 //	Classic Perlin 3D Noise 
@@ -82,27 +80,62 @@ float cnoise(vec3 P)
     return 2.2 * n_xyz;
 }
 
+
+
+//basic gradient portal bg
+//void main(){
+//  gl_FragColor = vec4(vUv, 1.0, 1.0);
+//}
+
+//perlin use cnoise()
+// void main(){
+//     //float strength = cnoise(vec3(vUv.x * 5.0, vUv.y * 5.0, 0.0));
+//     //float strength = cnoise(vec3(vUv * 5.0, 0.0));
+    
+//     //use uTime
+//     float strength = cnoise(vec3(vUv * 5.0, uTime));
+//     gl_FragColor = vec4(strength, strength, strength, 1.0);
+// }
+
+//displace the uv coordinates
+// void main(){
+//     // Displace the UV
+//     vec2 displacedUv = vUv + cnoise(vec3(vUv * 5.0, uTime)) ;
+
+//     //strength
+//     float strength = cnoise(vec3(displacedUv * 5.0, uTime));
+
+//     gl_FragColor = vec4(strength, strength, strength, 1.0);
+// }
+
+
+//final - slow down animation
 void main()
 {
     // Displace the UV
-    vec2 displacedUv = vUv + cnoise(vec3(vUv * 5.0, uTime * 0.1)) ;
+    vec2 displacedUv = vUv + cnoise(vec3(vUv * 5.0, uTime * 0.1));
 
     float strength = cnoise(vec3(displacedUv * 5.0, uTime * 0.2));
 
     // Outer glow
-    float outerGlow = distance(vUv, vec2(0.5)) * 5.0 - 1.3;
+    //float outerGlow = distance(vUv, vec2(0.5));
+    float outerGlow = distance(vUv, vec2(0.5)) * 5.0 - 1.4;
+
     strength += outerGlow;
     
-     // Apply cool step
-    strength = strength + step(- 0.2, strength) * 0.6;
+    // Apply cool step
+    //strength = step(-0.2, strength);
+    strength += step(- 0.2, strength) * 0.8;
 
     // Final color
     vec3 color = mix(uColorInner, uColorOuter, strength);
 
     // strength = smoothstep(0.0, 1.0, strength);
+    
+    //clamp from 0 to 1 (initial-value, bottom-limit, top-limit)
     strength = clamp(strength, 0.0, 1.0);
 
-    // gl_FragColor = vec4(vUv, 1.0, 1.0);
-    // gl_FragColor = vec4(strength, strength, strength, 1.0);
-    gl_FragColor = vec4(color, 1.0);
+    //gl_FragColor = vec4(strength, strength, strength, 1.0);
+     gl_FragColor = vec4(color, 1.0);
+    //gl_FragColor = vec4(vUv, 1.0, 1.0);
 }
