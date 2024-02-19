@@ -15,11 +15,14 @@ const cameraSettings = {
 
 root.render(
   <Canvas
+    // flat
+    dpr={1}
     orthographic
     gl={{
       antialias: true,
       toneMapping: THREE.ACESFilmicToneMapping,
-      outputEncoding: THREE.sRGBEncoding,
+      outputEncoding: THREE.sRGBEncoding,  //DEPRECATED
+      // outputEncoding: THREE.SRGBColorSpace,
     }}
     camera={cameraSettings}
   >

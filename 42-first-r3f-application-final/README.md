@@ -352,3 +352,76 @@ root.render(
     // groupRef.current.rotation.y += delta
   });
 ```
+
+#### anti-alias
+- on by default
+- remove it by adding gl attribute to `<Canvas>` and send it an object
+
+```js
+const cameraSettings = {
+  fov: 45,
+  zoom: 100,
+  near: 0.1,
+  far: 200,
+  position: [3, 2, 6],
+};
+
+root.render(
+<Canvas
+  orthographic
+  gl={{
+    antialias: true,
+    toneMapping: THREE.ACESFilmicToneMapping,
+    outputEncoding: THREE.sRGBEncoding,
+  }}
+  camera={cameraSettings}
+>
+  <Experience />
+</Canvas>
+);
+
+```
+
+### ToneMapping
+- R3F sets the toneMapping to "ACESFilmicToneMapping",
+- its not a true HDR to LDR (default renderer is LDR - tweaking color to look like HDR)
+- to remove set "flat" attribute to Canvas
+- output colors a sRGBEncoding //deprecated : use `outputEncoding: THREE.SRGBColorSpace`
+
+
+### background color
+- the background of the renderer is transparent by default
+- change it in css with "background"
+
+```css
+html,
+body,
+#root
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: LightSkyBlue;
+}
+```
+
+### PixelRatio
+- R3F handles pixel ratio automatically
+- good practice to clamp it in order to avoid performance issues on devices with a high pixel ratio
+- force pixel ratio
+- [1, 2] is the default set by R3F (meaning its clamped at pixel ratio of 2) (default)
+- so you can remove it
+
+```js
+<Canvas
+  dpr={[1,2]}
+>
+</Canvas>
+```
+
+### Recreated lessons of ThreeJS Journey
+- HazemOlbrahim - https://journey.pmnd.rs/   https://twitter.com/HazemOIbrahim
+- resources: https://threejs-journey.com/lessons/first-r3f-application#going-further
