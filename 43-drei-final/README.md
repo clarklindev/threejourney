@@ -66,7 +66,7 @@ const cube = useRef();
 <OrbitControls makeDefault />
 ```  
 
-### Pivot controls
+### Pivot controls (21min)
 - alternative solution to TransformControls 
 - looks good
 - wrap the whole mesh inside `<PivotControls></PivotControls>`
@@ -95,3 +95,63 @@ import {PivotControls, TransformControls, OrbitControls} from "@react-three/drei
   </mesh>
 </PivotControls>
 ```
+
+### LABELS - html text (30min 51sec)
+- html adds a DOM element that will stick to your object
+- add a `<Html>` anywhere in JSX and write any text you want in it
+- we an add it to a `<mesh>`, a `<group>` or anything that inherits from Object3D
+- put it in the sphere `<mesh>`
+- we can offset with the "position" attribute
+#### label (class and style)
+- we can add style to it, but we are going to add a class first in order to target it in CSS
+- add a wrapperClass attribute
+- in style.css add some css by targeting the div inside .label
+- center it on itself with the center attribute
+- we can simulate perspective with distanceFactor attribute
+- we can hide it (LABEL) when objects are in front of it with "occlude" attribute, to use occlude, you first need a reference to the various objects that can occlude the label
+- we already have the cube reference but not the sphere
+- create a "sphere" ref with "useRef" and associate it with the "<mesh>" using the "ref" attribute
+- send the references as an array to the occlude attribute: occlude={[sphere, cube]} (this means there objects are allowed to obscure the view)
+
+```js
+import {Html} from "@react-three/drei";
+
+const sphere = useRef();
+
+//...
+
+return (
+  <mesh ref={sphere} position-x={-2}>
+    <sphereGeometry />
+    <meshStandardMaterial color="orange" />
+    <Html
+      position={[1, 1, 0]}
+      wrapperClass="label"
+      center
+      distanceFactor={8}
+      occlude={[sphere, cube]}
+    >
+      That's a sphere 👍
+    </Html>
+  </mesh>
+);
+```
+
+```css
+.label > div
+{
+  font-family: Helvetica, Arial;
+  position: absolute;
+  background: #00000088;
+  color: white;
+  padding: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  border-radius: 30px;
+  user-select: none;
+}
+```
+
+### Text (adding text in 3d)
+
+#### Native Three.js
