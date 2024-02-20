@@ -217,3 +217,43 @@ import {
 >hello</Text>
 
 ```
+### Float
+- float makes object float like a baloon in the air 
+- wrap it around <Text> 
+- play with speed
+- play with floatIntensity
+
+```js
+import {Float} from '@react-three/drei'
+<Float speed={5} floatIntensity={2}>
+  <Text></Text>
+</Float>
+```
+
+### Reflections
+- reflections in webgl are complicated, but "MeshReflectorMaterial" isnt
+- replace `<meshStandardMaterial>` of the floor with `<MeshReflectorMaterial>` without the color attribute
+- MeshReflectorMaterial wont work well with non-planar meshes *(ie it works well with a plane floor)
+- set the resolution attribute to 512 to improve the quality
+- control blurryness of reflection 
+- set the blur to [1000, 1000] and the mixBlur to 1 to make the reflection blurry
+- add mirror effect (reflection "alpha") - add a mirror attribute of 0.5 to make the reflection clearer
+- add color back in if you want to add a tint to your plane
+
+```js
+import { 
+  MeshReflectorMaterial,
+} from '@react-three/drei'
+
+<mesh position-y={-1} rotation-x={-Math.PI * 0.5} scale={10}>
+  <planeGeometry />
+  <MeshReflectorMaterial
+    resolution={512}
+    blur={[1000, 1000]}
+    mixBlur={1}
+    mirror={0.5}
+    color="greenyellow"
+  />
+</mesh>
+
+```

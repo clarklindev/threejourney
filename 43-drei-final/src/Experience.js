@@ -59,7 +59,7 @@ export default function Experience() {
           resolution={512}
           blur={[1000, 1000]}
           mixBlur={1}
-          mirror={0.5}
+          mirror={0.65}
           color="greenyellow"
         />
       </mesh>
