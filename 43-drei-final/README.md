@@ -153,5 +153,67 @@ return (
 ```
 
 ### Text (adding text in 3d)
+- SFD Fonts
 
-#### Native Three.js
+#### Native Three.js solution
+- in three.js native, we use 3d TextGeometry class
+- problems: noticing polygons, takes cpu resources, fonts dont look good, no line-break support
+
+#### SDF Fonts (41min 46sec) Explained
+- used in fragment shaders to draw shapes
+- we send a 2d or 3d point to an sdf shape function that returns how far the point is from the shape.
+
+- explaination (remember the Shader pattern lessons..that would be the SDF function to draw a circle):
+  - imagine you want to draw a simple disc on a flat plane
+  - we get the distance of the UV coordinate (the fragment we are drawing) to the center of the disc
+  - we decide on a radius
+  - if the distance we got earlier is less than the radius, we are in the disc and we can draw the pixel
+  - if the distance exceeds the radius, we have moved beyond the disc and we draw nothing
+
+- it gets more complicated for more complex shapes (especially 3d)
+- Inigo Quilez (https://iquilezles.org/) wrote a good article with good examples of SDF functions (https://iquilezles.org/articles/)
+- developers have created scripts that generate textures containing the distance information for each character of a font
+- we can use that texture to indicate the distance between the fragment we are drawing and the supposed character.
+- if the distance is closer to a specific value, we draw the text, otherwise we draw nothing.
+- the values saved in the texture is the distance betweeen the point we are drawing and the character (center of character)
+- this enables features:
+  - change the thickness
+  - adding an outline
+  - adding a blur
+  - drawing huge text
+  - having a lot of words while using the same collection of characters
+- the "natural interpolation between pixels" (meaning guessing whats inbetween 2 pixels) makes the technique work with huge texts
+- some developers have dont most of the heavy lifting in the Troika library (and more precisely troika-three-text) and drei is implementing that solution in the Text helper
+
+#### SDF Fonts (implementation) (58min 31sec)
+- import Text from @react-three/drei
+- add `<Text>` anywhere in the scene
+- default font is Roboto (google fonts CDN)
+- you can put fonts in public/ 
+- files provided in the "public/" dir are accessible as if they are in the same folder as the website root url 
+  eg. localhost:3000/bangers-v20-latin-regular.woff
+- Troika supports woff, tt, otf formats, woff is usually lighter
+- can convert fonts with fontsquirrel
+- google webfonts helper helps convert google fonts
+- can change the size of the font
+- can change color
+- can play with position, rotation, scale
+- can limit the width to see the line breaks with the maxWidth attribute
+- can center the text
+```js
+import {
+
+  Text,
+
+} from "@react-three/drei";
+
+<Text 
+  font="./bangers-v20-latin-regular.woff" 
+  color="salmon" 
+  fontSize={1}
+  position-y={2}
+  maxWidth={2}
+  textAlign="center"
+>hello</Text>
+
+```
