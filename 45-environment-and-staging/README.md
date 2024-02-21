@@ -21,7 +21,7 @@ body,
 }
 ```
 
-2. setClearColor on renderer
+2. setClearColor on renderer (3min 20sec)
 
 The WebGLRenderer has a method named setClearColor. It’s a way of filling the <canvas> with a color before rendering the various objects in the scene.
 
@@ -87,6 +87,7 @@ const created = ({ scene }) =>
 ```
 
 4. using R3F color to set background (9min)
+
 - using R3F to set the color
 - create a <color> inside <Canvas>
 - R3F will auto create a Color instance. ie: <color> substitutes new THREE.Color()
@@ -106,4 +107,51 @@ const created = ({ scene }) =>
   <color args={ [ '#00FF00' ] } attach="background" />
   <Experience />
 </Canvas>
+```
+
+--- 
+# Lights (13min 40sec)
+
+
+```js
+// r3f lights
+
+<ambientLight />
+<hemisphereLight />
+<directionalLight />
+<pointLight />
+<rectAreaLight />
+<spotLight />
+
+```
+
+### Light Helpers (14min 21sec)
+- We can still use Three.js light helpers too.
+- To do so, we are going to use useHelper from drei, but first, we need a reference to the <directionalLight>.
+- useRef is already import from react to animate the cube.
+- Associate it with the <directionalLight> using the ref attribute:
+- Import useHelper from @react-three/drei:
+- useHelper - 
+  - 1st param is the reference to the light source
+  - 2nd is the helper class we want to use from Three.js
+- import THREE, to get access to the DirectionalLightHelper
+- can call useHelper() -     useHelper(directionalLight, THREE.DirectionalLightHelper, 1);  //1 is the size of helper
+- useHelper() can be used for Camera too with CameraHelper
+
+```js
+import { useHelper, OrbitControls } from '@react-three/drei';
+import * as THREE from 'three';
+
+export default function Experience()
+{
+    const directionalLight = useRef();
+    useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
+
+    // ...
+
+    return (
+      //...
+      <directionalLight ref={ directionalLight } position={ [ 1, 2, 3 ] } intensity={ 4.5 } />
+  );
+}
 ```

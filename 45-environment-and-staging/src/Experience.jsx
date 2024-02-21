@@ -9,17 +9,17 @@ import {
   // AccumulativeShadows,
   // SoftShadows,
   // BakeShadows,
-  // useHelper,
+  useHelper,
   OrbitControls
 } from "@react-three/drei";
 import { useRef } from "react";
 import { Perf } from "r3f-perf";
-// import * as THREE from 'three'
+import * as THREE from 'three';
 // import { useControls } from 'leva'
 
 export default function Experience() {
-  // const directionalLight = useRef()
-  // useHelper(directionalLight, THREE.DirectionalLightHelper, 1)
+  const directionalLight = useRef()
+  useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
 
   // const { color, opacity, blur } = useControls('contact shadows', {
   //     color: '#1d8f75',
@@ -48,7 +48,7 @@ export default function Experience() {
 
   return (
     <>
-      <color args={["#00FF00"]} attach="background" />
+      <color args={["ivory"]} attach="background" />
 
       <Perf position="top-left" />
 
@@ -117,19 +117,22 @@ export default function Experience() {
 
       {/* <Sky sunPosition={ sunPosition } /> */}
 
-      {/* <directionalLight
-            ref={ directionalLight }
-            position={ sunPosition }
-            intensity={ 4.5 }
-            castShadow
-            shadow-mapSize={ [ 1024, 1024 ] }
-            shadow-camera-near={ 1 }
-            shadow-camera-far={ 10 }
-            shadow-camera-top={ 5 }
-            shadow-camera-right={ 5 }
-            shadow-camera-bottom={ - 5 }
-            shadow-camera-left={ - 5 }
-        /> */}
+      {/* <directionalLight  
+        ref={ directionalLight }
+        position={ sunPosition }
+        intensity={ 4.5 }
+        castShadow
+        shadow-mapSize={ [ 1024, 1024 ] }
+        shadow-camera-near={ 1 }
+        shadow-camera-far={ 10 }
+        shadow-camera-top={ 5 }
+        shadow-camera-right={ 5 }
+        shadow-camera-bottom={ - 5 }
+        shadow-camera-left={ - 5 }
+        /> 
+        */}
+      <directionalLight ref={ directionalLight } position={ [ 1, 2, 3 ] } intensity={ 4.5 } />
+
       {/* <ambientLight intensity={ 1.5 } /> */}
 
       {/* <mesh castShadow position-y={ 1 } position-x={ - 2 }>
