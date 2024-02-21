@@ -85,3 +85,25 @@ const created = ({ scene }) =>
   scene.background = new THREE.Color('#ff0000')
 }
 ```
+
+4. using R3F color to set background (9min)
+- using R3F to set the color
+- create a <color> inside <Canvas>
+- R3F will auto create a Color instance. ie: <color> substitutes new THREE.Color()
+- need to assign color: We can add an attach attribute to specify what that component should be attached to.
+- we can put the code anywhere as long as the direct parent is the scene (still the case if we put it in Experience)
+
+
+```js
+<Canvas
+  camera={ {
+      fov: 45,
+      near: 0.1,
+      far: 50,
+      position: [ 1, 2, 6 ]
+  } }
+>
+  <color args={ [ '#00FF00' ] } attach="background" />
+  <Experience />
+</Canvas>
+```
