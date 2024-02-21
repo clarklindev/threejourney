@@ -217,7 +217,7 @@ import {
 >hello</Text>
 
 ```
-### Float
+### Float (67min)
 - float makes object float like a baloon in the air 
 - wrap it around <Text> 
 - play with speed
@@ -230,7 +230,7 @@ import {Float} from '@react-three/drei'
 </Float>
 ```
 
-### Reflections
+### Reflections (MeshReflectorMaterial) (68min)
 - reflections in webgl are complicated, but "MeshReflectorMaterial" isnt
 - replace `<meshStandardMaterial>` of the floor with `<MeshReflectorMaterial>` without the color attribute
 - MeshReflectorMaterial wont work well with non-planar meshes *(ie it works well with a plane floor)
@@ -252,7 +252,7 @@ import {
     blur={[1000, 1000]}
     mixBlur={1}
     mirror={0.5}
-    color="greenyellow"
+    color="greenyellow" 
   />
 </mesh>
 
