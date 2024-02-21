@@ -29,6 +29,8 @@ To use setClearColor, we need to have access to the renderer and we need to do t
 
 In index.jsx create a created function and send it to the <Canvas> attribute named onCreated:
 
+- this takes precedence over setting background on css.
+
 ```js
 const created = () => {
   console.log("created");
@@ -48,7 +50,9 @@ root.render(
   </Canvas>
 );
 ```
-The state will be sent as an argument of the function and the renderer will be available in the gl property:
+
+#### access to renderer via "gl"
+The state will be sent as an argument of the function and the "renderer will be available in the gl property":
 
 - We can then call the setClearColor with the color as the first parameter and the alpha as the second parameter:
 
@@ -63,6 +67,6 @@ The state will be sent as an argument of the function and the renderer will be a
 const created = ({ gl }) =>
 {
   console.log(gl)
-  gl.setClearColor('#ff0000', 1)
+  gl.setClearColor('#ff0000', 1);
 }
 ```

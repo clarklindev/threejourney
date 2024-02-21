@@ -5,9 +5,12 @@ import Experience from "./Experience.jsx";
 
 const root = ReactDOM.createRoot(document.querySelector("#root"));
 
-// const created = ()=>{
-//     console.log('created');
-// }
+const created = ({ gl }) =>
+{
+  console.log('created');
+  console.log(gl)
+  gl.setClearColor('#ff0000', 1)
+}
 
 root.render(
   <Canvas
@@ -18,7 +21,7 @@ root.render(
       far: 200,
       position: [-4, 3, 6],
     }}
-    // onCreated={created}
+    onCreated={created}
   >
     <Experience />
   </Canvas>
