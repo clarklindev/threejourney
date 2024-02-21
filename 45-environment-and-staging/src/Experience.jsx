@@ -18,7 +18,7 @@ import * as THREE from 'three';
 // import { useControls } from 'leva'
 
 export default function Experience() {
-  const directionalLight = useRef()
+  const directionalLight = useRef();
   useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
 
   // const { color, opacity, blur } = useControls('contact shadows', {
@@ -53,24 +53,7 @@ export default function Experience() {
       <Perf position="top-left" />
 
       <OrbitControls makeDefault />
-      <directionalLight position={[1, 2, 3]} intensity={4.5} />
 
-      <ambientLight intensity={1.5} />
-
-      <mesh position-x={-2}>
-        <sphereGeometry />
-        <meshStandardMaterial color="orange" />
-      </mesh>
-
-      <mesh ref={cube} position-x={2} scale={1.5}>
-        <boxGeometry />
-        <meshStandardMaterial color="mediumpurple" />
-      </mesh>
-
-      <mesh position-y={-1} rotation-x={-Math.PI * 0.5} scale={10}>
-        <planeGeometry />
-        <meshStandardMaterial color="greenyellow" />
-      </mesh>
 
       {/* <BakeShadows /> */}
       {/* <SoftShadows size={ 25 } samples={ 10 } focus={ 0 } /> */}
@@ -117,38 +100,67 @@ export default function Experience() {
 
       {/* <Sky sunPosition={ sunPosition } /> */}
 
-      {/* <directionalLight  
+      {/* 
+      //replaced...
+      <directionalLight ref={ directionalLight } position={ [ 1, 2, 3 ] } intensity={ 4.5 } /> */}
+
+       <directionalLight  
         ref={ directionalLight }
-        position={ sunPosition }
+        position={[1,2,3]}
+        // position={ sunPosition }
         intensity={ 4.5 }
         castShadow
-        shadow-mapSize={ [ 1024, 1024 ] }
-        shadow-camera-near={ 1 }
-        shadow-camera-far={ 10 }
-        shadow-camera-top={ 5 }
-        shadow-camera-right={ 5 }
-        shadow-camera-bottom={ - 5 }
-        shadow-camera-left={ - 5 }
+        // shadow-mapSize={ [ 1024, 1024 ] }
+        // shadow-camera-near={ 1 }
+        // shadow-camera-far={ 10 }]]]]]]]]]
+        // shadow-camera-top={ 5 }
+        // shadow-camera-right={ 5 }
+        // shadow-camera-bottom={ - 5 }
+        // shadow-camera-left={ - 5 }
         /> 
-        */}
-      <directionalLight ref={ directionalLight } position={ [ 1, 2, 3 ] } intensity={ 4.5 } />
 
-      {/* <ambientLight intensity={ 1.5 } /> */}
+      <ambientLight intensity={1.5} />
 
-      {/* <mesh castShadow position-y={ 1 } position-x={ - 2 }>
-            <sphereGeometry />
-            <meshStandardMaterial color="orange" envMapIntensity={ envMapIntensity } />
-        </mesh> */}
+{/* Shere */}
+      <mesh position-x={-2}
+        castShadow 
+        // position-y={ 1 } 
+      >
+        <sphereGeometry />
+        <meshStandardMaterial 
+          color="orange" 
+          //envMapIntensity={ envMapIntensity }
+        />
+      </mesh>
 
-      {/* <mesh castShadow position-y={ 1 } ref={ cube } position-x={ 2 } scale={ 1.5 }>
-            <boxGeometry />
-            <meshStandardMaterial color="mediumpurple" envMapIntensity={ envMapIntensity } />
-        </mesh> */}
+{/* Cube */}
+      <mesh 
+        castShadow 
+        // position-y={ 1 } 
+        ref={cube} 
+        position-x={2} 
+        scale={1.5}>
+        <boxGeometry />
+        <meshStandardMaterial 
+        color="mediumpurple" 
+        // envMapIntensity={ envMapIntensity }
+        />
+      </mesh>
 
-      {/* <mesh receiveShadow position-y={ 0 } rotation-x={ - Math.PI * 0.5 } scale={ 10 }>
-            <planeGeometry />
-            <meshStandardMaterial color="greenyellow" envMapIntensity={ envMapIntensity } />
-        </mesh> */}
+{/* Floor */}
+      <mesh 
+        receiveShadow 
+        position-y={ -1 }
+        rotation-x={-Math.PI * 0.5} 
+        scale={10}
+      >
+        <planeGeometry />
+        <meshStandardMaterial 
+          color="greenyellow" 
+          // envMapIntensity={ envMapIntensity }
+        />
+      </mesh>
+
 
       {/* <ContactShadows
             position={ [ 0, 0, 0 ] }

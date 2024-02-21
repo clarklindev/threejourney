@@ -52,6 +52,7 @@ root.render(
 ```
 
 #### access to renderer via "gl"
+
 The state will be sent as an argument of the function and the "renderer will be available in the gl property":
 
 - We can then call the setClearColor with the color as the first parameter and the alpha as the second parameter:
@@ -62,28 +63,25 @@ The state will be sent as an argument of the function and the "renderer will be 
 //     console.log(state.gl)
 // }
 
-
 //destructured
-const created = ({ gl }) =>
-{
-  console.log(gl)
-  gl.setClearColor('#ff0000', 1);
-}
+const created = ({ gl }) => {
+  console.log(gl);
+  gl.setClearColor("#ff0000", 1);
+};
 ```
 
 3. using scene background
+
 - instead of setting the background on the renderer, set it on the scene
 - then access it in the "created" function
 - We can now instantiate a Color using Three.js and assign it to the background property (don’t forget to import THREE or just Color from three)
 
-
 ```js
-import * as THREE from 'three'
-const created = ({ scene }) =>
-{
-  console.log(scene)
-  scene.background = new THREE.Color('#ff0000')
-}
+import * as THREE from "three";
+const created = ({ scene }) => {
+  console.log(scene);
+  scene.background = new THREE.Color("#ff0000");
+};
 ```
 
 4. using R3F color to set background (9min)
@@ -94,24 +92,23 @@ const created = ({ scene }) =>
 - need to assign color: We can add an attach attribute to specify what that component should be attached to.
 - we can put the code anywhere as long as the direct parent is the scene (still the case if we put it in Experience)
 
-
 ```js
 <Canvas
-  camera={ {
-      fov: 45,
-      near: 0.1,
-      far: 50,
-      position: [ 1, 2, 6 ]
-  } }
+  camera={{
+    fov: 45,
+    near: 0.1,
+    far: 50,
+    position: [1, 2, 6],
+  }}
 >
-  <color args={ [ '#00FF00' ] } attach="background" />
+  <color args={["#00FF00"]} attach="background" />
   <Experience />
 </Canvas>
 ```
 
---- 
-# Lights (13min 40sec)
+---
 
+# Lights (13min 40sec)
 
 ```js
 // r3f lights
@@ -126,32 +123,120 @@ const created = ({ scene }) =>
 ```
 
 ### Light Helpers (14min 21sec)
+
 - We can still use Three.js light helpers too.
 - To do so, we are going to use useHelper from drei, but first, we need a reference to the <directionalLight>.
 - useRef is already import from react to animate the cube.
 - Associate it with the <directionalLight> using the ref attribute:
 - Import useHelper from @react-three/drei:
-- useHelper - 
+- useHelper -
   - 1st param is the reference to the light source
   - 2nd is the helper class we want to use from Three.js
 - import THREE, to get access to the DirectionalLightHelper
-- can call useHelper() -     useHelper(directionalLight, THREE.DirectionalLightHelper, 1);  //1 is the size of helper
+- can call useHelper() - useHelper(directionalLight, THREE.DirectionalLightHelper, 1); //1 is the size of helper
 - useHelper() can be used for Camera too with CameraHelper
 
 ```js
-import { useHelper, OrbitControls } from '@react-three/drei';
-import * as THREE from 'three';
+import { useHelper, OrbitControls } from "@react-three/drei";
+import * as THREE from "three";
 
-export default function Experience()
-{
-    const directionalLight = useRef();
-    useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
+export default function Experience() {
+  const directionalLight = useRef();
+  useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
 
-    // ...
+  // ...
 
-    return (
-      //...
-      <directionalLight ref={ directionalLight } position={ [ 1, 2, 3 ] } intensity={ 4.5 } />
+  return (
+    //...
+    <directionalLight
+      ref={directionalLight}
+      position={[1, 2, 3]}
+      intensity={4.5}
+    />
   );
 }
+```
+
+### Shadows (18:28)
+
+- We are going to start with the default Three.js shadows system, but
+- then we are going to see other shadow solutions made easier thanks to R3F and drei.
+- default shadows
+
+#### default shadows - activation
+
+To activate shadow rendering on the WebGLRenderer, all we need to do is add a "shadows" attribute to the <Canvas> in index.jsx:
+
+```js
+root.render(
+  <Canvas
+    shadows={true}
+    camera={{
+      fov: 45,
+      near: 0.1,
+      far: 50,
+      position: [-4, 3, 6],
+    }}
+  >
+    <Experience />
+  </Canvas>
+);
+```
+
+- in experience.js add castSahdow to the <directionalLight>
+```js
+<directionalLight  
+  ref={ directionalLight }
+  position={[1,2,3]}
+  // position={ sunPosition }
+  intensity={ 4.5 }
+  castShadow
+/>
+```
+- add castShadow on the objects - on the sphere <mesh> and cube <mesh>
+- those objects only need cast shadow since there is nothing above.
+- on the floor, ask <mesh> to receiveShadow
+- the floor only needs to receive shadow as there is nothing below
+ 
+```js
+// Experience.js
+
+// Sphere
+<mesh position-x={-2}
+  castShadow 
+  // position-y={ 1 } 
+>
+  <sphereGeometry />
+  <meshStandardMaterial 
+    color="orange" 
+    //envMapIntensity={ envMapIntensity }
+  />
+</mesh>
+
+// Cube
+<mesh 
+  castShadow 
+  // position-y={ 1 } 
+  ref={cube} 
+  position-x={2} 
+  scale={1.5}>
+  <boxGeometry />
+  <meshStandardMaterial 
+  color="mediumpurple" 
+  // envMapIntensity={ envMapIntensity }
+  />
+</mesh>
+
+<mesh 
+  receiveShadow 
+  position-y={ -1 }
+  rotation-x={-Math.PI * 0.5} 
+  scale={10}
+>
+  <planeGeometry />
+  <meshStandardMaterial 
+    color="greenyellow" 
+    envMapIntensity={ envMapIntensity }
+  />
+</mesh>
 ```
