@@ -70,3 +70,18 @@ const created = ({ gl }) =>
   gl.setClearColor('#ff0000', 1);
 }
 ```
+
+3. using scene background
+- instead of setting the background on the renderer, set it on the scene
+- then access it in the "created" function
+- We can now instantiate a Color using Three.js and assign it to the background property (don’t forget to import THREE or just Color from three)
+
+
+```js
+import * as THREE from 'three'
+const created = ({ scene }) =>
+{
+  console.log(scene)
+  scene.background = new THREE.Color('#ff0000')
+}
+```
