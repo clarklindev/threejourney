@@ -240,3 +240,50 @@ root.render(
   />
 </mesh>
 ```
+
+---
+
+### Baking - BakeShadows helper
+
+- real time shadow baking for static scenes 
+  - done once at begining then stop (ie. not on each frame)
+- BakeShadows helper from drei
+
+```js
+export default function Experience()
+{
+    // ...
+
+    return <>
+
+        <BakeShadows />
+        {/* ... */}
+
+    </>
+}
+```
+#### Configuring the shadows
+-  each light casting shadows will render the scene in a specific way and output that we call “shadow map”. This shadow map is then used to know if a surface is in the shade or not.
+- By default, that shadow map resolution is rather low in order to maintain solid performance.
+- In pure JavaScript, we can access it by doing directionalLight.shadow.mapSize.set(1024, 1024), but how can we do that in R3F?
+- most properties (even deep ones) are still accessible right from the attributes, by separating the different depth levels with dashes -
+- eg. to change the shadow.mapSize property, we can use the shadow-mapSize attribute
+- And we can do the same with the near, far, top, right, bottom and left properties (since a OrthographicCamera is used to render the shadow map):
+- note: bottom, left are negative values
+
+```js
+
+<directionalLight
+    ref={ directionalLight }
+    position={ [ 1, 2, 3 ] }
+    intensity={ 4.5 }
+    castShadow
+    shadow-mapSize={ [ 1024, 1024 ] }
+    shadow-camera-near={ 1 }
+    shadow-camera-far={ 10 }
+    shadow-camera-top={ 2 }
+    shadow-camera-right={ 2 }
+    shadow-camera-bottom={ - 2 }
+    shadow-camera-left={ - 2 }
+/>
+```
