@@ -1,7 +1,7 @@
 import { useFrame } from "@react-three/fiber";
 import {
   // Stage,
-  // Lightformer,
+  Lightformer,
   Environment,
   ContactShadows,
   RandomizedLight,
@@ -64,16 +64,16 @@ export default function Experience() {
 
        <Environment
             background
-            files={ [
-                './environmentMaps/2/px.jpg',
-                './environmentMaps/2/nx.jpg',
-                './environmentMaps/2/py.jpg',
-                './environmentMaps/2/ny.jpg',
-                './environmentMaps/2/pz.jpg',
-                './environmentMaps/2/nz.jpg',
-            ] }
+            // files={ [
+            //     './environmentMaps/2/px.jpg',
+            //     './environmentMaps/2/nx.jpg',
+            //     './environmentMaps/2/py.jpg',
+            //     './environmentMaps/2/ny.jpg',
+            //     './environmentMaps/2/pz.jpg',
+            //     './environmentMaps/2/nz.jpg',
+            // ] }
             // files="./environmentMaps/the_sky_is_on_fire_2k.hdr"
-            // preset="sunset"
+            preset="sunset"
             // resolution={ 32 }
             // ground={ {
             //     height: envMapHeight,
@@ -81,7 +81,27 @@ export default function Experience() {
             //     scale: envMapScale
             // } }
         >
+          
+
+          {/* set background color of scene */}
+          <color args={['black']} attach="background"/>
+        
+          {/* <mesh position-z={ - 5 } scale={ 10 }>
+            <planeGeometry />
+            <meshBasicMaterial color={[100,0,0]} />
+          </mesh> */}
+
+          {/* Lightformer */}
+          <Lightformer 
+            position-z={-5} 
+            scale={10}
+            color="cyan"
+            intensity={10}
+            form="ring"
+          />
         </Environment> 
+
+       
 
       {/* 
           //AccumulativeShadows

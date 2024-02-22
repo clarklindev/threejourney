@@ -633,3 +633,125 @@ export default function Experience() {
   );
 }
 ```
+
+### HDRI texture
+- instead of 6 images to form cube - use HDRI texture (single 360image)
+- usually High Dynamic Range images (more accurate data)
+- loading .hdr (load single file instead of set)
+- you can use the presents for `<Environment>`  https://github.com/pmndrs/drei/blob/master/src/helpers/environment-assets.ts
+
+```js
+//presets https://github.com/pmndrs/drei/blob/master/src/helpers/environment-assets.ts
+export const presetsObj = {
+  apartment: 'lebombo_1k.hdr',
+  city: 'potsdamer_platz_1k.hdr',
+  dawn: 'kiara_1_dawn_1k.hdr',
+  forest: 'forest_slope_1k.hdr',
+  lobby: 'st_fagans_interior_1k.hdr',
+  night: 'dikhololo_night_1k.hdr',
+  park: 'rooitou_park_1k.hdr',
+  studio: 'studio_small_03_1k.hdr',
+  sunset: 'venice_sunset_1k.hdr',
+  warehouse: 'empty_warehouse_01_1k.hdr',
+}
+
+```
+
+```js
+<Environment
+  background
+  files="./environmentMaps/the_sky_is_on_fire_2k.hdr"
+  //preset="sunset"   //example using preset
+/>
+```
+
+#### adding tweaks to environment map
+- what if you want red light illuminating onto the scene thats using environment map for lighting?
+- position a `<mesh>` inside the `<Environment>`
+- first create the 'mesh' outside the 'environment' to make sure its well positioned.
+
+```js
+<Environment
+  background
+  preset="sunset"
+/>
+
+<mesh position-z={ - 5 } scale={ 10 }>
+  <planeGeometry />
+  <meshBasicMaterial color="red" />
+</mesh>
+```
+
+- And then add it inside the `<Environment>`
+- reload the page
+
+```js
+<Environment
+  background
+  preset="sunset"
+>
+  <mesh position-z={ - 5 } scale={ 10 }>
+    <planeGeometry />
+    <meshBasicMaterial color="red" />
+  </mesh>
+</Environment>
+
+```
+- if you remove the environment map, you have only the mesh illuminating the scene
+- remove preset="sunset"
+- by default the bg of environment map is black, can set a background color on the scene that is being rendered in `<Environment>`.
+- add a `<color>` inside the `<Environment>` set its value to 'blue' and set its attach attribute to "background".
+- using meshes to illuminate scene sounds like a limited solution since light shouldnt be limited to the color sprectrum.
+- replace "red" of `<meshBasicMaterial>` by [1,0,0]
+- BUT now you can go beyond 1, eg [2,0,0]
+- CRAZY BRIGHT? try 100
+
+
+```js
+
+<Environment
+  background
+>
+  <color args={['black']} attach="background"/> 
+
+  <mesh position-z={ - 5 } scale={ 10 }>
+    <planeGeometry />
+    // <meshBasicMaterial color={[2,0,0]} />
+    <meshBasicMaterial color={[100,0,0]} />
+  </mesh>
+</Environment>
+```
+
+
+
+#### LightFormer 
+- there is a helper to create the light intensity effect: LightFormer instead of using meshes
+- import {Lightformer} from "@react-three/drei";
+- add it to the <Environment> with the same position and scale that we had on our `<mesh>`
+- can use a literal color with the 'color' attribute and change the 'intensity'
+- the default shape is rectangle, but the Lightformer supports other shapes: 'ring', 'circle', via 'form' attribute
+- using it on a scene with reflection will add realism
+- you can animate the lightformer
+- you can change enviroment resolution 
+- an environment map with a small resolution will look blury (fine if its used only for illumination)
+```js
+import {Lightformer} from "@react-three/drei";
+
+<Environment
+  background
+  preset="sunset"
+  resolution={32}
+>
+  <color args={['black']} attach="background"/> 
+  
+  <Lightformer 
+    position-z={-5} 
+    scale={10}
+    color="cyan"
+    intensity={10}
+    form="ring"
+  />
+
+</Environment>
+```
+
