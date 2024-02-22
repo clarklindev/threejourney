@@ -28,9 +28,9 @@ export default function Experience() {
       blur: { value: 2.8, min: 0, max: 10 },
   })
 
-  // const { sunPosition } = useControls('sky', {
-  //     sunPosition: { value: [ 1, 2, 3 ] }
-  // })
+  const { sunPosition } = useControls('sky', {
+      sunPosition: { value: [ 1, 2, 3 ] }
+  })
 
   // const { envMapIntensity, envMapHeight, envMapRadius, envMapScale } = useControls('environment map', {
   //     envMapIntensity: { value: 7, min: 0, max: 12 },
@@ -100,7 +100,7 @@ export default function Experience() {
             
         </AccumulativeShadows> */}
 
-      {/* <Sky sunPosition={ sunPosition } /> */}
+      <Sky sunPosition={ sunPosition } />
 
       {/* 
       //replaced...
@@ -108,8 +108,8 @@ export default function Experience() {
 
       <directionalLight
         ref={directionalLight}
-        position={[1, 2, 3]}
-        // position={ sunPosition }
+        // position={[1, 2, 3]}
+        position={ sunPosition }
         intensity={4.5}
         castShadow
         shadow-mapSize={[1024, 1024]}

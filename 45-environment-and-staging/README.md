@@ -512,3 +512,47 @@ npm i leva@0.9
 
 ---
 ### Sky (80min 35sec)
+- R3F drei - Sky helper
+- add `<Sky/>` to jsx
+- class is physics based and tries to reproduce a realistic sky
+- add sunPosition to Leva ( call useControls, set first param as 'sky', send an object with 'sunPosition' property set to have a vector 3 tweak)
+- use it in the `<Sky>`
+
+
+```js
+import {Sky } from "@react-three/drei";
+
+export default function Experience(){
+
+  const { sunPosition } = useControls('sky', {
+    sunPosition: { value: [ 1, 2, 3 ] }
+  });
+
+  return (
+  <>
+    <Sky sunPosition={sunPosition}/>
+  </>
+  );
+}
+```
+- the above is not usual way to set Sun coordinates, use spherical Coordinates
+- create a Spherical
+- create a Vector3
+- use its setFromSpherical()  to convert from the spherical coordinate to a vector 3 (x, y, z) coordinates.
+- Finally, to make the scene more realistic and logical, we can use the sunPosition for the `<directionalLight>`:
+
+```js
+<directionalLight
+  ref={ directionalLight }
+  position={ sunPosition }
+  intensity={ 4.5 }
+  castShadow
+  shadow-mapSize={ [ 1024, 1024 ] }
+  shadow-camera-near={ 1 }
+  shadow-camera-far={ 10 }
+  shadow-camera-top={ 5 }
+  shadow-camera-right={ 5 }
+  shadow-camera-bottom={ - 5 }
+  shadow-camera-left={ - 5 }
+/>
+```
