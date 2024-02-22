@@ -439,6 +439,76 @@ useFrame((state, delta)=>{
 
 ---
 
-### Contact Shadow
+### Contact Shadow (60min 08sec)
 - reset the scene 
 - remove the animation for cube and put back light helper
+- doesnt rely on Threejs shadows
+- deactivate shadows on canvas `shadows={ false }`
+- remove AccumulativeShadows
+
+```js
+<Canvas
+    shadows={ false }
+    camera={ {
+        fov: 45,
+        near: 0.1,
+        far: 50,
+        position: [ - 4, 3, 6 ]
+    } }
+>
+  <Experience />
+</Canvas>
+```
+
+- Contact shadows work without light and only on a plane
+- Contact shadows will render the whole scene (like directional light) but with the camera taking place of the floor - so it will look from floor up and see where shadows are cast by the geometry in scene.
+- blurs shadow map
+- import ContactShadows
+- move it right above the floor: position={[0, -0.99, 0]}
+- change its scale
+- improve the quality with 'resolution'
+- 'far' - how far above should objects render shadows 
+- install leva 
+- import useControls
+- create the color, opacity and blur tweaks in a "contact shadow" folder
+- use them on ContactShadow
+- good performance
+- can Bake the shadow by setting the frames attribute on ContactShadow to 1 `frames={1}`
+
+#### limitations
+- shadow always comes from opposite of plane 
+- not physically accurate
+- blurs shadow regardless of distances from object
+- pulls a lot on performance
+
+```js
+import { useControls } from 'leva';
+
+import {ContactShadows} from "@react-three/drei";
+
+const { color, opacity, blur } = useControls('contact shadows', {
+    color: '#1d8f75',
+    opacity: { value: 0.4, min: 0, max: 1 },
+    blur: { value: 2.8, min: 0, max: 10 },
+});
+
+//...
+
+<ContactShadows
+  position={[0, -0.99, 0]}
+  scale={10}
+  resolution={512} 
+  far={5}
+  color={color}
+  opacity={opacity}
+  blur={blur}
+  frames={1}
+/>
+```
+
+```
+npm i leva@0.9
+```
+
+---
+### Sky (80min 35sec)
