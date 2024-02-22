@@ -755,3 +755,46 @@ import {Lightformer} from "@react-three/drei";
 </Environment>
 ```
 
+---
+### Ground (110 min)
+
+- comment out everything in `<Environment>`
+- keep 'background' and 'preset'
+- makes your enviromentmap appear as if the objects in the scene are directly on the floor (no more floating objects in environment)
+- by adding a "ground" attribute, the projection of the environment map will make it look as if the floor underneath the object is near.
+- remove "background"
+- add "ground" attribute to `<Environment>`
+- the ground is considered to be at the 0 elevation of the scene (meaning inside the ground)
+- fix it by moving them up a little with their  position-y attribute
+- background has some distortion - the settings of the groud are a bit confusing and best solution is to add controls to find the perfect values.
+- add parameters to tweak the environment map via controls 
+
+```js
+
+  const { 
+    envMapIntensity, 
+    envMapHeight, 
+    envMapRadius, 
+    envMapScale 
+  } = useControls('environment map', {
+      envMapIntensity: { value: 7, min: 0, max: 12 },
+      envMapHeight: { value: 7, min: 0, max: 100 },
+      envMapRadius: { value: 28, min: 10, max: 1000 },
+      envMapScale: { value: 100, min: 10, max: 1000 }
+  });
+
+return (
+  <>
+  <Environment ground={{height: envMapHeight, radius: envMapRadius, scale: envMapScale}}>
+  </Environment>
+
+  <mesh position-y={1}> 
+    <sphereGeometry/>
+    <meshStandardMaterial color="orange"/>
+  </mesh>
+  </>
+);
+
+```
+
+### Stage

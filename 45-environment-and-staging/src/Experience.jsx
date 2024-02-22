@@ -22,7 +22,7 @@ export default function Experience() {
   useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
 
   const { color, opacity, blur } = useControls('contact shadows', {
-      color: '#1d8f75',
+      color: '#4b2709',
       opacity: { value: 0.4, min: 0, max: 1 },
       blur: { value: 2.8, min: 0, max: 10 },
   })
@@ -33,14 +33,14 @@ export default function Experience() {
 
   const { 
     envMapIntensity, 
-    // envMapHeight, 
-    // envMapRadius, 
-    // envMapScale 
+    envMapHeight, 
+    envMapRadius, 
+    envMapScale 
   } = useControls('environment map', {
       envMapIntensity: { value: 7, min: 0, max: 12 },
-      // envMapHeight: { value: 7, min: 0, max: 100 },
-      // envMapRadius: { value: 28, min: 10, max: 1000 },
-      // envMapScale: { value: 100, min: 10, max: 1000 }
+      envMapHeight: { value: 7, min: 0, max: 100 },
+      envMapRadius: { value: 28, min: 10, max: 1000 },
+      envMapScale: { value: 100, min: 10, max: 1000 }
   });
 
   const cube = useRef();
@@ -63,7 +63,7 @@ export default function Experience() {
       {/* <SoftShadows size={ 25 } samples={ 10 } focus={ 0 } /> */}
 
        <Environment
-            background
+            // background
             // files={ [
             //     './environmentMaps/2/px.jpg',
             //     './environmentMaps/2/nx.jpg',
@@ -75,16 +75,16 @@ export default function Experience() {
             // files="./environmentMaps/the_sky_is_on_fire_2k.hdr"
             preset="sunset"
             // resolution={ 32 }
-            // ground={ {
-            //     height: envMapHeight,
-            //     radius: envMapRadius,
-            //     scale: envMapScale
-            // } }
+            ground={ {
+                height: envMapHeight,
+                radius: envMapRadius,
+                scale: envMapScale
+            } }
         >
           
 
           {/* set background color of scene */}
-          <color args={['black']} attach="background"/>
+          {/* <color args={['black']} attach="background"/> */}
         
           {/* <mesh position-z={ - 5 } scale={ 10 }>
             <planeGeometry />
@@ -92,13 +92,13 @@ export default function Experience() {
           </mesh> */}
 
           {/* Lightformer */}
-          <Lightformer 
+          {/* <Lightformer 
             position-z={-5} 
             scale={10}
             color="cyan"
             intensity={10}
             form="ring"
-          />
+          /> */}
         </Environment> 
 
        
@@ -151,7 +151,7 @@ export default function Experience() {
       <mesh
         position-x={-2}
         castShadow
-        // position-y={ 1 }
+        position-y={ 1 }
       >
         <sphereGeometry />
         <meshStandardMaterial
@@ -163,7 +163,7 @@ export default function Experience() {
       {/* Cube */}
       <mesh
         castShadow
-        // position-y={ 1 }
+        position-y={ 1 }
         ref={cube}
         position-x={2}
         scale={1.5}
@@ -176,7 +176,7 @@ export default function Experience() {
       </mesh>
 
       {/* Floor */}
-      <mesh
+      {/* <mesh
         // receiveShadow
         position-y={-1}
         rotation-x={-Math.PI * 0.5}
@@ -187,10 +187,10 @@ export default function Experience() {
           color="greenyellow"
           envMapIntensity={ envMapIntensity }
         />
-      </mesh>
+      </mesh> */}
 
       <ContactShadows
-        position={[0, -0.99, 0]}
+        position={[0, 0, 0]}
         scale={10}
         resolution={512}
         far={5}
