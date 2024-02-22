@@ -2,8 +2,7 @@ import { useFrame } from "@react-three/fiber";
 import {
   // Stage,
   // Lightformer,
-  // Environment,
-  // Sky,
+  Environment,
   ContactShadows,
   RandomizedLight,
   AccumulativeShadows,
@@ -32,12 +31,17 @@ export default function Experience() {
       sunPosition: { value: [ 1, 2, 3 ] }
   })
 
-  // const { envMapIntensity, envMapHeight, envMapRadius, envMapScale } = useControls('environment map', {
-  //     envMapIntensity: { value: 7, min: 0, max: 12 },
-  //     envMapHeight: { value: 7, min: 0, max: 100 },
-  //     envMapRadius: { value: 28, min: 10, max: 1000 },
-  //     envMapScale: { value: 100, min: 10, max: 1000 }
-  // })
+  const { 
+    envMapIntensity, 
+    // envMapHeight, 
+    // envMapRadius, 
+    // envMapScale 
+  } = useControls('environment map', {
+      envMapIntensity: { value: 7, min: 0, max: 12 },
+      // envMapHeight: { value: 7, min: 0, max: 100 },
+      // envMapRadius: { value: 28, min: 10, max: 1000 },
+      // envMapScale: { value: 100, min: 10, max: 1000 }
+  });
 
   const cube = useRef();
 
@@ -58,26 +62,26 @@ export default function Experience() {
       {/* <BakeShadows /> */}
       {/* <SoftShadows size={ 25 } samples={ 10 } focus={ 0 } /> */}
 
-      {/* <Environment
+       <Environment
             background
-            // files={ [
-            //     './environmentMaps/2/px.jpg',
-            //     './environmentMaps/2/nx.jpg',
-            //     './environmentMaps/2/py.jpg',
-            //     './environmentMaps/2/ny.jpg',
-            //     './environmentMaps/2/pz.jpg',
-            //     './environmentMaps/2/nz.jpg',
-            // ] }
+            files={ [
+                './environmentMaps/2/px.jpg',
+                './environmentMaps/2/nx.jpg',
+                './environmentMaps/2/py.jpg',
+                './environmentMaps/2/ny.jpg',
+                './environmentMaps/2/pz.jpg',
+                './environmentMaps/2/nz.jpg',
+            ] }
             // files="./environmentMaps/the_sky_is_on_fire_2k.hdr"
-            preset="sunset"
-            resolution={ 32 }
-            ground={ {
-                height: envMapHeight,
-                radius: envMapRadius,
-                scale: envMapScale
-            } }
+            // preset="sunset"
+            // resolution={ 32 }
+            // ground={ {
+            //     height: envMapHeight,
+            //     radius: envMapRadius,
+            //     scale: envMapScale
+            // } }
         >
-        </Environment> */}
+        </Environment> 
 
       {/* 
           //AccumulativeShadows
@@ -100,13 +104,13 @@ export default function Experience() {
             
         </AccumulativeShadows> */}
 
-      <Sky sunPosition={ sunPosition } />
+      {/* <Sky sunPosition={ sunPosition } /> */}
 
       {/* 
       //replaced...
       <directionalLight ref={ directionalLight } position={ [ 1, 2, 3 ] } intensity={ 4.5 } /> */}
 
-      <directionalLight
+      {/* <directionalLight
         ref={directionalLight}
         // position={[1, 2, 3]}
         position={ sunPosition }
@@ -119,9 +123,9 @@ export default function Experience() {
         shadow-camera-right={5}
         shadow-camera-bottom={-5}
         shadow-camera-left={-5}
-      />
+      /> */}
 
-      <ambientLight intensity={1.5} />
+      {/* <ambientLight intensity={1.5} /> */}
 
       {/* Shere */}
       <mesh
@@ -132,7 +136,7 @@ export default function Experience() {
         <sphereGeometry />
         <meshStandardMaterial
           color="orange"
-          //envMapIntensity={ envMapIntensity }
+          envMapIntensity={ envMapIntensity }
         />
       </mesh>
 
@@ -147,7 +151,7 @@ export default function Experience() {
         <boxGeometry />
         <meshStandardMaterial
           color="mediumpurple"
-          // envMapIntensity={ envMapIntensity }
+          envMapIntensity={ envMapIntensity }
         />
       </mesh>
 
@@ -161,7 +165,7 @@ export default function Experience() {
         <planeGeometry />
         <meshStandardMaterial
           color="greenyellow"
-          // envMapIntensity={ envMapIntensity }
+          envMapIntensity={ envMapIntensity }
         />
       </mesh>
 

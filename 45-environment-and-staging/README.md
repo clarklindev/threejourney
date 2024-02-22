@@ -388,12 +388,12 @@ export default function Experience(){
   - use debug ui like Leva to tweak values
 - have access to attributes on AccumulativeShadows:
   - color - color the shadow
-  - opacity 
+  - opacity
   - frames - renders to do (higher = better quality)
   - temportal - spread the renders across multiple frames
 - the shadow looks smooth but threejs had to do those 1000 renders on the first frame
 - can prevent the freeze with "temporal" by spreading renders across frames
-- fixing the weird artifacts (lines) drawn on shadows - from the helper: fix = remove helper 
+- fixing the weird artifacts (lines) drawn on shadows - from the helper: fix = remove helper
   `// useHelper(directionalLight, THREE.DirectionalLightHelper, 1);`
 - reduce frames to 100 (take less than 2 seconds @60fps)
 - shadow not moving with cube (because 100 renders are being done on first frame then stops)
@@ -401,31 +401,30 @@ export default function Experience(){
 - Now use it on the cube position with a Math.sin() and add 2 to it so that it stays near its current position:
 
 #### make shadow follow geometry
+
 - tell AccumulativeShadows to keep rendering the shaodws with the frames attribute set to "Infinity"
 - this creates a stop motion feeling
-- when using AccumulativeShadows - its only blending the last 20 shadow renders. 
+- when using AccumulativeShadows - its only blending the last 20 shadow renders.
 - FIX: set the blend attribute to 100
 - AccumulativeShadows is good for static Scenes.
 
 ```js
 import { RandomizedLight, AccumulativeShadows } from "@react-three/drei";
 
-useFrame((state, delta)=>{
+useFrame((state, delta) => {
   const time = state.clock.elapsedTime;
-  cube.current.position.x = 2 + Math.sin(time)
+  cube.current.position.x = 2 + Math.sin(time);
 });
 
-
-
-<AccumulativeShadows 
-  position={[0, -0.99, 0]} 
-  scale={10} 
-  color="#316d39" 
-  opacity={ 0.8 } 
-  frames={ Infinity }
+<AccumulativeShadows
+  position={[0, -0.99, 0]}
+  scale={10}
+  color="#316d39"
+  opacity={0.8}
+  frames={Infinity}
   temporal
   blend={100}
-  > 
+>
   <RandomizedLight
     position={[1, 2, 3]}
     amount={8}
@@ -440,7 +439,8 @@ useFrame((state, delta)=>{
 ---
 
 ### Contact Shadow (60min 08sec)
-- reset the scene 
+
+- reset the scene
 - remove the animation for cube and put back light helper
 - doesnt rely on Threejs shadows
 - deactivate shadows on canvas `shadows={ false }`
@@ -448,13 +448,13 @@ useFrame((state, delta)=>{
 
 ```js
 <Canvas
-    shadows={ false }
-    camera={ {
-        fov: 45,
-        near: 0.1,
-        far: 50,
-        position: [ - 4, 3, 6 ]
-    } }
+  shadows={false}
+  camera={{
+    fov: 45,
+    near: 0.1,
+    far: 50,
+    position: [-4, 3, 6],
+  }}
 >
   <Experience />
 </Canvas>
@@ -467,8 +467,8 @@ useFrame((state, delta)=>{
 - move it right above the floor: position={[0, -0.99, 0]}
 - change its scale
 - improve the quality with 'resolution'
-- 'far' - how far above should objects render shadows 
-- install leva 
+- 'far' - how far above should objects render shadows
+- install leva
 - import useControls
 - create the color, opacity and blur tweaks in a "contact shadow" folder
 - use them on ContactShadow
@@ -476,20 +476,21 @@ useFrame((state, delta)=>{
 - can Bake the shadow by setting the frames attribute on ContactShadow to 1 `frames={1}`
 
 #### limitations
-- shadow always comes from opposite of plane 
+
+- shadow always comes from opposite of plane
 - not physically accurate
 - blurs shadow regardless of distances from object
 - pulls a lot on performance
 
 ```js
-import { useControls } from 'leva';
+import { useControls } from "leva";
 
-import {ContactShadows} from "@react-three/drei";
+import { ContactShadows } from "@react-three/drei";
 
-const { color, opacity, blur } = useControls('contact shadows', {
-    color: '#1d8f75',
-    opacity: { value: 0.4, min: 0, max: 1 },
-    blur: { value: 2.8, min: 0, max: 10 },
+const { color, opacity, blur } = useControls("contact shadows", {
+  color: "#1d8f75",
+  opacity: { value: 0.4, min: 0, max: 1 },
+  blur: { value: 2.8, min: 0, max: 10 },
 });
 
 //...
@@ -497,13 +498,13 @@ const { color, opacity, blur } = useControls('contact shadows', {
 <ContactShadows
   position={[0, -0.99, 0]}
   scale={10}
-  resolution={512} 
+  resolution={512}
   far={5}
   color={color}
   opacity={opacity}
   blur={blur}
   frames={1}
-/>
+/>;
 ```
 
 ```
@@ -511,48 +512,124 @@ npm i leva@0.9
 ```
 
 ---
+
 ### Sky (80min 35sec)
+
 - R3F drei - Sky helper
 - add `<Sky/>` to jsx
 - class is physics based and tries to reproduce a realistic sky
 - add sunPosition to Leva ( call useControls, set first param as 'sky', send an object with 'sunPosition' property set to have a vector 3 tweak)
 - use it in the `<Sky>`
 
-
 ```js
-import {Sky } from "@react-three/drei";
+import { Sky } from "@react-three/drei";
 
-export default function Experience(){
-
-  const { sunPosition } = useControls('sky', {
-    sunPosition: { value: [ 1, 2, 3 ] }
+export default function Experience() {
+  const { sunPosition } = useControls("sky", {
+    sunPosition: { value: [1, 2, 3] },
   });
 
   return (
-  <>
-    <Sky sunPosition={sunPosition}/>
-  </>
+    <>
+      <Sky sunPosition={sunPosition} />
+    </>
   );
 }
 ```
+
 - the above is not usual way to set Sun coordinates, use spherical Coordinates
 - create a Spherical
 - create a Vector3
-- use its setFromSpherical()  to convert from the spherical coordinate to a vector 3 (x, y, z) coordinates.
+- use its setFromSpherical() to convert from the spherical coordinate to a vector 3 (x, y, z) coordinates.
 - Finally, to make the scene more realistic and logical, we can use the sunPosition for the `<directionalLight>`:
 
 ```js
 <directionalLight
-  ref={ directionalLight }
-  position={ sunPosition }
-  intensity={ 4.5 }
+  ref={directionalLight}
+  position={sunPosition}
+  intensity={4.5}
   castShadow
-  shadow-mapSize={ [ 1024, 1024 ] }
-  shadow-camera-near={ 1 }
-  shadow-camera-far={ 10 }
-  shadow-camera-top={ 5 }
-  shadow-camera-right={ 5 }
-  shadow-camera-bottom={ - 5 }
-  shadow-camera-left={ - 5 }
+  shadow-mapSize={[1024, 1024]}
+  shadow-camera-near={1}
+  shadow-camera-far={10}
+  shadow-camera-top={5}
+  shadow-camera-right={5}
+  shadow-camera-bottom={-5}
+  shadow-camera-left={-5}
 />
+```
+
+---
+
+### Environment Map - drei using Environment (86min 27sec)
+
+- using HDRI textures for environment map (instead of 6 images)
+- its a 360deg image
+- pixel data goes beyond traditional color range
+- Drei has "Environment" helper
+- use environment map to illuminate scene
+- remove current lights and `<Sky>`
+- remove directional light
+- remove ambient light
+- remove sky
+- import Environment from drei
+- add `<Environment>` to jsx and set its files attribute to contain an array of textures
+
+#### Intensity
+- the env map is the only thing creating light in scene after removing all lights
+- use envMapIntensity (default 1)
+- need to set this on each mesh
+- add to leva 
+- call useControls, "environment map", send object with envMapIntensity property that ranges 0 - 12
+- use that value on every `<meshStandardMaterial>`
+
+#### Background
+- if you want to see the environment map in the background (instead of just for lighting), add a background attribute
+
+```js
+import { Environment } from "@react-three/drei";
+
+export default function Experience() {
+  // ...
+
+    const { 
+      envMapIntensity, 
+      // envMapHeight, 
+      // envMapRadius, 
+      // envMapScale 
+    } = useControls('environment map', {
+        envMapIntensity: { value: 3.5, min: 0, max: 12 },
+        // envMapHeight: { value: 7, min: 0, max: 100 },
+        // envMapRadius: { value: 28, min: 10, max: 1000 },
+        // envMapScale: { value: 100, min: 10, max: 1000 }
+    });
+
+
+  return (
+    <>
+      <Environment
+        background
+        files={[
+          "./environmentMaps/2/px.jpg",
+          "./environmentMaps/2/nx.jpg",
+          "./environmentMaps/2/py.jpg",
+          "./environmentMaps/2/ny.jpg",
+          "./environmentMaps/2/pz.jpg",
+          "./environmentMaps/2/nz.jpg",
+        ]}
+      />
+
+      {/* ...
+      
+     
+      */}
+ 
+      <meshStandardMaterial
+        color="orange"
+        envMapIntensity={ envMapIntensity }
+      />
+    
+    </>
+  );
+}
 ```
