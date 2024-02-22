@@ -798,3 +798,37 @@ return (
 ```
 
 ### Stage
+- predefined setting of the stage
+- minimal configuration that looks good
+- consists of: environment map, shadows, 2 directional lights, center the scene
+
+- TODO: 
+- comment everything in JSX except for `<OrbitControls>` and `<Perf>`
+- then duplicate sphere <mesh> and cube <mesh>
+- wrap with <Stage></Stage>
+- you can control contact Shadow with "contactShadows" attribute
+- "environment" presets is for lighting
+- can change intensity of lighting
+
+```js
+import {Stage} from "@react-three/drei";
+
+<Stage
+  shadows={ { type: 'contact', opacity: 0.2, blur: 3 } }
+  environment="sunset"
+  preset="portrait"
+  intensity={ 6 }
+  contactShadow={{opacity:0.2, blur:3}}
+>
+  <mesh position-y={ 1 } position-x={ - 2 }>
+    <sphereGeometry />
+    <meshStandardMaterial color="orange" />
+  </mesh>
+
+  <mesh ref={ cube } position-y={ 1 } position-x={ 2 } scale={ 1.5 }>
+    <boxGeometry />
+    <meshStandardMaterial color="mediumpurple" />
+  </mesh>
+</Stage> 
+
+```

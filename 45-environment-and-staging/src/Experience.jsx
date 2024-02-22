@@ -1,6 +1,6 @@
 import { useFrame } from "@react-three/fiber";
 import {
-  // Stage,
+  Stage,
   Lightformer,
   Environment,
   ContactShadows,
@@ -53,7 +53,7 @@ export default function Experience() {
 
   return (
     <>
-      <color args={["ivory"]} attach="background" />
+      {/* <color args={["ivory"]} attach="background" /> */}
 
       <Perf position="top-left" />
 
@@ -62,7 +62,7 @@ export default function Experience() {
       {/* <BakeShadows /> */}
       {/* <SoftShadows size={ 25 } samples={ 10 } focus={ 0 } /> */}
 
-       <Environment
+       {/* <Environment
             // background
             // files={ [
             //     './environmentMaps/2/px.jpg',
@@ -80,7 +80,7 @@ export default function Experience() {
                 radius: envMapRadius,
                 scale: envMapScale
             } }
-        >
+        > */}
           
 
           {/* set background color of scene */}
@@ -99,7 +99,7 @@ export default function Experience() {
             intensity={10}
             form="ring"
           /> */}
-        </Environment> 
+        {/* </Environment>  */}
 
        
 
@@ -148,7 +148,7 @@ export default function Experience() {
       {/* <ambientLight intensity={1.5} /> */}
 
       {/* Shere */}
-      <mesh
+      {/* <mesh
         position-x={-2}
         castShadow
         position-y={ 1 }
@@ -158,10 +158,10 @@ export default function Experience() {
           color="orange"
           envMapIntensity={ envMapIntensity }
         />
-      </mesh>
+      </mesh> */}
 
       {/* Cube */}
-      <mesh
+      {/* <mesh
         castShadow
         position-y={ 1 }
         ref={cube}
@@ -173,7 +173,7 @@ export default function Experience() {
           color="mediumpurple"
           envMapIntensity={ envMapIntensity }
         />
-      </mesh>
+      </mesh> */}
 
       {/* Floor */}
       {/* <mesh
@@ -189,7 +189,7 @@ export default function Experience() {
         />
       </mesh> */}
 
-      <ContactShadows
+      {/* <ContactShadows
         position={[0, 0, 0]}
         scale={10}
         resolution={512}
@@ -198,9 +198,9 @@ export default function Experience() {
         opacity={opacity}
         blur={blur}
         frames={1}
-      />
+      /> */}
 
-      {/* <Stage
+       <Stage
             shadows={ { type: 'contact', opacity: 0.2, blur: 3 } }
             environment="sunset"
             preset="portrait"
@@ -215,7 +215,7 @@ export default function Experience() {
                 <boxGeometry />
                 <meshStandardMaterial color="mediumpurple" />
             </mesh>
-        </Stage> */}
+        </Stage> 
     </>
   );
 }
