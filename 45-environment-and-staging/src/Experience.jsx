@@ -19,7 +19,7 @@ import * as THREE from 'three';
 
 export default function Experience() {
   const directionalLight = useRef();
-  // useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
+  useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
 
   // const { color, opacity, blur } = useControls('contact shadows', {
   //     color: '#1d8f75',
@@ -42,8 +42,8 @@ export default function Experience() {
 
   useFrame((state, delta) => {
     
-    const time = state.clock.elapsedTime;
-    cube.current.position.x = 2 + Math.sin(time);
+    // const time = state.clock.elapsedTime;
+    // cube.current.position.x = 2 + Math.sin(time);
     cube.current.rotation.y += delta * 0.2;
   });
 

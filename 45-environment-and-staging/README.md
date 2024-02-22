@@ -413,7 +413,6 @@ import { RandomizedLight, AccumulativeShadows } from "@react-three/drei";
 useFrame((state, delta)=>{
   const time = state.clock.elapsedTime;
   cube.current.position.x = 2 + Math.sin(time)
-
 });
 
 
@@ -437,3 +436,9 @@ useFrame((state, delta)=>{
   />
 </AccumulativeShadows>;
 ```
+
+---
+
+### Contact Shadow
+- reset the scene 
+- remove the animation for cube and put back light helper
