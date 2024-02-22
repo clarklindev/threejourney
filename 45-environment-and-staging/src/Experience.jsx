@@ -5,8 +5,8 @@ import {
   // Environment,
   // Sky,
   // ContactShadows,
-  // RandomizedLight,
-  // AccumulativeShadows,
+  RandomizedLight,
+  AccumulativeShadows,
   SoftShadows,
   BakeShadows,
   useHelper,
@@ -19,7 +19,7 @@ import * as THREE from 'three';
 
 export default function Experience() {
   const directionalLight = useRef();
-  useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
+  // useHelper(directionalLight, THREE.DirectionalLightHelper, 1);
 
   // const { color, opacity, blur } = useControls('contact shadows', {
   //     color: '#1d8f75',
@@ -41,8 +41,9 @@ export default function Experience() {
   const cube = useRef();
 
   useFrame((state, delta) => {
-    // const time = state.clock.elapsedTime
-    // cube.current.position.x = 2 + Math.sin(time)
+    
+    const time = state.clock.elapsedTime;
+    cube.current.position.x = 2 + Math.sin(time);
     cube.current.rotation.y += delta * 0.2;
   });
 
@@ -56,7 +57,7 @@ export default function Experience() {
 
 
       {/* <BakeShadows /> */}
-      <SoftShadows size={ 25 } samples={ 10 } focus={ 0 } />
+      {/* <SoftShadows size={ 25 } samples={ 10 } focus={ 0 } /> */}
 
       {/* <Environment
             background
@@ -79,24 +80,29 @@ export default function Experience() {
         >
         </Environment> */}
 
-      {/* <AccumulativeShadows
-            position={ [ 0, - 0.99, 0 ] }
-            scale={ 10 }
+        <AccumulativeShadows  position={ [ 0, - 0.99, 0 ]} scale={10}
             color="#316d39"
             opacity={ 0.8 }
+            // frames={ 100 }
             frames={ Infinity }
             temporal
             blend={ 100 }
         >
+          {/* <directionalLight  
+            position={[1,2,3]}
+            castShadow
+          /> */}
+          
             <RandomizedLight
+                position={ [ 1, 2, 3 ] }
                 amount={ 8 }
                 radius={ 1 }
                 ambient={ 0.5 }
                 intensity={ 3 }
-                position={ [ 1, 2, 3 ] }
                 bias={ 0.001 }
             />
-        </AccumulativeShadows> */}
+            
+        </AccumulativeShadows>
 
       {/* <Sky sunPosition={ sunPosition } /> */}
 
@@ -149,7 +155,7 @@ export default function Experience() {
 
 {/* Floor */}
       <mesh 
-        receiveShadow 
+        // receiveShadow 
         position-y={ -1 }
         rotation-x={-Math.PI * 0.5} 
         scale={10}

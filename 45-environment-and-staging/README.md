@@ -184,58 +184,60 @@ root.render(
 ```
 
 - in experience.js add castSahdow to the <directionalLight>
+
 ```js
-<directionalLight  
-  ref={ directionalLight }
-  position={[1,2,3]}
+<directionalLight
+  ref={directionalLight}
+  position={[1, 2, 3]}
   // position={ sunPosition }
-  intensity={ 4.5 }
+  intensity={4.5}
   castShadow
 />
 ```
+
 - add castShadow on the objects - on the sphere <mesh> and cube <mesh>
 - those objects only need cast shadow since there is nothing above.
 - on the floor, ask <mesh> to receiveShadow
 - the floor only needs to receive shadow as there is nothing below
- 
+
 ```js
 // Experience.js
 
 // Sphere
 <mesh position-x={-2}
-  castShadow 
-  // position-y={ 1 } 
+  castShadow
+  // position-y={ 1 }
 >
   <sphereGeometry />
-  <meshStandardMaterial 
-    color="orange" 
+  <meshStandardMaterial
+    color="orange"
     //envMapIntensity={ envMapIntensity }
   />
 </mesh>
 
 // Cube
-<mesh 
-  castShadow 
-  // position-y={ 1 } 
-  ref={cube} 
-  position-x={2} 
+<mesh
+  castShadow
+  // position-y={ 1 }
+  ref={cube}
+  position-x={2}
   scale={1.5}>
   <boxGeometry />
-  <meshStandardMaterial 
-  color="mediumpurple" 
+  <meshStandardMaterial
+  color="mediumpurple"
   // envMapIntensity={ envMapIntensity }
   />
 </mesh>
 
-<mesh 
-  receiveShadow 
+<mesh
+  receiveShadow
   position-y={ -1 }
-  rotation-x={-Math.PI * 0.5} 
+  rotation-x={-Math.PI * 0.5}
   scale={10}
 >
   <planeGeometry />
-  <meshStandardMaterial 
-    color="greenyellow" 
+  <meshStandardMaterial
+    color="greenyellow"
     envMapIntensity={ envMapIntensity }
   />
 </mesh>
@@ -245,25 +247,26 @@ root.render(
 
 ### Baking - BakeShadows helper
 
-- real time shadow baking for static scenes 
+- real time shadow baking for static scenes
   - done once at begining then stop (ie. not on each frame)
 - BakeShadows helper from drei
 
 ```js
-export default function Experience()
-{
-    // ...
+export default function Experience() {
+  // ...
 
-    return <>
-
-        <BakeShadows />
-        {/* ... */}
-
+  return (
+    <>
+      <BakeShadows />
+      {/* ... */}
     </>
+  );
 }
 ```
+
 #### Configuring the shadows (24min 20sec)
--  each light casting shadows will render the scene in a specific way and output that we call “shadow map”. This shadow map is then used to know if a surface is in the shade or not.
+
+- each light casting shadows will render the scene in a specific way and output that we call “shadow map”. This shadow map is then used to know if a surface is in the shade or not.
 - By default, that shadow map resolution is rather low in order to maintain solid performance.
 - In pure JavaScript, we can access it by doing directionalLight.shadow.mapSize.set(1024, 1024), but how can we do that in R3F?
 - most properties (even deep ones) are still accessible right from the attributes, by separating the different depth levels with dashes -
@@ -272,45 +275,54 @@ export default function Experience()
 - note: "bottom" and "left" are negative values
 - 'near' and 'far' anything outside the bounds cannot see.
 
-### soft shadows 
+### soft shadows
+
 - NOTE: this is better quality shadow visually - better than default shadow
 - default shadows are too sharp
 - soften shadows with PCSS (Percent Closer Soft shadows)
-- makes shadow look blurry by picking the shadow map texture at an offset position according to the distance between the surface casting the shadow and the surface receiving the shadow 
+- makes shadow look blurry by picking the shadow map texture at an offset position according to the distance between the surface casting the shadow and the surface receiving the shadow
 - ie the further away an object is, the softer the shadow
 - madeby: spidersharma03
 - implementing this soltion implies modifying the shader chunks of Threejs directly (global)
 
 #### Drei component method (PREFERRED - newer)
+
 - drei has <SoftShadows>
 - And add it right after the <BakeShadows /> with the following attributes:
 
 ```js
 //drei component method
-import { SoftShadows, BakeShadows, useHelper, OrbitControls } from '@react-three/drei'
+import {
+  SoftShadows,
+  BakeShadows,
+  useHelper,
+  OrbitControls,
+} from "@react-three/drei";
 
 <directionalLight
-    ref={ directionalLight }
-    position={ [ 1, 2, 3 ] }
-    intensity={ 4.5 }
-    castShadow
-    shadow-mapSize={ [ 1024, 1024 ] }
-    shadow-camera-near={ 1 }
-    shadow-camera-far={ 10 }
-    shadow-camera-top={ 2 }
-    shadow-camera-right={ 2 }
-    shadow-camera-bottom={ - 2 }
-    shadow-camera-left={ - 2 }
-/>
+  ref={directionalLight}
+  position={[1, 2, 3]}
+  intensity={4.5}
+  castShadow
+  shadow-mapSize={[1024, 1024]}
+  shadow-camera-near={1}
+  shadow-camera-far={10}
+  shadow-camera-top={2}
+  shadow-camera-right={2}
+  shadow-camera-bottom={-2}
+  shadow-camera-left={-2}
+/>;
 
-return ( <>
+return (
+  <>
     <BakeShadows />
-    <SoftShadows size={ 25 } samples={ 10 } focus={ 0 } />
+    <SoftShadows size={25} samples={10} focus={0} />
   </>
-)
+);
 ```
 
-#### Drei CODE method  
+#### Drei CODE method
+
 - softShadows() - call it once at begining and outside of any component.
 - In Experience.jsx, import SoftShadows from @react-three/drei:
 - remove <BakeShadows/> to see shadows moving
@@ -336,4 +348,92 @@ export default function Experience(){
 
 }
 
+```
+
+---
+
+### Accumulative shadows (41min 10sec)
+
+- accumulate multiple shadow renders - ie move light get shadow, move light get shadow, etc then combine all shadows to get soft shadow
+- shadow wil be composed of multiple renders from different angles
+- can be rendered on the plane only.
+- AccumulativeShadows is its own shadow, should deactivate the shadow on the floor mesh.
+- remove receiveShadow from floor mesh
+- remove softShadow()
+- import AccumulativeShadows
+- add it to the scene right after the `<directionalLight>` and dont auto-close it
+- move it a little above the floor (fix z-fighting)
+- default scale is 10 units which matches our scene perfectly, but if you need a smaller or bigger AccumulativeShadows, use the scale attribute
+- AccumulativeShadow DOES NOT TAKE LIGHT FROM THE SCENE, have to provide the light separately
+- Since the AccumulativeShadows will be a shadow on its own, we should deactivate the shadows on the `<mesh>` corresponding to the floor to prevent having two shadows.
+- create a `<directionalLight>` in AccumulativeShadows,
+- use the same position attribute as the current directionalLight
+- add castShadow attribute
+
+#### RandomizedLight (48min)
+
+- import RandomizedLight
+- replace by using RandomizedLight instead of the directional light - use same position attribute
+- RadomizedLight has multiple attributes
+  - amount - how many light
+  - radius - amplitude of jiggle
+  - intensity - light intensity
+  - ambient - act like global light was illuminating whole scene, only tight spaces and crevices receiving shadows
+- parameters related to shadow map:
+  - castShadow: If it should cast shadows
+  - bias: the bias offset to fix the issue where the objects are casting shadows on themselves or not casting shadow on objects very close to their surface
+  - mapSize: the shadow map size (the lower, the better for performances)
+  - size: the amplitude of the shadow (top, right, bottom and left all at once)
+  - near and far: how close and how far the shadow map camera will render objects
+  - use debug ui like Leva to tweak values
+- have access to attributes on AccumulativeShadows:
+  - color - color the shadow
+  - opacity 
+  - frames - renders to do (higher = better quality)
+  - temportal - spread the renders across multiple frames
+- the shadow looks smooth but threejs had to do those 1000 renders on the first frame
+- can prevent the freeze with "temporal" by spreading renders across frames
+- fixing the weird artifacts (lines) drawn on shadows - from the helper: fix = remove helper 
+  `// useHelper(directionalLight, THREE.DirectionalLightHelper, 1);`
+- reduce frames to 100 (take less than 2 seconds @60fps)
+- shadow not moving with cube (because 100 renders are being done on first frame then stops)
+- in the useFrame, retrieve the clock elapsedTime and assign it to ta time variable
+- Now use it on the cube position with a Math.sin() and add 2 to it so that it stays near its current position:
+
+#### make shadow follow geometry
+- tell AccumulativeShadows to keep rendering the shaodws with the frames attribute set to "Infinity"
+- this creates a stop motion feeling
+- when using AccumulativeShadows - its only blending the last 20 shadow renders. 
+- FIX: set the blend attribute to 100
+- AccumulativeShadows is good for static Scenes.
+
+```js
+import { RandomizedLight, AccumulativeShadows } from "@react-three/drei";
+
+useFrame((state, delta)=>{
+  const time = state.clock.elapsedTime;
+  cube.current.position.x = 2 + Math.sin(time)
+
+});
+
+
+
+<AccumulativeShadows 
+  position={[0, -0.99, 0]} 
+  scale={10} 
+  color="#316d39" 
+  opacity={ 0.8 } 
+  frames={ Infinity }
+  temporal
+  blend={100}
+  > 
+  <RandomizedLight
+    position={[1, 2, 3]}
+    amount={8}
+    radius={1}
+    ambient={0.5}
+    intensity={3}
+    bias={0.001}
+  />
+</AccumulativeShadows>;
 ```
