@@ -262,16 +262,32 @@ export default function Experience()
     </>
 }
 ```
-#### Configuring the shadows
+#### Configuring the shadows (24min 20sec)
 -  each light casting shadows will render the scene in a specific way and output that we call “shadow map”. This shadow map is then used to know if a surface is in the shade or not.
 - By default, that shadow map resolution is rather low in order to maintain solid performance.
 - In pure JavaScript, we can access it by doing directionalLight.shadow.mapSize.set(1024, 1024), but how can we do that in R3F?
 - most properties (even deep ones) are still accessible right from the attributes, by separating the different depth levels with dashes -
-- eg. to change the shadow.mapSize property, we can use the shadow-mapSize attribute
+- to change the shadow.mapSize property, we can use the shadow-mapSize attribute
 - And we can do the same with the near, far, top, right, bottom and left properties (since a OrthographicCamera is used to render the shadow map):
-- note: bottom, left are negative values
+- note: "bottom" and "left" are negative values
+- 'near' and 'far' anything outside the bounds cannot see.
+
+### soft shadows 
+- NOTE: this is better quality shadow visually - better than default shadow
+- default shadows are too sharp
+- soften shadows with PCSS (Percent Closer Soft shadows)
+- makes shadow look blurry by picking the shadow map texture at an offset position according to the distance between the surface casting the shadow and the surface receiving the shadow 
+- ie the further away an object is, the softer the shadow
+- madeby: spidersharma03
+- implementing this soltion implies modifying the shader chunks of Threejs directly (global)
+
+#### Drei component method (PREFERRED - newer)
+- drei has <SoftShadows>
+- And add it right after the <BakeShadows /> with the following attributes:
 
 ```js
+//drei component method
+import { SoftShadows, BakeShadows, useHelper, OrbitControls } from '@react-three/drei'
 
 <directionalLight
     ref={ directionalLight }
@@ -286,4 +302,38 @@ export default function Experience()
     shadow-camera-bottom={ - 2 }
     shadow-camera-left={ - 2 }
 />
+
+return ( <>
+    <BakeShadows />
+    <SoftShadows size={ 25 } samples={ 10 } focus={ 0 } />
+  </>
+)
+```
+
+#### Drei CODE method  
+- softShadows() - call it once at begining and outside of any component.
+- In Experience.jsx, import SoftShadows from @react-three/drei:
+- remove <BakeShadows/> to see shadows moving
+- Note that this helper will modify Three.js shaders directly and each change applied on its attributes will re-compile all the shaders supporting shadows. This will result in performance issues and a drastic frame rate drop.
+
+```js
+//Drei code method
+import { softShadows, BakeShadows, useHelper, OrbitControls } from '@react-three/drei'
+
+softShadows({
+  frustum: 3.75,
+  size: 0.005,
+  near: 9.5,
+  samples: 17,
+  rings:11
+})
+
+export default function Experience(){
+
+
+  return (<>
+    <>)
+
+}
+
 ```

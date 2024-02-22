@@ -7,7 +7,7 @@ import {
   // ContactShadows,
   // RandomizedLight,
   // AccumulativeShadows,
-  // SoftShadows,
+  SoftShadows,
   BakeShadows,
   useHelper,
   OrbitControls
@@ -55,8 +55,8 @@ export default function Experience() {
       <OrbitControls makeDefault />
 
 
-      <BakeShadows />
-      {/* <SoftShadows size={ 25 } samples={ 10 } focus={ 0 } /> */}
+      {/* <BakeShadows /> */}
+      <SoftShadows size={ 25 } samples={ 10 } focus={ 0 } />
 
       {/* <Environment
             background
