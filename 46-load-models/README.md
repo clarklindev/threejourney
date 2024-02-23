@@ -184,3 +184,26 @@ export default function Hamburger({...props}){
 useGLTF.preload("./hamburger-draco.glb");
 ```
 
+### Multiple instances (46min)
+- adding more instances...
+- Clone helper
+- import {Clone}  from drei
+- instead of `<primitive>`, use `<Clone>`
+
+```js
+import {Clone} from '@react-three/drei';
+
+export default function Model() {
+
+  return (
+    <>
+      <Clone object={model.scene} scale={0.35} position-x={-4} />
+      <Clone object={model.scene} scale={0.35} position-x={0} />
+      <Clone object={model.scene} scale={0.35} position-x={4} />
+    </>
+
+    // <primitive object={model.scene} scale={0.35}/>  //hamburger
+  );
+}
+
+```
