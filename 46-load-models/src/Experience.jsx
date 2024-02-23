@@ -1,32 +1,29 @@
 import { OrbitControls } from "@react-three/drei";
 import { Perf } from "r3f-perf";
-// import Model from "./Model.jsx";
-// import { Suspense } from "react";
-// import Placeholder from "./Placeholder.jsx";
+import { Suspense } from "react";
+
+import Model from "./Model.jsx";
+import Placeholder from "./Placeholder.jsx";
 // import Hamburger from "./Hamburger.jsx";
 // import Fox from "./Fox.jsx";
-
-import {useLoader} from '@react-three/fiber';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-
 
 export default function Experience() {
     
   // const model = useLoader(GLTFLoader, './hamburger.glb');
   // console.log(model);
 
-  //load with dracoloader
-  const model = useLoader(
-    GLTFLoader, 
-    './hamburger-draco.glb',
-    (loader)=>{
+  //load with dracoloader ... moved to Model.jsx
+  // const model = useLoader(
+  //   GLTFLoader, 
+  //   // './hamburger-draco.glb',
+  //   './FlightHelmet/glTF/FlightHelmet.gltf',
+  //   (loader)=>{
       
-      const dracoLoader = new DRACOLoader();
-      dracoLoader.setDecoderPath('./draco/');
-      loader.setDRACOLoader(dracoLoader);
-    }  
-  );
+  //     const dracoLoader = new DRACOLoader();
+  //     dracoLoader.setDecoderPath('./draco/');
+  //     loader.setDRACOLoader(dracoLoader);
+  //   }  
+  // );
 
   return (
     <>
@@ -42,7 +39,7 @@ export default function Experience() {
       />
       <ambientLight intensity={1.5} />
 
-      <primitive object={model.scene} scale={0.35} />
+      {/* <primitive object={model.scene} scale={5} position-y={-1}/> //moved to Model.jsx */}  
 
 {/* 
       <mesh castShadow position-x={ - 2 }>
@@ -65,11 +62,21 @@ export default function Experience() {
         <meshStandardMaterial color="greenyellow" />
       </mesh>
 
-      {/* <Suspense fallback={<Placeholder position-y={0.5} scale={[2, 3, 2]} />}>
-        <Hamburger scale={0.35} />
+   
+      <Suspense 
+        // fallback={ 
+        //   <mesh position-y={ 0.5 } scale={ [ 2, 3, 2 ] }>
+        //     <boxGeometry args={ [ 1, 1, 1, 2, 2, 2 ] } />
+        //     <meshBasicMaterial wireframe color="red" />
+        //   </mesh> 
+        // }
+        fallback={<Placeholder position-y={0.5} scale={[2, 3, 2]} />}
+      >
+        {/* <Hamburger scale={0.35} /> */}
+        <Model/>
       </Suspense>
 
-      <Fox /> */}
+      {/* <Fox />  */}
     </>
   );
 }
