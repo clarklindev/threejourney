@@ -30,3 +30,24 @@ export default function Experience(){
     )
 }
 ```
+
+### Draco loader (09min 59sec)
+- to load draco compressed files, need to instantiate a DRACOLoader and add it to GLTFLoader with setDRACOLoader()
+- pass a third argument to useLoader() and send it a function that gives access to the loader instance
+- import DRACOLoader
+- instantiate it in the function (the DRACO decoder folder is available in the /public/ folder) and associate it with the GLTFLoader instance using setDRACOLoader()
+
+```js
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+
+const model = useLoader(
+  GLTFLoader, 
+  './hamburger-draco.glb',
+  (loader)=>{
+    
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('./draco/');
+    loader.setDRACOLoader(dracoLoader);
+  }  
+);
+```
