@@ -1,15 +1,16 @@
 
-import {useLoader} from '@react-three/fiber';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+// import {useLoader} from '@react-three/fiber';
+// import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 import { Clone, useGLTF } from "@react-three/drei";
 
 export default function Model() {
 
-  const model = useLoader(
-    GLTFLoader, 
-    './hamburger.glb',
+  //basic loader
+  // const model = useLoader(
+  //   GLTFLoader, 
+  //   './hamburger.glb',
     // './FlightHelmet/glTF/FlightHelmet.gltf',
     
     //draco loader
@@ -19,9 +20,9 @@ export default function Model() {
     //   dracoLoader.setDecoderPath('./draco/');
     //   loader.setDRACOLoader(dracoLoader);
     // }  
-  );
+  // );
 
-  // const model = useGLTF("./hamburger-draco.glb");
+  const model = useGLTF("./hamburger-draco.glb");
 
   return (
     // <>
@@ -35,4 +36,4 @@ export default function Model() {
   );
 }
 
-// useGLTF.preload("./hamburger-draco.glb");
+useGLTF.preload("./hamburger-draco.glb");

@@ -144,3 +144,43 @@ export default function Placeholder()
   </mesh>
 }
 ```
+---
+### GLTF loading with drei (38min 41sec) 
+
+- loading with drei
+- drei implements multiple loader helpers like useGLTF 
+- import useGLTF
+- replace useLoader() by useGLTF() with path to the file
+- remove useLoader, GLTFLoader, DRACOLoader
+- useGLTF does not require the draco/ folder (gets it from CDN)
+
+```js
+
+//remove
+// import {useLoader} from '@react-three/fiber';
+// import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+
+import { useGLTF } from "@react-three/drei";
+
+const model = useGLTF('./hamburger.glb');
+
+```
+
+### Preloading (41min 56sec)
+- instead of loading model ONLY once instance of model is created, 
+- ie. if we only instantiate the model instance later, it will take time to load a model and we see a placeholder (if there is one)
+- TODO: load model as soon as possible
+- can use useGLTF.preload() to preload
+- preload file should be the same link 
+
+```js
+//model js
+
+export default function Hamburger({...props}){
+  //...
+}
+
+useGLTF.preload("./hamburger-draco.glb");
+```
+
