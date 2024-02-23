@@ -6,10 +6,14 @@ import { Perf } from "r3f-perf";
 // import Hamburger from "./Hamburger.jsx";
 // import Fox from "./Fox.jsx";
 
+import {useLoader} from '@react-three/fiber';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+
 export default function Experience() {
     
-  // const model = useLoader(GLTFLoader, './hamburger.glb');
-  // console.log(model);
+  const model = useLoader(GLTFLoader, './hamburger.glb');
+  console.log(model);
 
   return (
     <>
@@ -24,6 +28,9 @@ export default function Experience() {
         // shadow-normalBias={0.04}
       />
       <ambientLight intensity={1.5} />
+
+      <primitive object={model.scene} scale={0.35} />
+
 {/* 
       <mesh castShadow position-x={ - 2 }>
           <sphereGeometry />
