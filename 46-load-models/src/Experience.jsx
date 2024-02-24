@@ -2,9 +2,9 @@ import { OrbitControls } from "@react-three/drei";
 import { Perf } from "r3f-perf";
 import { Suspense } from "react";
 
-import Model from "./Model.jsx";
+// import Model from "./Model.jsx";
 import Placeholder from "./Placeholder.jsx";
-// import Hamburger from "./Hamburger.jsx";
+import Hamburger from "./Hamburger.jsx";
 // import Fox from "./Fox.jsx";
 
 export default function Experience() {
@@ -35,8 +35,9 @@ export default function Experience() {
         castShadow
         position={[1, 2, 3]}
         intensity={4.5}
-        // shadow-normalBias={0.04}
+        shadow-normalBias={0.04}
       />
+      
       <ambientLight intensity={1.5} />
 
       {/* <primitive object={model.scene} scale={5} position-y={-1}/> //moved to Model.jsx */}  
@@ -72,8 +73,8 @@ export default function Experience() {
         // }
         fallback={<Placeholder position-y={0.5} scale={[2, 3, 2]} />}
       >
-        {/* <Hamburger scale={0.35} /> */}
-        <Model/>
+        {/* <Model/> */}
+        <Hamburger scale={0.35} />
       </Suspense>
 
       {/* <Fox />  */}

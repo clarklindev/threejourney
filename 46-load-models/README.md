@@ -207,3 +207,85 @@ export default function Model() {
 }
 
 ```
+
+---
+# GLTF to component (48min 53sec)
+- to manipulate the different parts of a hamburger: need to traverse the loaded model, find the child, save as variable, apply modifications.
+- SOLUTION: loaded file is a component and everything inside is the parts as components in JSX (GLTF to react three fiber)
+
+#### GLTF -> React 3 fiber
+https://github.com/pmndrs/gltfjsx
+online version - https://gltf.pmnd.rs
+
+- it creates the react component from the model - giving access to individual parts as components
+- drag-and-drop hamburger model .glb (draco or normal version) and you get component jsx code returned
+- copy the code -> using the Leva exports -> "copy to clipboard"
+- paste code src/Hamburger.js
+
+#### Refactoring
+- tool assumes model is available in the root directory (/public)
+- or in other circumstances, make sure that the path in useGLTF() and useGLTF.preload() are the same.
+- ./ makes the path relative to url
+
+```js
+const { nodes, materials } = useGLTF("./hamburger.glb");
+
+//...
+useGLTF.preload("./hamburger.glb");
+
+```
+
+#### Import (58min 23sec)
+- import Hamburger in Experience.js
+- in Experience.js, replace `<Model/>` with `<Hamburger>`
+- since every part of the model are written as <mesh> and <group> in Hamburger.js we have a lot more control over it.
+
+```js
+
+export default function Hamburger(props) {
+  const { nodes, materials } = useGLTF("./hamburger.glb");
+  return (
+    <group {...props} dispose={null}>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.bottomBun.geometry}
+        material={materials.BunMaterial}
+      />
+
+      //...
+
+      //top bun
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.topBun.geometry}
+        material={materials.BunMaterial}
+        position={[0, 1.77, 0]}
+      />
+    </group>
+  )
+}
+```
+
+- fixing the shadow, theres lines from 'shadow acne', each mesh is receiving and casting shadows - bun is casting shadows on itself.
+- FIX: tweak "bias" or 'shadowBias' on the directional light shadow in Experience.
+
+```js
+//Experience
+
+export default function Experience() {
+  //...
+
+  return (
+  <directionalLight
+    castShadow
+    position={[1, 2, 3]}
+    intensity={4.5}
+    shadow-normalBias={0.04}
+  />
+  )
+}
+  
+```
+
