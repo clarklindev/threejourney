@@ -20,6 +20,13 @@
 - useMatcapTexture returns an array and we need the fist value (the texture)
 - replace `<meshNormalMaterial>` with a `<meshMatcapMaterial>` and use the matcapTexture on the mapcap attribute
 
+#### donuts
+- create a `<mesh>` with `<torusGeometry>` and duplicate the `<meshMatcapMaterial>`
+- you can tweak the geometry with parameters via args={}
+
+#### multiple donuts
+
+ 
 ```js
 import { useMatcapTexture, Center, Text3D } from "@rect-three/drei";
 
@@ -42,10 +49,17 @@ export default function Experience() {
           bevelSegments={ 5 }
           // material={ material }
         >
+          <meshMatcapMaterial matcap={ matcapTexture }/>
+          {/* <meshNormalMaterial/> */}
           HELLO R3F
-          <meshNormalMaterial/>
         </Text3D>
       </Center>
+
+      //{/* donut */}
+      <mesh>
+        <torusGeometry args={[1, 0.6, 16, 32]}/>
+        <meshMatcapMaterial matcap={matcapTexture}/>
+      </mesh>
     </>
   );
 }

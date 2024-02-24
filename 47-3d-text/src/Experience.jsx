@@ -62,13 +62,18 @@ export default function Experience() {
           bevelSize={ 0.02 }
           bevelOffset={ 0 }
           bevelSegments={ 5 }
-          // 
         >
           <meshMatcapMaterial matcap={ matcapTexture }/>
           {/* <meshNormalMaterial/> */}
           HELLO R3F
         </Text3D>
       </Center>
+
+      {/* Donut (single) */}
+      <mesh>
+        <torusGeometry/>
+        <meshMatcapMaterial matcap={matcapTexture}/>
+      </mesh>
 
       {/* { [...Array(100)].map((value, index) =>
             <mesh
