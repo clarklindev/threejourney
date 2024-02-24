@@ -1,7 +1,7 @@
 import {
-  // useMatcapTexture,
-  //Center,
-  //Text3D,
+  useMatcapTexture,
+  Center,
+  Text3D,
   OrbitControls,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
@@ -15,7 +15,7 @@ import { Perf } from "r3f-perf";
 export default function Experience() {
   // const donuts = useRef([])
 
-  // const [ matcapTexture ] = useMatcapTexture('7B5254_E9DCC7_B19986_C8AC91', 256)
+  const [ matcapTexture ] = useMatcapTexture('7B5254_E9DCC7_B19986_C8AC91', 256);
 
   // useFrame((state, delta) =>
   // {
@@ -40,27 +40,35 @@ export default function Experience() {
 
       <OrbitControls makeDefault />
 
-      <mesh scale={1.5}>
+      {/* <mesh scale={1.5}>
         <boxGeometry />
         <meshNormalMaterial />
-      </mesh>
+      </mesh> */}
 
-      {/* <Center>
-            <Text3D
-                material={ material }
-                font="./fonts/helvetiker_regular.typeface.json"
-                size={ 0.75 }
-                height={ 0.2 }
-                curveSegments={ 12 }
-                bevelEnabled
-                bevelThickness={ 0.02 }
-                bevelSize={ 0.02 }
-                bevelOffset={ 0 }
-                bevelSegments={ 5 }
-            >
-                HELLO R3F
-            </Text3D>
-        </Center> */}
+
+      {/* <Text3D font="./fonts/helvetiker_regular.typeface.json">
+        Hello world!
+        <meshNormalMaterial />
+      </Text3D> */}
+
+      <Center>
+        <Text3D
+          font="./fonts/helvetiker_regular.typeface.json"
+          size={ 0.75 }
+          height={ 0.2 }
+          curveSegments={ 12 }
+          bevelEnabled
+          bevelThickness={ 0.02 }
+          bevelSize={ 0.02 }
+          bevelOffset={ 0 }
+          bevelSegments={ 5 }
+          // 
+        >
+          <meshMatcapMaterial matcap={ matcapTexture }/>
+          {/* <meshNormalMaterial/> */}
+          HELLO R3F
+        </Text3D>
+      </Center>
 
       {/* { [...Array(100)].map((value, index) =>
             <mesh
