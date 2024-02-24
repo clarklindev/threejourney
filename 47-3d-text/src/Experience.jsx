@@ -5,7 +5,7 @@ import {
   OrbitControls,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
-// import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 // import { useFrame } from '@react-three/fiber'
 // import * as THREE from 'three'
 
@@ -70,17 +70,18 @@ export default function Experience() {
       </Center>
 
       {/* Donut (single) */}
-      <mesh>
+      {/* <mesh>
         <torusGeometry/>
         <meshMatcapMaterial matcap={matcapTexture}/>
-      </mesh>
+      </mesh> */}
 
-      {/* { [...Array(100)].map((value, index) =>
+      { [...Array(100)].map((value, index) =>
             <mesh
-                ref={ (element) => donuts.current[index] = element }
+                // ref={ (element) => donuts.current[index] = element }
                 key={ index }
-                geometry={ torusGeometry }
-                material={ material }
+                // geometry={ torusGeometry }
+                // material={ material }
+                
                 position={ [
                     (Math.random() - 0.5) * 10,
                     (Math.random() - 0.5) * 10,
@@ -92,8 +93,11 @@ export default function Experience() {
                     Math.random() * Math.PI,
                     0
                 ] }
-            />
-        ) } */}
+            >
+              <torusGeometry args={[1, 0.6, 16, 32]}/>
+              <meshMatcapMaterial matcap={matcapTexture}/>
+            </mesh>
+        ) }
     </>
   );
 }

@@ -10,7 +10,7 @@
 #### Centering
 - instead of offsetting the geometry itself, use `<Center>` from drei
 
-#### material - matcap
+#### material - matcap (10min 5sec)
 - TODO: load matcap texture
 - drei helper to load matcap textures: useMatcapTexture automatically from https://github.com/emmelleppi/matcaps
 - import useMatcapTexture from drei
@@ -20,15 +20,26 @@
 - useMatcapTexture returns an array and we need the fist value (the texture)
 - replace `<meshNormalMaterial>` with a `<meshMatcapMaterial>` and use the matcapTexture on the mapcap attribute
 
-#### donuts
+#### donuts (18min) (Native Three.js)
 - create a `<mesh>` with `<torusGeometry>` and duplicate the `<meshMatcapMaterial>`
 - you can tweak the geometry with parameters via args={}
 
-#### multiple donuts
+#### multiple donuts (20min 14sec) (Native Three.js)
+- create array with default "undefined" `[...Array(100)]`
+- add randomness to "position"
+- add randomness to scale
+- add randomness to rotation
+- use index from map(value, index) and use index as key
 
- 
+#### OPTIMIZATION - move the geometries outside
+  - create one `<torusGeometry>` outside of the donut
+  - store it in useState: `import { useEffect, useRef, useState } from 'react'`
+  - put it back on mesh from state
+
 ```js
+
 import { useMatcapTexture, Center, Text3D } from "@rect-three/drei";
+import { useEffect, useRef, useState } from 'react'
 
 export default function Experience() {
 
@@ -56,10 +67,33 @@ export default function Experience() {
       </Center>
 
       //{/* donut */}
-      <mesh>
-        <torusGeometry args={[1, 0.6, 16, 32]}/>
-        <meshMatcapMaterial matcap={matcapTexture}/>
-      </mesh>
+      // <mesh>
+      //   <torusGeometry args={[1, 0.6, 16, 32]}/>
+      //   <meshMatcapMaterial matcap={matcapTexture}/>
+      // </mesh>
+
+      { [...Array(100)].map((value, index) =>
+         <mesh
+            // ref={ (element) => donuts.current[index] = element }
+            key={ index }
+            // geometry={ torusGeometry }
+            // material={ material }
+            position={ [
+                (Math.random() - 0.5) * 10,
+                (Math.random() - 0.5) * 10,
+                (Math.random() - 0.5) * 10
+            ] }
+            scale={ 0.2 + Math.random() * 0.2 }
+            rotation={ [
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                0
+            ] }
+          >
+            <torusGeometry args={[1, 0.6, 16, 32]}/>
+            <meshMatcapMaterial matcap={matcapTexture}/>
+          </mesh>
+      ) }
     </>
   );
 }
