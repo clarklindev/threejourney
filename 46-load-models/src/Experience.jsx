@@ -5,7 +5,7 @@ import { Suspense } from "react";
 // import Model from "./Model.jsx";
 import Placeholder from "./Placeholder.jsx";
 import Hamburger from "./Hamburger.jsx";
-// import Fox from "./Fox.jsx";
+import Fox from "./Fox.jsx";
 
 export default function Experience() {
     
@@ -77,7 +77,7 @@ export default function Experience() {
         <Hamburger scale={0.35} />
       </Suspense>
 
-      {/* <Fox />  */}
+      <Fox /> 
     </>
   );
 }

@@ -289,3 +289,105 @@ export default function Experience() {
   
 ```
 
+---
+### Animation
+- creating a Fox component (src/Fox.jsx), 
+- load any of the model variations available in public/Fox/ folder with useGLTF()
+- add it to the scene
+- use attributes like 'scale', 'position', 'rotation' to adjust
+
+### Play the animation
+- 1. "Survey"
+- 2. "Walk"
+- 3. "Run"
+
+- Drei has a helper for animations called: useAnimations()
+- Fox.js: import {useAnimations, useGLTF} from '@react-three/drei';
+- the loaded model gives us access to animations that come with the model in fox.animations
+- after calling useGLTF, call useAnimation and send it fox.animations and fox.scene
+  `const animations = useAnimations(fox.animations, fox.scene);`
+- we have access to various animations provided with the model and each one has bee converted into an AnimationAction using the name of the animation: for Fox... (Run, Survey, Walk) 
+- those actions are available in the (loaded).actions object
+- useAnimation removes the manual process of creating AnimationActions
+- eg. animations.actions.Run
+- BUT before starting any actions, its better to do it once the component has finished for first time using useEffect
+- React Three Fiber and useAnimations helper will take care of updating the animation on each frame.
+- if you want the fox to start walking after a few seconds, use the various available methods in AnimationAction like "crossFadeFrom" which is going to "fadeOut" the "Run" and "fadeIn" the "Walk"
+
+#### crossfade animation
+```js
+  //crossfade animation
+  window.setTimeout(()=>{
+    animations.actions.Walk.play();
+    animations.actions.Walk.crossFadeFrom(animations.actions.Run, 1);
+  }, 2000);
+```
+
+#### animation control and cleanup
+- control animation via name - using Leva 
+- after useAnimations, call useControls to create a tweak with a `<select>` where choices available are the animations in the model.
+- access is via 'animations.names'
+- in useEffect, instead of using the Run animation, use the animationName variable
+- remove the automatic setTimeout we coded previously
+- use the useEffect dependencies array to reflect the changing animation.
+- when changing animation, threejs mixes AND plays all the animations together 
+- TODO: clean transition animations for stop old animation (fadeOut) and start new animation (fadeIn)
+  `action.reset().fadeIn(0.5).play();` - fade it in with fadeIn() before play with 0.5
+- cleanup phase: animations to fadeOut is handled by useEffect() return ()=>{ action.fadeOut(0.5); }
+- sometimes you need to reset the model animation so that the animation begins exactly when the fadeIn starts...
+- FIX: add reset() before fadeIn().
+- reset also ensures animation starts from begining
+
+```js
+//src/Fox
+
+import { useAnimations, useGLTF } from "@react-three/drei";
+import { useControls } from "leva";
+import { useEffect } from "react";
+
+export default function Fox() {
+  const fox = useGLTF("./Fox/glTF/Fox.gltf");
+
+  console.log(fox);   //gives access to properties like .scene and .animations
+
+
+  const animations = useAnimations(fox.animations, fox.scene);
+
+  console.log(animations.actions.Run);
+
+  const { animationName } = useControls({
+    animationName: { options: animations.names },
+  });
+
+  useEffect(() => {
+    // const action = animations.actions.Run;
+    // action.play();
+
+    const action = animations.actions[animationName];
+    action
+      .reset()
+      .fadeIn(0.5)
+      .play();
+
+    //crossfade animation
+    // window.setTimeout(()=>{
+    //   animations.actions.Walk.play();
+    //   animations.actions.Walk.crossFadeFrom(animations.actions.Run, 1);     //run crossfade into walk
+    // }, 2000);
+
+    return () => {
+      action.fadeOut(0.5);
+    };
+  }, [animationName]);
+
+  return (
+    <primitive
+      object={fox.scene}
+      scale={0.02}
+      position={[-2.5, 0, 2.5]}
+      rotation-y={0.3}
+    />
+  );
+}
+
+```
