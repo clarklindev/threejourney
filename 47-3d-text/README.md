@@ -31,11 +31,15 @@
 - add randomness to rotation
 - use index from map(value, index) and use index as key
 
-#### OPTIMIZATION - move the geometries outside
+#### OPTIMIZATION - move the geometries outside (29min 53sec)
+  - currently creating multiple geometries (but should only have 2: donut and text)
   - create one `<torusGeometry>` outside of the donut
   - store it in useState: `import { useEffect, useRef, useState } from 'react'`
   - put it back on mesh from state
-
+- send the setTorusGeometry function to the ref={} of the torusGeometry
+- when sending a function to the ref, React will call that function with the component as the parameter.
+- state torusGeometry now contains `<torusGeometry>`
+- can send to `<mesh geometry={}>` with geometry attribute
 ```js
 
 import { useMatcapTexture, Center, Text3D } from "@rect-three/drei";
@@ -44,9 +48,22 @@ import { useEffect, useRef, useState } from 'react'
 export default function Experience() {
 
   const [matcapTexture] = useMatcapTexture('7B5254_E9DCC7_B19986_C8AC91', 256);
+  const [torusGeometry, setTorusGeometry] = useState();
 
   return (
     <>
+      <Perf position="top-left" />
+
+      <OrbitControls makeDefault />
+
+      <torusGeometry ref={setTorusGeometry} args={[1, 0.6, 16, 32]}/>
+
+      //{/* donut */}
+      // <mesh>
+      //   <torusGeometry args={[1, 0.6, 16, 32]}/>
+      //   <meshMatcapMaterial matcap={matcapTexture}/>
+      // </mesh>
+
       <Center>
         <Text3D
           font="./fonts/helvetiker_regular.typeface.json"
@@ -66,17 +83,11 @@ export default function Experience() {
         </Text3D>
       </Center>
 
-      //{/* donut */}
-      // <mesh>
-      //   <torusGeometry args={[1, 0.6, 16, 32]}/>
-      //   <meshMatcapMaterial matcap={matcapTexture}/>
-      // </mesh>
-
       { [...Array(100)].map((value, index) =>
          <mesh
             // ref={ (element) => donuts.current[index] = element }
             key={ index }
-            // geometry={ torusGeometry }
+            geometry={ torusGeometry }
             // material={ material }
             position={ [
                 (Math.random() - 0.5) * 10,
@@ -90,7 +101,6 @@ export default function Experience() {
                 0
             ] }
           >
-            <torusGeometry args={[1, 0.6, 16, 32]}/>
             <meshMatcapMaterial matcap={matcapTexture}/>
           </mesh>
       ) }

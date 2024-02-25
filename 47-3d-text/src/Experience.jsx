@@ -5,17 +5,19 @@ import {
   OrbitControls,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
 // import { useFrame } from '@react-three/fiber'
-// import * as THREE from 'three'
+import * as THREE from 'three'
 
-// const torusGeometry = new THREE.TorusGeometry(1, 0.6, 16, 32)
+const torusGeometry = new THREE.TorusGeometry(1, 0.6, 16, 32);
 // const material = new THREE.MeshMatcapMaterial()
 
 export default function Experience() {
   // const donuts = useRef([])
 
   const [ matcapTexture ] = useMatcapTexture('7B5254_E9DCC7_B19986_C8AC91', 256);
+
+  const [torusGeometry, setTorusGeometry] = useState();
 
   // useFrame((state, delta) =>
   // {
@@ -39,6 +41,9 @@ export default function Experience() {
       <Perf position="top-left" />
 
       <OrbitControls makeDefault />
+
+      <torusGeometry ref={setTorusGeometry} args={[1, 0.6, 16, 32]}/>
+
 
       {/* <mesh scale={1.5}>
         <boxGeometry />
@@ -79,7 +84,7 @@ export default function Experience() {
             <mesh
                 // ref={ (element) => donuts.current[index] = element }
                 key={ index }
-                // geometry={ torusGeometry }
+                geometry={ torusGeometry }
                 // material={ material }
                 
                 position={ [
@@ -94,7 +99,8 @@ export default function Experience() {
                     0
                 ] }
             >
-              <torusGeometry args={[1, 0.6, 16, 32]}/>
+              {/* moved outside and use on mesh with attribute geometry={} instead*/}
+              {/* <torusGeometry args={[1, 0.6, 16, 32]}/> */}
               <meshMatcapMaterial matcap={matcapTexture}/>
             </mesh>
         ) }
