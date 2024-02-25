@@ -226,3 +226,41 @@ export default function Experience(){
   });
 }
 ```
+
+#### Method 2
+- problem with method 1 is we changing the code due to structure flaw in design : requiring access to the children.
+- TODO: use an array instead to track the donuts: 
+  - array .current initially an empty array
+  - add donuts to array
+- remove donutsGroup ref, `<group>`, and the loop inside useFrame.
+- create donuts reference and assign [] as default value
+- REMEMBER: sending a value to useRef will set that value as the default current property of the reference
+- to donut mesh, add a ref attribute but pass it a function - react will call this function and pass the actual element as parameter
+- we can then save it in the donuts.current property of donuts using push()
+- problem is: everytime component re-renders array will grow
+- FIX: add elements to array at specific index of map
+- use useFrame() and loop again to update rotations but on donuts.current
+
+```js
+export default function Experience() {
+  
+  const donuts = useRef([]);
+
+  useFrame((state, delta)=>{
+    for(const donut of donuts.current){
+      donut.rotation.y += delta * 0.2;
+    }
+  });
+
+  return (
+    { [...Array(100)].map((value, index) =>
+    
+      <mesh ref={ (element) => 
+        // donuts.current.push(element)    //problem is: everytime component re-renders array will grow
+        donuts.current[index] = element 
+      }
+      />
+    )}
+  )
+}
+```
