@@ -1,41 +1,48 @@
-import { shaderMaterial, Sparkles, Center, useTexture, useGLTF, OrbitControls } from '@react-three/drei'
-import * as THREE from 'three'
-import { useFrame, extend } from '@react-three/fiber'
-import { useRef } from 'react'
-import portalVertexShader from './shaders/portal/vertex.glsl'
-import portalFragmentShader from './shaders/portal/fragment.glsl'
+import {
+  // shaderMaterial, Sparkles, Center, useTexture, useGLTF,
+  OrbitControls,
+} from "@react-three/drei";
+// import * as THREE from 'three'
+// import { useFrame, extend } from '@react-three/fiber'
+// import { useRef } from 'react'
+// import portalVertexShader from './shaders/portal/vertex.glsl'
+// import portalFragmentShader from './shaders/portal/fragment.glsl'
 
-const PortalMaterial = shaderMaterial(
-    {
-        uTime: 0,
-        uColorStart: new THREE.Color('#ffffff'),
-        uColorEnd: new THREE.Color('#000000')
-    },
-    portalVertexShader,
-    portalFragmentShader
-)
+// const PortalMaterial = shaderMaterial(
+//     {
+//         uTime: 0,
+//         uColorStart: new THREE.Color('#ffffff'),
+//         uColorEnd: new THREE.Color('#000000')
+//     },
+//     portalVertexShader,
+//     portalFragmentShader
+// )
 
-extend({ PortalMaterial })
+// extend({ PortalMaterial })
 
-export default function Experience()
-{
-    const { nodes } = useGLTF('./model/portal.glb')
+export default function Experience() {
+  // const { nodes } = useGLTF('./model/portal.glb')
 
-    const bakedTexture = useTexture('./model/baked.jpg')
-    bakedTexture.flipY = false
-    
-    const portalMaterial = useRef()
+  // const bakedTexture = useTexture('./model/baked.jpg')
+  // bakedTexture.flipY = false
 
-    useFrame((state, delta) =>
-    {
-        portalMaterial.current.uTime += delta
-    })
+  // const portalMaterial = useRef()
 
-    return <>
+  // useFrame((state, delta) =>
+  // {
+  //     portalMaterial.current.uTime += delta
+  // })
 
-        <OrbitControls makeDefault />
+  return (
+    <>
+      <OrbitControls makeDefault />
 
-        <Center>
+      <mesh scale={1.5}>
+        <boxGeometry />
+        <meshNormalMaterial />
+      </mesh>
+
+      {/* <Center>
             <mesh geometry={ nodes.baked.geometry }>
                 <meshBasicMaterial map={ bakedTexture } />
             </mesh>
@@ -59,7 +66,7 @@ export default function Experience()
                 speed={ 0.2 }
                 count={ 40 }
             />
-        </Center>
-
+        </Center> */}
     </>
+  );
 }
