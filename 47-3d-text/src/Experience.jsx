@@ -7,9 +7,9 @@ import {
 import { Perf } from "r3f-perf";
 import { useEffect, useRef, useState } from 'react';
 // import { useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
+// import * as THREE from 'three'
 
-const torusGeometry = new THREE.TorusGeometry(1, 0.6, 16, 32);
+// const torusGeometry = new THREE.TorusGeometry(1, 0.6, 16, 32);
 // const material = new THREE.MeshMatcapMaterial()
 
 export default function Experience() {
@@ -18,6 +18,7 @@ export default function Experience() {
   const [ matcapTexture ] = useMatcapTexture('7B5254_E9DCC7_B19986_C8AC91', 256);
 
   const [torusGeometry, setTorusGeometry] = useState();
+  const [material, setMaterial] = useState();
 
   // useFrame((state, delta) =>
   // {
@@ -44,17 +45,7 @@ export default function Experience() {
 
       <torusGeometry ref={setTorusGeometry} args={[1, 0.6, 16, 32]}/>
 
-
-      {/* <mesh scale={1.5}>
-        <boxGeometry />
-        <meshNormalMaterial />
-      </mesh> */}
-
-
-      {/* <Text3D font="./fonts/helvetiker_regular.typeface.json">
-        Hello world!
-        <meshNormalMaterial />
-      </Text3D> */}
+      <meshMatcapMaterial ref={setMaterial} matcap={matcapTexture}/>
 
       <Center>
         <Text3D
@@ -67,25 +58,18 @@ export default function Experience() {
           bevelSize={ 0.02 }
           bevelOffset={ 0 }
           bevelSegments={ 5 }
+          material={material}
         >
-          <meshMatcapMaterial matcap={ matcapTexture }/>
-          {/* <meshNormalMaterial/> */}
           HELLO R3F
         </Text3D>
       </Center>
-
-      {/* Donut (single) */}
-      {/* <mesh>
-        <torusGeometry/>
-        <meshMatcapMaterial matcap={matcapTexture}/>
-      </mesh> */}
 
       { [...Array(100)].map((value, index) =>
             <mesh
                 // ref={ (element) => donuts.current[index] = element }
                 key={ index }
                 geometry={ torusGeometry }
-                // material={ material }
+                material={ material }
                 
                 position={ [
                     (Math.random() - 0.5) * 10,
@@ -98,11 +82,7 @@ export default function Experience() {
                     Math.random() * Math.PI,
                     0
                 ] }
-            >
-              {/* moved outside and use on mesh with attribute geometry={} instead*/}
-              {/* <torusGeometry args={[1, 0.6, 16, 32]}/> */}
-              <meshMatcapMaterial matcap={matcapTexture}/>
-            </mesh>
+            />
         ) }
     </>
   );

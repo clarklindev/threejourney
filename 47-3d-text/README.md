@@ -40,6 +40,19 @@
 - when sending a function to the ref, React will call that function with the component as the parameter.
 - state torusGeometry now contains `<torusGeometry>`
 - can send to `<mesh geometry={}>` with geometry attribute
+
+#### optimize material (35min 30sec)
+
+- in the shaders of r3f-perf: "performance monitoring", theres only one shader (threejs reuses shaders)
+
+##### Method 1
+- TODO: separate material so its shared for geometries (text and donut)
+- move `<meshMatcapMaterial>` out of the donuts `<mesh>` and remove it from the `<Text3D>` too
+- create material and setMaterial state: `const [material, setMaterial] = useState();`
+- send setMaterial to the ref={setMaterial} of meshMatcapMaterial 
+- send material state to material attribute of `Text3D` and donut `mesh`
+
+
 ```js
 
 import { useMatcapTexture, Center, Text3D } from "@rect-three/drei";
@@ -49,6 +62,7 @@ export default function Experience() {
 
   const [matcapTexture] = useMatcapTexture('7B5254_E9DCC7_B19986_C8AC91', 256);
   const [torusGeometry, setTorusGeometry] = useState();
+  const [material, setMaterial] = useState();
 
   return (
     <>
@@ -57,12 +71,7 @@ export default function Experience() {
       <OrbitControls makeDefault />
 
       <torusGeometry ref={setTorusGeometry} args={[1, 0.6, 16, 32]}/>
-
-      //{/* donut */}
-      // <mesh>
-      //   <torusGeometry args={[1, 0.6, 16, 32]}/>
-      //   <meshMatcapMaterial matcap={matcapTexture}/>
-      // </mesh>
+      <meshMatcapMaterial ref={setMaterial} matcap={matcapTexture}/>
 
       <Center>
         <Text3D
@@ -75,10 +84,9 @@ export default function Experience() {
           bevelSize={ 0.02 }
           bevelOffset={ 0 }
           bevelSegments={ 5 }
-          // material={ material }
+          material={ material }
         >
           <meshMatcapMaterial matcap={ matcapTexture }/>
-          {/* <meshNormalMaterial/> */}
           HELLO R3F
         </Text3D>
       </Center>
@@ -88,7 +96,7 @@ export default function Experience() {
             // ref={ (element) => donuts.current[index] = element }
             key={ index }
             geometry={ torusGeometry }
-            // material={ material }
+            material={ material }
             position={ [
                 (Math.random() - 0.5) * 10,
                 (Math.random() - 0.5) * 10,
@@ -100,11 +108,11 @@ export default function Experience() {
                 Math.random() * Math.PI,
                 0
             ] }
-          >
-            <meshMatcapMaterial matcap={matcapTexture}/>
-          </mesh>
+          />
       ) }
     </>
   );
 }
 ```
+
+
