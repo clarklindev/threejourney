@@ -199,3 +199,30 @@ export default function Experience() {
 ```
 
 ### Animating the donut
+
+
+#### METHOD 1
+- making donuts rotate -> need to access the donuts
+- ie. need to create refs
+- but if you do it in the map() it will ref the last one,
+- add a `<group>` around meshes, gives access to donuts via group's children
+- useRef() and create a reference to donutsGroup.
+- associate it with group using ref={donutsGroup}.
+- now have access to donuts via children of the donutsGroup ref.
+- NOTE: every class that inherits from Object3D has a children property.
+- import {useFrame} from '@react-three/fiber'
+- call it in Experience and send a function
+- retrieve the state and delta
+- loop through the children of the donutsGroup.current with a for of and update their rotation,y property with delta.
+
+```js
+//experience.js
+
+export default function Experience(){
+  useFrame((state, delta)=>{
+    for(const donut of donutGroup.current.children){
+      donut.rotation.y += delta * 0.2;
+    }
+  });
+}
+```
