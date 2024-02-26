@@ -1,16 +1,21 @@
 import { OrbitControls } from "@react-three/drei";
 import { Perf } from "r3f-perf";
+
 import {
   // DepthOfField,
   // Bloom,
   // Noise,
   // Glitch,
   // ToneMapping,
-  // Vignette,
+  Vignette,
   EffectComposer,
 } from "@react-three/postprocessing";
 
-// import { GlitchMode, BlendFunction } from 'postprocessing'
+import {
+  // GlitchMode,
+  BlendFunction,
+} from "postprocessing";
+
 // import Drunk from './Drunk.jsx'
 // import { useRef } from 'react'
 // import { useControls } from 'leva'
@@ -25,43 +30,46 @@ export default function Experience() {
 
   return (
     <>
-      {/* <color args={ [ '#ffffff' ] } attach="background" />
+      <color args={["#ffffff"]} attach="background" />
 
-        <EffectComposer disableNormalPass>
-            {/* <Vignette
-                offset={ 0.3 }
-                darkness={ 0.9 }
-                blendFunction={ BlendFunction.NORMAL }
-            />
-            <Glitch
-                delay={ [ 0.5, 1 ] }
-                duration={ [ 0.1, 0.3 ] }
-                strength={ [ 0.2, 0.4 ] }
-                mode={ GlitchMode.CONSTANT_MILD }
-            />
-            <Noise
-                premultiply
-                blendFunction={ BlendFunction.SOFT_LIGHT }
-            />
-            <Bloom
-                mipmapBlur
-                intensity={ 0.5 }
-                luminanceThreshold={ 0 }
-            />
-            <DepthOfField
-                focusDistance={ 0.025 }
-                focalLength={ 0.025 }
-                bokehScale={ 6 }
-            /> */}
+      <EffectComposer
+        multisampling={0}
+        // disableNormalPass
+      >
+        <Vignette
+          offset={0.3}
+          darkness={0.9}
+          blendFunction={BlendFunction.NORMAL}
+        />
 
-      {/*
-            <Drunk
-                ref={ drunkRef }
-                { ...drunkProps }
-                blendFunction={ BlendFunction.DARKEN }
-            />
-            <ToneMapping />
-        </EffectComposer> */}
+    {/* <Glitch
+            delay={ [ 0.5, 1 ] }
+            duration={ [ 0.1, 0.3 ] }
+            strength={ [ 0.2, 0.4 ] }
+            mode={ GlitchMode.CONSTANT_MILD }
+        />
+        <Noise
+            premultiply
+            blendFunction={ BlendFunction.SOFT_LIGHT }
+        />
+        <Bloom
+            mipmapBlur
+            intensity={ 0.5 }
+            luminanceThreshold={ 0 }
+        />
+        <DepthOfField
+            focusDistance={ 0.025 }
+            focalLength={ 0.025 }
+            bokehScale={ 6 }
+        /> 
+
+        <Drunk
+            ref={ drunkRef }
+            { ...drunkProps }
+            blendFunction={ BlendFunction.DARKEN }
+        />
+        <ToneMapping /> */}
+      </EffectComposer>
 
       <Perf position="top-left" />
 
