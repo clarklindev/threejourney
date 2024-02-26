@@ -1,5 +1,8 @@
 import {
-  // shaderMaterial, Sparkles, Center, useTexture, useGLTF,
+  // shaderMaterial, Sparkles, 
+  Center, 
+  useTexture, 
+  useGLTF,
   OrbitControls,
 } from "@react-three/drei";
 // import * as THREE from 'three'
@@ -21,10 +24,10 @@ import {
 // extend({ PortalMaterial })
 
 export default function Experience() {
-  // const { nodes } = useGLTF('./model/portal.glb')
+  const { nodes } = useGLTF('./model/portal.glb');
 
-  // const bakedTexture = useTexture('./model/baked.jpg')
-  // bakedTexture.flipY = false
+  const bakedTexture = useTexture('./model/baked.jpg');
+  bakedTexture.flipY = false;
 
   // const portalMaterial = useRef()
 
@@ -35,38 +38,43 @@ export default function Experience() {
 
   return (
     <>
+
+      <color args={['black']} attach="background"/>
       <OrbitControls makeDefault />
 
-      <mesh scale={1.5}>
-        <boxGeometry />
-        <meshNormalMaterial />
-      </mesh>
+      <Center>
+        <mesh geometry={ nodes.baked.geometry }>
+          <meshBasicMaterial map={bakedTexture}
+            // map-flipY={false}
+          />
+        </mesh>
 
-      {/* <Center>
-            <mesh geometry={ nodes.baked.geometry }>
-                <meshBasicMaterial map={ bakedTexture } />
-            </mesh>
+        <mesh geometry={ nodes.poleLightA.geometry } position={ nodes.poleLightA.position }>
+          <meshBasicMaterial color="#ffffe5" />
+        </mesh>
 
-            <mesh geometry={ nodes.poleLightA.geometry } position={ nodes.poleLightA.position }>
-                <meshBasicMaterial color="#ffffe5" />
-            </mesh>
+        <mesh geometry={ nodes.poleLightB.geometry } position={ nodes.poleLightB.position }>
+          <meshBasicMaterial color="#ffffe5" />
+        </mesh>
 
-            <mesh geometry={ nodes.poleLightB.geometry } position={ nodes.poleLightB.position }>
-                <meshBasicMaterial color="#ffffe5" />
-            </mesh>
+        <mesh 
+          geometry={ nodes.portalLight.geometry } 
+          position={ nodes.portalLight.position } 
+          rotation={ nodes.portalLight.rotation }
+        >
+          {/* <portalMaterial ref={ portalMaterial } /> */}
+        </mesh>
 
-            <mesh geometry={ nodes.portalLight.geometry } position={ nodes.portalLight.position } rotation={ nodes.portalLight.rotation }>
-                <portalMaterial ref={ portalMaterial } />
-            </mesh>
-
-            <Sparkles
-		        size={ 6 }
-                scale={ [ 4, 2, 4 ] }
-                position-y={ 1 }
-                speed={ 0.2 }
-                count={ 40 }
-            />
-        </Center> */}
+      {/* 
+        <Sparkles
+          size={ 6 }
+          scale={ [ 4, 2, 4 ] }
+          position-y={ 1 }
+          speed={ 0.2 }
+          count={ 40 }
+        />
+      */}
+      </Center>
     </>
   );
 }
