@@ -14,7 +14,7 @@ root.render(
       far: 200,
       position: [-4, 3, 6],
     }}
-    // onPointerMissed={ () => { console.log('You missed!') } }
+    onPointerMissed={ () => { console.log('You missed!') } }
   >
     {/* <Bvh> */}
     <Experience />
