@@ -56,8 +56,19 @@
 - fix: index.js -> `<Canvas flat>`
 - sending flat on canvas will set toneMapping to THREE.NoToneMapping
 
+### Fireflies
+- threejs native - fireflies were created with a custom shader
+- drei -> Sparkles
+- set attributes: 
+    - size={6}, 
+    - scale={[x, y, z]} - this is a box area where fireflies can move
+    - position-y={1}
+    - speed
+    - count
+  
+
 ```js
-import { Center, useGLTF , useTexture} from "@react-three/drei";
+import { Center, useGLTF , useTexture, Sparkles} from "@react-three/drei";
 
 export default function Experience() {
   const { nodes } = useGLTF("./model/portal.glb");

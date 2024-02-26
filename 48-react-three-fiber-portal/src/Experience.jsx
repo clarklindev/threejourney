@@ -1,5 +1,6 @@
 import {
-  // shaderMaterial, Sparkles, 
+  // shaderMaterial, 
+  Sparkles, 
   Center, 
   useTexture, 
   useGLTF,
@@ -65,7 +66,6 @@ export default function Experience() {
           {/* <portalMaterial ref={ portalMaterial } /> */}
         </mesh>
 
-      {/* 
         <Sparkles
           size={ 6 }
           scale={ [ 4, 2, 4 ] }
@@ -73,7 +73,6 @@ export default function Experience() {
           speed={ 0.2 }
           count={ 40 }
         />
-      */}
       </Center>
     </>
   );
