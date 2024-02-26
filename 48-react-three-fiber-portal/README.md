@@ -66,9 +66,32 @@
     - speed
     - count
   
+### Portal (25min 40sec)
+- on mesh children, replace `<meshBasicMaterial>` with `<shaderMaterial>` (three.js)
+- importing shaders using normal import syntax gives an url, 
+- to get raw content - change .glsl to .js file format
+- change the file content to export a default string literal 
+- install vscode plugin: "es6-string-html" then add after "export default" `/* glsl */`
+
+### implementing the shaders (34min 32sec)
+- default shader is "shaderMaterial" 
+- we can use our shaders on the `<shaderMaterial>` with the "vertexShader" attribute and "fragmentShader" attribute
+- the shader needs us to provide 3 uniforms in fragment shader:
+    1. uTime (number)
+    2. uColorStart (Threejs color instance)
+    3. uColorEnd (Threejs color instance)
+- import * as THREE from 'three';
+- provide "uniforms" attribute to shaderMaterial
+
+### DREI shaderMaterial helper (38min)
+- drei also has shaderMaterial that creates a ShaderMaterial
+- import {shaderMaterial} from drei 
 
 ```js
 import { Center, useGLTF , useTexture, Sparkles} from "@react-three/drei";
+import portalVertexShader from './shaders/portal/vertex.js';
+import portalFragmentShader from './shaders/portal/fragment.js';
+
 
 export default function Experience() {
   const { nodes } = useGLTF("./model/portal.glb");
@@ -98,13 +121,29 @@ export default function Experience() {
 
         //portal
         <mesh 
-          geometry={ nodes.portalLight.geometry } 
+          geometry={ nodes.portalLi ght.geometry } 
           position={ nodes.portalLight.position } 
           rotation={ nodes.portalLight.rotation }
         >
-          <portalMaterial ref={ portalMaterial } />
+          <shaderMaterial
+            vertexShader={portalVertexShader}
+            fragmentShader={portalFragmentShader}
+            uniforms={{
+              uTime: {value: 0},
+              uColorStart: {value: new THREE.Color('#000000')},
+              uColorEnd: {value: new THREE.Color('#FFFFFF')}
+            }}
+          />
         </mesh>
 
+        //fireflies
+        <Sparkles
+          size={ 6 }
+          scale={ [ 4, 2, 4 ] }
+          position-y={ 1 }
+          speed={ 0.2 }
+          count={ 40 }
+        />
 
       </Center>
     </>
