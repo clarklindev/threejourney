@@ -50,6 +50,12 @@
 - create a mesh with geometry={nodes.portalLight.geometry} 
 - also do same for position, rotation, scale
 
+### fixing color
+- the color is already baked into (blender) the texture to look good.
+- react-three-fiber then adds its own color management (toneMapping).
+- fix: index.js -> `<Canvas flat>`
+- sending flat on canvas will set toneMapping to THREE.NoToneMapping
+
 ```js
 import { Center, useGLTF , useTexture} from "@react-three/drei";
 
