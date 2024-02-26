@@ -96,11 +96,20 @@
 - send extend() an object, with property AND value "PortalMaterial", 
 - this now allows us to use it in tag format `<portalMaterial>` NOTE: camelCase!!!
 
+### Animating
+- animating portal, need a reference to the material
+- import useRef
+- create a portalMaterial ref
+- associate it with the shaderMaterial using ref attribute
+- import useFrame from react-three/fiber
+- call useFrame() in the Experience, provide a function that gives us access to delta
+
 ```js
 import { Center, useGLTF , useTexture, Sparkles, shaderMaterial} from "@react-three/drei";
 import portalVertexShader from './shaders/portal/vertex.js';
 import portalFragmentShader from './shaders/portal/fragment.js';
-import {extend} from '@react-three/fiber';
+import {useFrame, extend} from '@react-three/fiber';
+import {useRef} from 'react';
 
 const PortalMaterial = shaderMaterial(
   {
@@ -118,6 +127,14 @@ export default function Experience() {
   const { nodes } = useGLTF("./model/portal.glb");
   const bakedTexture = useTexture('./model/baked.jpg');
   bakedTexture.flipY = false;
+
+  const portalMaterial = useRef();
+
+  useFrame((state, delta) =>
+  {
+      portalMaterial.current.uTime += delta
+  });
+
   
   return (
     <>
@@ -161,7 +178,7 @@ export default function Experience() {
 
         */}
 
-          <portalMaterial/>
+          <portalMaterial ref={portalMaterial}/>
 
         </mesh>
 

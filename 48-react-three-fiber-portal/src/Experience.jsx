@@ -8,7 +8,7 @@ import {
 } from "@react-three/drei";
 import * as THREE from 'three';
 import { useFrame, extend } from '@react-three/fiber';
-// import { useRef } from 'react';
+import { useRef } from 'react';
 import portalVertexShader from './shaders/portal/vertex.js';
 import portalFragmentShader from './shaders/portal/fragment.js';
 
@@ -30,12 +30,12 @@ export default function Experience() {
   const bakedTexture = useTexture('./model/baked.jpg');
   bakedTexture.flipY = false;
 
-  // const portalMaterial = useRef()
+  const portalMaterial = useRef()
 
-  // useFrame((state, delta) =>
-  // {
-  //     portalMaterial.current.uTime += delta
-  // })
+  useFrame((state, delta) =>
+  {
+    portalMaterial.current.uTime += delta
+  });
 
   return (
     <>
@@ -73,7 +73,7 @@ export default function Experience() {
               uColorEnd: {value: new THREE.Color('#FFFFFF')}
             }}
           /> */}
-          <portalMaterial/>
+          <portalMaterial ref={portalMaterial}/>
         </mesh>
 
         <Sparkles
