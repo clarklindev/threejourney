@@ -83,15 +83,36 @@
 - import * as THREE from 'three';
 - provide "uniforms" attribute to shaderMaterial
 
-### DREI shaderMaterial helper (38min)
-- drei also has shaderMaterial that creates a ShaderMaterial
+### DREI shaderMaterial() helper (38min)
+- drei has helper "shaderMaterial" that creates a ShaderMaterial (jsx)
 - import {shaderMaterial} from drei 
+- outside of the Experience() function, assign the result in a PortalMaterial variable
+- NOTE: we need to provide 3 parameters to shaderMaterial(), 
+  1. uniforms - but we dont need the value property
+  2. uColorStart - 
+  3. uColorEnd - 
+- this creates a class we can instantiate, but to use it as a JSX element tag, use "extend" 
+- import extend from react-three/fiber
+- send extend() an object, with property AND value "PortalMaterial", 
+- this now allows us to use it in tag format `<portalMaterial>` NOTE: camelCase!!!
 
 ```js
-import { Center, useGLTF , useTexture, Sparkles} from "@react-three/drei";
+import { Center, useGLTF , useTexture, Sparkles, shaderMaterial} from "@react-three/drei";
 import portalVertexShader from './shaders/portal/vertex.js';
 import portalFragmentShader from './shaders/portal/fragment.js';
+import {extend} from '@react-three/fiber';
 
+const PortalMaterial = shaderMaterial(
+  {
+    uTime: 0, 
+    uColorStart: new THREE.Color('#FFFFFF'),
+    uColorEnd: new THREE.Color('#000000')
+  },
+  portalVertexShader,
+  portalFragmentShader
+);
+
+extend({PortalMaterial}); //{PortalMaterial: PortalMaterial}
 
 export default function Experience() {
   const { nodes } = useGLTF("./model/portal.glb");
@@ -125,15 +146,23 @@ export default function Experience() {
           position={ nodes.portalLight.position } 
           rotation={ nodes.portalLight.rotation }
         >
-          <shaderMaterial
-            vertexShader={portalVertexShader}
-            fragmentShader={portalFragmentShader}
-            uniforms={{
-              uTime: {value: 0},
-              uColorStart: {value: new THREE.Color('#000000')},
-              uColorEnd: {value: new THREE.Color('#FFFFFF')}
-            }}
-          />
+        {/*
+          // <shaderMaterial
+          //   vertexShader={portalVertexShader}
+          //   fragmentShader={portalFragmentShader}
+
+          //   //native THREEjs method: requires {value:}
+          //   uniforms={{
+          //     uTime: {value: 0},
+          //     uColorStart: {value: new THREE.Color('#000000')},
+          //     uColorEnd: {value: new THREE.Color('#FFFFFF')}
+          //   }}
+          //  />
+
+        */}
+
+          <portalMaterial/>
+
         </mesh>
 
         //fireflies

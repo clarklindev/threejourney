@@ -7,18 +7,22 @@ import {
   OrbitControls,
 } from "@react-three/drei";
 import * as THREE from 'three';
-// import { useFrame, extend } from '@react-three/fiber';
+import { useFrame, extend } from '@react-three/fiber';
 // import { useRef } from 'react';
 import portalVertexShader from './shaders/portal/vertex.js';
 import portalFragmentShader from './shaders/portal/fragment.js';
 
-// const PortalMaterial = shaderMaterial(
+const PortalMaterial = shaderMaterial(
+    {
+      uTime: 0, 
+      uColorStart: new THREE.Color('#FFFFFF'),
+      uColorEnd: new THREE.Color('#000000')
+    },
+    portalVertexShader,
+    portalFragmentShader
+)
 
-//     portalVertexShader,
-//     portalFragmentShader
-// )
-
-// extend({ PortalMaterial })
+extend({ PortalMaterial });
 
 export default function Experience() {
   const { nodes } = useGLTF('./model/portal.glb');
@@ -60,7 +64,7 @@ export default function Experience() {
           rotation={ nodes.portalLight.rotation }
         > 
           {/* <meshBasicMaterial/> */}
-          <shaderMaterial 
+          {/* <shaderMaterial 
             vertexShader={portalVertexShader} 
             fragmentShader={portalFragmentShader}
             uniforms={{
@@ -68,7 +72,8 @@ export default function Experience() {
               uColorStart: {value: new THREE.Color('#000000')},
               uColorEnd: {value: new THREE.Color('#FFFFFF')}
             }}
-          />
+          /> */}
+          <portalMaterial/>
         </mesh>
 
         <Sparkles
