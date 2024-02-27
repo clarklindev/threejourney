@@ -39,14 +39,14 @@ export default function Experience() {
           blendFunction={BlendFunction.NORMAL}
         /> */}
 
-        <Glitch
+        {/* <Glitch
           delay={[0.5, 1]}
           duration={[0.1, 0.3]}
           strength={[0.2, 0.4]}
           mode={GlitchMode.CONSTANT_MILD}
-        />
+        /> */}
 
-        {/* <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} /> */}
+        <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} />
 
         {/* <Bloom
           mipmapBlur
