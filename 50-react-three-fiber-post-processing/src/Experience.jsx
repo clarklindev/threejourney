@@ -3,18 +3,15 @@ import { Perf } from "r3f-perf";
 
 import {
   // DepthOfField,
-  // Bloom,
-  // Noise,
-  // Glitch,
+  Bloom,
+  Noise,
+  Glitch,
   // ToneMapping,
   Vignette,
   EffectComposer,
 } from "@react-three/postprocessing";
 
-import {
-  // GlitchMode,
-  BlendFunction,
-} from "postprocessing";
+import { GlitchMode, BlendFunction } from "postprocessing";
 
 // import Drunk from './Drunk.jsx'
 // import { useRef } from 'react'
@@ -30,33 +27,36 @@ export default function Experience() {
 
   return (
     <>
-      <color args={["#ffffff"]} attach="background" />
+      <color args={["#000000"]} attach="background" />
 
       <EffectComposer
         multisampling={0}
         // disableNormalPass
       >
-        <Vignette
+        {/* <Vignette
           offset={0.3}
           darkness={0.9}
           blendFunction={BlendFunction.NORMAL}
+        /> */}
+
+        {/* <Glitch
+          delay={[0.5, 1]}
+          duration={[0.1, 0.3]}
+          strength={[0.2, 0.4]}
+          mode={GlitchMode.CONSTANT_MILD}
+        /> */}
+
+        {/* <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} /> */}
+
+        <Bloom
+          mipmapBlur
+          intensity={ 0.1 }
+          luminanceThreshold={ 0 }
         />
 
-    {/* <Glitch
-            delay={ [ 0.5, 1 ] }
-            duration={ [ 0.1, 0.3 ] }
-            strength={ [ 0.2, 0.4 ] }
-            mode={ GlitchMode.CONSTANT_MILD }
-        />
-        <Noise
-            premultiply
-            blendFunction={ BlendFunction.SOFT_LIGHT }
-        />
-        <Bloom
-            mipmapBlur
-            intensity={ 0.5 }
-            luminanceThreshold={ 0 }
-        />
+        {/* 
+        
+        
         <DepthOfField
             focusDistance={ 0.025 }
             focalLength={ 0.025 }
@@ -85,7 +85,11 @@ export default function Experience() {
 
       <mesh castShadow position-x={2} scale={1.5}>
         <boxGeometry />
-        <meshStandardMaterial color="mediumpurple" />
+        {/* <meshStandardMaterial color="mediumpurple"/> */}
+        {/* <meshStandardMaterial color="white" emissive="orange" emissiveIntensity={10} toneMapped={false}/> */}
+        <meshBasicMaterial color={[5.5 * 10, 10, 4 * 10]} toneMapped={false}/>
+        {/* <meshBasicMaterial color={[5.5 * 100, 100, 4 * 100]} toneMapped={false}/> */}  
+
       </mesh>
 
       <mesh
