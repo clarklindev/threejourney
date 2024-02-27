@@ -213,3 +213,236 @@ const ssrProps = useControls({
   <SSR {...ssrProps}/>
 </EffectComposer>
 ```
+---
+
+### Custom effects (71min 33sec)
+- to make your own effects, create it for post processing, then make it available for R3F
+- post processing is merging effects together into one shader
+
+#### how to? (73min)
+Post Processing custom effect: https://github.com/pmndrs/postprocessing/wiki/Custom-Effects
+React-postprocessing custom effect: https://github.com/pmndrs/react-postprocessing/blob/master/api.md#custom-effects
+
+#### basic postprocessing effect
+- this is just displaying the uv coordinates (if working)
+- src/DrunkEffect.js
+- need to extend Effect class from 'postprocessing';
+- postprocessing will take our shader and merge it with other effect shaders
+- our shader can be implemented in a function that must be named 'mainImage', return "void" and have the following specific params
+  `void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)`
+- omitting one of the parameters or changing them will result in a bug
+- put it in fragmentShader variable right before the class
+- NOTE: syntax highlight install vscode extension: `es6-string-html`
+- using WEBGL 2 syntax where we can specify more information associated with each patameter
+  - const -> parameter wont be writable
+  - in -> a copy of actual variable and changing it wont affect the initial variable sent when calling the function
+  - out -> changing this value will change the variable sent when calling the function
+  - inputColor -> contains the current color for that pixel which is defined by the previous effects
+  - uv -> contains the render coordinates
+  - outputColor -> is what we need to change in order to apply the effect
+- TODO: assign the uv to the outputColor and fill the other values with 1.0
+- calling super() in the constructor is like calling constructor of that parent class
+  - provide 3 parameters to super() *this is the constructor of Effect()*
+    1. name of the effect
+    2. fragment shader we wrote
+    3. options in an object 
+
+```js
+import {Effect} from 'postprocessing';
+
+const fragmentShader = /* glsl */`
+  void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
+  {
+    outputColor = vec4(uv, 1.0, 1.0); //assign the uv to the outputColor and fill the other values with 1.0
+    // outputColor = vec4(0.8, 1.0, 0.5, inputColor.a);
+  }
+`
+
+export default class DrunkEffect extends Effect{
+  constructor(){
+    super(
+      'DrunkEffect', 
+      fragmentShader, 
+      {}
+    );
+  }
+}
+
+```
+### the React post-processing part(84min 54sec)
+- create src/Drunk.js export a Drunk function as default
+- this is the react 3 fiber part...
+- test with just a basic mesh
+- instantiate DrunkEffect() in the function.
+- return a `<primitive>` with object={effect}
+
+### Props (90min)
+- in Experience, import Drunk component
+- want to be able to tweak attributes
+- screen will wiggle with sinus function sin() and we want to be able to tweak: amplitude and frequency
+- add a frequency={2} attribute and an amplitude={0.1} on `<Drunk>`
+- retrieve the props in Drunk.js: add a props parameter to Drunk function, and forward it to DrunkEffect(props)
+- support reference with useRef
+
+
+```js
+//Drunk.js
+import DrunkEffect from './DrunkEffect.jS'
+import { forwardRef } from 'react'
+
+//export default function Drunk(props){
+//}
+
+//using forwardRef, and in args, add "ref"
+export default forwardRef(function Drunk(props, ref){
+  const effect = new DrunkEffect(props);
+
+  // return <mesh><boxGeometry/></mesh>  //test with just a basic mesh
+  return <primitive 
+    ref={ ref } 
+    object={ effect } 
+  />
+});
+
+```
+- in experience.js, import useRef from react
+- create a drunkRef
+- associate the ref with `<Drunk>` using ref attribute
+- NOTE: function components cant be given ref or use forwardRef
+- ENDGOAL: a reference to DrunkEffect
+- so in Drunk.js, import forwardRef: `import { forwardRef } from 'react'`
+- Drunk.js: using forwardRef, and in args, receive ref as 2nd arg of props
+- Drunk.js: add ref to the primitive
+- use drunkRef to get reference to the primitive in Drunk.js
+
+```js
+//Experience.js
+import {useRef} from 'react';
+import Drunk from './Drunk.js';
+
+export default function Experience(){
+  const drunkRef = useRef();
+  
+  const drunkProps = useControls('Drunk Effect', {
+      frequency: { value: 2, min: 1, max: 20 },
+      amplitude: { value: 0.1, min: 0, max: 1 }
+  });
+
+  return (
+    <>
+    <EffectComposer>
+      <Drunk 
+        ref={drunkRef}
+        // frequency={2} 
+        // amplitude={0.1}
+        {...drunkProps}
+      />
+    </EffectComposer>
+    </>
+  );
+
+}
+
+```
+
+- in DrunkEffect.js, in the fragmentShader, assign the inputColor to outputColor
+- because inputColor is const, save it in a new variable called "color"
+- multiply the rgb channels of the color by a green color
+- we are manipulating the rgb channels because wE dont want to alter the alpha channel
+
+### Wiggle the screen
+- to make it wiggle, mess with uv coordinates
+- there is a uv parameter in our mainImage function that gives us the uv coordinate - but its not that one...
+- we need to change the uv coordinate! and to do that implement a neW mainUv() function
+- inout means - both read and write to it
+- we are going to use a sin() to move the y-coordinate of the uv according to the x coordinate
+- later, we use the attributes we send to `<Drunk>`
+- for now, multiply uv.x and sin() by arbitrary values
+
+#### use the attributes
+- we have already forwarded the props to DrunkEffect and we can retrieve them in the constructor
+- we can destructure the props to get only what we want.
+- we now need to send them as uniforms and we can do that in the empty object we sent as the third parameter of super();
+- the format is different than what we are used to and we need to create a Map.
+- a Map is a mix between an object and an array with helpful methods and properties.
+- create a uniform property in the empty object and set a Map.
+- the map should take an array, each item is an array in the array with this structure: 
+  `['name-of-property', {value: the-value}]`,  
+- NOTE: theres actually an official way to create a Uniform: `import {Uniform } from 'three';`
+- replace the object containing each uniform by an instance of Uniform.
+- retrieve those uniforms in the shader
+- use them in the mainUv
+- since we already have Leva installed in our project, make our effect tweakable
+- in Experience.js, add a useControls call, name is "Drunk effect"
+- associate drunkProps with our effect
+- spread it on the `<Drunk>` instead of setting each attribute manually
+
+
+### blending the colors
+- until now we multiplied the inputColor by a green color, but 
+- we can let the developer decide on a preferred blending
+- in fragmentShader, send the green color directly in the outputColor and keep the alpha from the inputColor
+- Experience.js: add a blendFunction attribute to the `<Drunk>` and set it to "BlendFunction.DARKEN"
+- DrunkEffect.js: retrieve the blendFunction in the destructuring of the constructor
+- send it to the same object that we used for the uniforms
+- we didnt set a default `blendFunction` making the screen all green by default
+- in DrunkEffect.js, import BlendFunction from postprocessing
+- set the default value of blendFunction to BlendFunction.DARKEN in the constructor parameter
+
+
+```js
+//DrunkEffect.js
+import { Uniform } from "three";
+import {BlendFunction, Effect} from 'postprocessing';
+
+const fragmentShader = /* glsl */`
+  uniform float frequency;
+  uniform flat amplitude;
+  uniform float offset;
+
+  void mainUv(inout vec2 uv){
+    uv.y += sin(uv.x * frequency) * offset * amplitude;
+  }
+
+  void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
+  {
+
+    // vec4 color = inputColor;
+    // color.rgb *= vec3(0.8, 1.0, 0.5);
+    // outputColor = color;
+
+    //send green color directly in the outputColor
+    outputColor = vec4(0.8, 1.0, 0.5, inputColor.a);
+  
+  }
+`
+export default class DrunkEffect extends Effect{
+  constructor({frequency, amplitude, blendFunction = BlendFunction.DARKEN}){
+    super(
+      "DrunkEffect", fragmentShader, {
+      blendFunction,
+      uniforms: new Map([
+        ["frequency", new Uniform(frequency)],    //['frequency', {value:frequency}],
+        ["amplitude", new Uniform(amplitude)],    //['amplitude', {value:amplitude}],
+        ["offset", new Uniform(0)]
+        // ["time", new Uniform(0)],
+      ]),
+    }
+    )
+  }
+
+  update(renderer, inputBuffer, deltaTime) {
+    // this.uniforms.get("offset").value += 0.02;
+    this.uniforms.get("time").value += deltaTime;
+  }
+}
+
+```
+### Animating (117min 57sec)
+- in DrunkEffect, add an "offset" uniform to 0
+- retrieve it in the fragmentShader and add it in the sin();
+- add an update method to the DrunkEffect class
+- the function is being called on each frame automatically
+- because we used a Map, we must access the values with the get() method
+- we can retrieve the elapsed time since the last frame as the third parameter of update()
+- the 2 first parameters are the "renderer" and the 'inputBuffer' (dont care about these...)
