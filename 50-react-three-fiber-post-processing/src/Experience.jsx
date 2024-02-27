@@ -39,20 +39,20 @@ export default function Experience() {
           blendFunction={BlendFunction.NORMAL}
         /> */}
 
-        {/* <Glitch
+        <Glitch
           delay={[0.5, 1]}
           duration={[0.1, 0.3]}
           strength={[0.2, 0.4]}
           mode={GlitchMode.CONSTANT_MILD}
-        /> */}
+        />
 
         {/* <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} /> */}
 
-        <Bloom
+        {/* <Bloom
           mipmapBlur
           intensity={ 0.1 }
           luminanceThreshold={ 0 }
-        />
+        /> */}
 
         {/* 
         
@@ -85,9 +85,9 @@ export default function Experience() {
 
       <mesh castShadow position-x={2} scale={1.5}>
         <boxGeometry />
-        {/* <meshStandardMaterial color="mediumpurple"/> */}
+        <meshStandardMaterial color="mediumpurple"/>
         {/* <meshStandardMaterial color="white" emissive="orange" emissiveIntensity={10} toneMapped={false}/> */}
-        <meshBasicMaterial color={[5.5 * 10, 10, 4 * 10]} toneMapped={false}/>
+        {/* <meshBasicMaterial color={[5.5 * 10, 10, 4 * 10]} toneMapped={false}/> */}
         {/* <meshBasicMaterial color={[5.5 * 100, 100, 4 * 100]} toneMapped={false}/> */}  
 
       </mesh>
