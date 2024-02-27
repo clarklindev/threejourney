@@ -146,3 +146,23 @@ import {Bloom} from "@react-three/postprocessing";
 </mesh>
 
 ```
+
+### 50-react-three-fiber-post-processing-depth-of-field (54min 45sec)
+- blur something what's closer or further from a set distance
+- 3 attributes:
+  - focalDistance - distance at which image should be sharp
+  - focalLength - distance to travel from the focusDistance before reaching maximum blur
+  - bokehScale - blur radius
+- these values are normalized (ie. between 0 -> 1)
+
+```js
+import {DepthOfField} from "@react-three/postprocessing";
+
+<DepthOfField
+  focusDistance={ 0.025 }
+  focalLength={ 0.025 }
+  bokehScale={ 6 }
+/> 
+```
+
+### ScreenSpaceReflection (SSR) effect (60min)

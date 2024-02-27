@@ -2,7 +2,7 @@ import { OrbitControls } from "@react-three/drei";
 import { Perf } from "r3f-perf";
 
 import {
-  // DepthOfField,
+  DepthOfField,
   Bloom,
   Noise,
   Glitch,
@@ -46,7 +46,7 @@ export default function Experience() {
           mode={GlitchMode.CONSTANT_MILD}
         /> */}
 
-        <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} />
+        {/* <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} /> */}
 
         {/* <Bloom
           mipmapBlur
@@ -54,15 +54,13 @@ export default function Experience() {
           luminanceThreshold={ 0 }
         /> */}
 
-        {/* 
-        
-        
         <DepthOfField
-            focusDistance={ 0.025 }
-            focalLength={ 0.025 }
-            bokehScale={ 6 }
+          focusDistance={ 0.025 }
+          focalLength={ 0.025 }
+          bokehScale={ 6 }
         /> 
 
+        {/* 
         <Drunk
             ref={ drunkRef }
             { ...drunkProps }
@@ -89,7 +87,6 @@ export default function Experience() {
         {/* <meshStandardMaterial color="white" emissive="orange" emissiveIntensity={10} toneMapped={false}/> */}
         {/* <meshBasicMaterial color={[5.5 * 10, 10, 4 * 10]} toneMapped={false}/> */}
         {/* <meshBasicMaterial color={[5.5 * 100, 100, 4 * 100]} toneMapped={false}/> */}  
-
       </mesh>
 
       <mesh
