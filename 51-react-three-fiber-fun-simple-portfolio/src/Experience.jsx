@@ -1,12 +1,20 @@
-import { Text, Html, ContactShadows, PresentationControls, Float, Environment, useGLTF } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
+// import { Text, Html, ContactShadows, PresentationControls, Float, Environment, useGLTF } from '@react-three/drei'
 
 export default function Experience()
 {
-    const computer = useGLTF('https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/macbook/model.gltf')
+    // const computer = useGLTF('https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/macbook/model.gltf')
     
     return <>
+        <OrbitControls makeDefault />
 
-        <color args={ [ '#241a1a' ] } attach="background" />
+        <mesh>
+            <boxGeometry />
+            <meshNormalMaterial />
+        </mesh>
+
+
+        {/* <color args={ [ '#241a1a' ] } attach="background" />
 
         <Environment preset="city" />
         
@@ -61,7 +69,7 @@ export default function Experience()
             opacity={ 0.4 }
             scale={ 5 }
             blur={ 2.4 }
-        />
+        /> */}
 
     </>
 }
