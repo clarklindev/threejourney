@@ -112,4 +112,122 @@ return (
 
 ### Forces (44min 56sec)
 - apply forces on the bodies, eg. player should jump when key is pressed
-- 
+
+#### Reference and impulse (46min 48sec)
+- 1. first you need a reference to an object
+- 2. apply impulse on object via reference (we want to apply forces on the cube, need a reference to the cube)
+- add ref to the cube `<RigidBody>`
+- TODO: trigger a function when mesh is clicked
+- the reference is the actual RigidBody from Rapier and we can use any of the available methods.
+
+### Force vs Impulse
+- addForce() - apply a force that lasts a long time - is like a constant push (eg wind) 
+- applyImpulse() - is a short force - short period of time - is a onceoff nudge like for a projectile
+  - needs a Vector3 parameter (direction of the impulse) can use object with x,y,z
+  - strength of impulse is dictated by the length of vector
+- in cubeJump call applyImpulse on the cube.current reference, send it a vector going upward.
+
+### rotation and torque
+- torque is rotation.
+- addTorque (equivalent of addForce)
+- applyTorqueImpulse (equivalent of applyImpulse)
+- make it spin 360:   cube.current.applyTorqueImpulse({x:0, y:1, z:0});
+- make it spin random: cube.current.applyTorqueImpulse({x: Math.random() - 0.5, y: Math.random() - 0.5, z: Math.random() - 0.5});
+
+### friction, restitution, mass, gravity
+
+#### Gravity (55min 56sec)
+- set to simulate earth (-9.81)
+- add to `<Physics gravity={[0, -1.6, 0]]>`   //gravity on moon
+- each object can get its own "gravityScale" prop. eg: `gravityScale={0.2}`
+- negative gravity makes object go up
+
+#### Restitution (bounciness) (59min 40sec)
+- bounciness - default 0 meaning it doesnt bounce
+- set the restitution to 1 on the `<RigidBody>`
+- the floor AND object both need restitution
+- if the floor has a restitution of 0 but the ball has a restitution of 1, its like dropping a bouncy ball on a carpet.
+
+#### Friction (63min 10sec)
+- add friction to both the objects with values set to 0
+- by default Rapier takes the average of the 2 frictions (object vs floor)
+- reset friction to 0.7
+
+#### Mass (65min 36sec)
+- mass of the RigidBody is automatically calculated as the sum of the masses of the Colliders that make up the RigidBody
+- mass of Colliders is automatically calculated according to their shape and volume
+- ie. big object have bigger mass
+- mass wont change how fast an object falls (unless we add air friction - then velocity might be affected)
+- to update mass, need to create the colliders ourselves - deactivate the colliders={false}
+- create the CuboidCollider in the RigidBody
+- and provide mass in the Collider
+- with higher mass, we want our object to go as high as before, how can we fix that?
+- we would like to adapt the strength of the impulse according to the mass of the object so that it jumps to the same height regardless of the mass.
+- in the cubeJump, we can retrieve mass with mass method: `const mass = cube.current.mass();`
+- multiply the vector in applyImpulse()
+
+### Moving Objects
+- we can change the rotation and position of the <RigidBody> through their position and rotation attributes
+- BUT for dynamic and fixed objects, you should NOT change those values at run-time
+- their purpose is INITIAL POSITION - only to set the original position and rotation before letting Rapier update the objects
+
+#### updating object position
+- if you need to move it, you should apply forces
+- OPTION 1 - if you need to reset position (eg. car game reset car position)
+  - need to reset velocities,
+- OPTION 2 - if you need to move it in time. with fixed animation (always same speeds), use kinematic types.
+  - used for games where you control the player. 
+  
+#### there are 2 types of Kinematic:
+- kinematicPosition 
+- kinematicVelocity
+
+- the difference is how we update them.
+  - kinematicPosition -> we provide the next position (it should go there)
+  - kinematicVelocity -> we provide the velocity (this is the speed you should go)
+
+
+```js
+const cube = useRef();
+
+const cubeJump = ()=>{
+  console.log('hello:', cube.current);
+  const mass = cube.current.mass();
+
+  cube.current.applyImpulse({x:0, y:5 * mass, z:0});
+  cube.current.applyTorqueImpulse({x: Math.random() - 0.5, y: Math.random() - 0.5, z: Math.random() - 0.5});
+};
+
+return (
+<>
+  <Physics gravity={[0, -1.6, 0]}>
+    
+    // cube
+    <RigidBody 
+      ref={cube} 
+      position={[1.5, 2, 0] 
+      gravityScale={0.2}}
+      restitution={1}
+      friction={0.7}
+      colliders={false}
+    >
+      <mesh onClick={cubeJump}></mesh>
+      <CuboidCollider mass={0.5} args={[0.5, 0.5, 0.5]}/>
+    </RigidBody>
+
+    // floor
+    <RigidBody 
+      type="fixed"
+      restitution={1}
+      friction={0.7}
+    >
+      <mesh receiveShadow position-y={ - 1.25 }>
+        <boxGeometry args={ [ 10, 0.5, 10 ] } />
+        <meshStandardMaterial color="greenyellow" />
+      </mesh>
+    </RigidBody>
+
+  </Physics>
+</>
+)
+```

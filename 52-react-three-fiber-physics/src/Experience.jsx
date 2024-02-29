@@ -31,9 +31,12 @@ export default function Experience() {
   });
 
   const cubeJump = () => {
+    
     const mass = cube.current.mass();
 
-    cube.current.applyImpulse({ x: 0, y: 5 * mass, z: 0 });
+    cube.current.applyImpulse({x:0, y:5 * mass, z:0}); 
+
+    //random
     cube.current.applyTorqueImpulse({
       x: Math.random() - 0.5,
       y: Math.random() - 0.5,
@@ -78,7 +81,7 @@ export default function Experience() {
       <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} />
       <ambientLight intensity={1.5} />
 
-      <Physics debug={true}>
+      <Physics debug={true} gravity={[0, -9.08, 0]}>
 
         {/* sphere */}
         <RigidBody colliders="ball">
@@ -89,15 +92,30 @@ export default function Experience() {
         </RigidBody>
 
         {/* cube */}
-        <RigidBody>
-          <mesh castShadow position={ [ 1.5, 2, 0 ] }>
+        <RigidBody 
+          ref={cube} 
+          position={ [ 1.5, 2, 0 ] }
+          gravityScale={1}
+          restitution={0} 
+          friction={0.7} 
+          colliders={false}
+        >
+          <mesh 
+            castShadow 
+            onClick={cubeJump}
+          >
             <boxGeometry />
             <meshStandardMaterial color="mediumpurple" />
           </mesh>
+          <CuboidCollider mass={1} args={[0.5, 0.5, 0.5]}/>
         </RigidBody>
 
         {/* floor */}
-        <RigidBody type="fixed">
+        <RigidBody 
+          type="fixed"
+          // restitution={1}
+          friction={0.7}
+        >
           <mesh receiveShadow position-y={ - 1.25 }>
             <boxGeometry args={ [ 10, 0.5, 10 ] } />
             <meshStandardMaterial color="greenyellow" />
@@ -116,7 +134,6 @@ export default function Experience() {
         {/* <RigidBody colliders={false} position={[0, 1, 0]} rotation={[Math.PI * 0.5, 0, 0]}>
           <CuboidCollider args={[1.5, 1.5, 0.5]}/>
           <CuboidCollider args={[0.25, 1, 0.25]} position={[0,0,1]} rotation={[-Math.PI * 0.35, 0, 0]}/>
-
           <mesh castShadow>
             <torusGeometry args={[1, 0.5, 16, 32]}/>
             <meshStandardMaterial color="mediumpurple"/>
@@ -125,13 +142,9 @@ export default function Experience() {
 
       </Physics>
 
-      {/* <Physics debug={true} gravity={[0, -9.08, 0]}>
-        <RigidBody colliders="ball" position={[-1.5, 2, 0]}>
-          <mesh castShadow>
-            <sphereGeometry />
-            <meshStandardMaterial color="orange" />
-          </mesh>
-        </RigidBody>
+      {/* 
+      
+      
 
         <RigidBody
           ref={cube}
@@ -193,7 +206,7 @@ export default function Experience() {
             <meshStandardMaterial color="tomato" />
           </instancedMesh>
         </InstancedRigidBodies>
-      </Physics> */}
+      */}
     </>
   );
 }
