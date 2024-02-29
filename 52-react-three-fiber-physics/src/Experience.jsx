@@ -80,20 +80,23 @@ export default function Experience() {
 
       <Physics debug={true}>
 
+        {/* sphere */}
         <RigidBody colliders="ball">
-          <mesh castShadow position={ [ 0, 4, 0 ] }>
+          <mesh castShadow position={ [ -1.5, 2, 0 ] }>
               <sphereGeometry />
             <meshStandardMaterial color="orange" />
           </mesh>
         </RigidBody>
 
-        {/* <RigidBody>
-          <mesh castShadow position={ [ 2, 2, 0 ] }>
+        {/* cube */}
+        <RigidBody>
+          <mesh castShadow position={ [ 1.5, 2, 0 ] }>
             <boxGeometry />
             <meshStandardMaterial color="mediumpurple" />
           </mesh>
-        </RigidBody> */}
+        </RigidBody>
 
+        {/* floor */}
         <RigidBody type="fixed">
           <mesh receiveShadow position-y={ - 1.25 }>
             <boxGeometry args={ [ 10, 0.5, 10 ] } />
@@ -110,7 +113,7 @@ export default function Experience() {
         </RigidBody> */}
 
         {/* Custom Collider example */}
-        <RigidBody colliders={false} position={[0, 1, 0]} rotation={[Math.PI * 0.5, 0, 0]}>
+        {/* <RigidBody colliders={false} position={[0, 1, 0]} rotation={[Math.PI * 0.5, 0, 0]}>
           <CuboidCollider args={[1.5, 1.5, 0.5]}/>
           <CuboidCollider args={[0.25, 1, 0.25]} position={[0,0,1]} rotation={[-Math.PI * 0.35, 0, 0]}/>
 
@@ -118,7 +121,7 @@ export default function Experience() {
             <torusGeometry args={[1, 0.5, 16, 32]}/>
             <meshStandardMaterial color="mediumpurple"/>
           </mesh>
-        </RigidBody>
+        </RigidBody> */}
 
       </Physics>
 
