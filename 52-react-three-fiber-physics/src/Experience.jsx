@@ -3,7 +3,10 @@ import {
   OrbitControls,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
-import { InstancedRigidBodies, CylinderCollider, BallCollider, CuboidCollider, RigidBody, Physics } from '@react-three/rapier';
+import { InstancedRigidBodies, CylinderCollider, BallCollider, CuboidCollider, 
+  RigidBody, 
+  Physics 
+} from '@react-three/rapier';
 import { useMemo, useEffect, useState, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -75,20 +78,49 @@ export default function Experience() {
       <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} />
       <ambientLight intensity={1.5} />
 
-      <mesh castShadow position={ [ - 2, 2, 0 ] }>
-          <sphereGeometry />
-        <meshStandardMaterial color="orange" />
-      </mesh>
+      <Physics debug={true}>
 
-      <mesh castShadow position={ [ 2, 2, 0 ] }>
-        <boxGeometry />
-        <meshStandardMaterial color="mediumpurple" />
-      </mesh>
+        <RigidBody colliders="ball">
+          <mesh castShadow position={ [ 0, 4, 0 ] }>
+              <sphereGeometry />
+            <meshStandardMaterial color="orange" />
+          </mesh>
+        </RigidBody>
 
-      <mesh receiveShadow position-y={ - 1.25 }>
-        <boxGeometry args={ [ 10, 0.5, 10 ] } />
-        <meshStandardMaterial color="greenyellow" />
-      </mesh>
+        {/* <RigidBody>
+          <mesh castShadow position={ [ 2, 2, 0 ] }>
+            <boxGeometry />
+            <meshStandardMaterial color="mediumpurple" />
+          </mesh>
+        </RigidBody> */}
+
+        <RigidBody type="fixed">
+          <mesh receiveShadow position-y={ - 1.25 }>
+            <boxGeometry args={ [ 10, 0.5, 10 ] } />
+            <meshStandardMaterial color="greenyellow" />
+          </mesh>
+        </RigidBody>
+
+        {/* Trimesh example */}
+        {/* <RigidBody colliders="trimesh">
+          <mesh castShadow position={[0, 1, -0.25]} rotation={[Math.PI * 0.1, 0, 0]}>
+            <torusGeometry args={[1, 0.5, 16, 32]}/>
+            <meshStandardMaterial color="mediumpurple"/>
+          </mesh>
+        </RigidBody> */}
+
+        {/* Custom Collider example */}
+        <RigidBody colliders={false} position={[0, 1, 0]} rotation={[Math.PI * 0.5, 0, 0]}>
+          <CuboidCollider args={[1.5, 1.5, 0.5]}/>
+          <CuboidCollider args={[0.25, 1, 0.25]} position={[0,0,1]} rotation={[-Math.PI * 0.35, 0, 0]}/>
+
+          <mesh castShadow>
+            <torusGeometry args={[1, 0.5, 16, 32]}/>
+            <meshStandardMaterial color="mediumpurple"/>
+          </mesh>
+        </RigidBody>
+
+      </Physics>
 
       {/* <Physics debug={true} gravity={[0, -9.08, 0]}>
         <RigidBody colliders="ball" position={[-1.5, 2, 0]}>
