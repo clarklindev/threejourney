@@ -192,26 +192,36 @@ return (
 - need a reference to this box ref={twister}
 - change position and rotation on each frame - import useFrame: `import { useFrame } from '@react-three/fiber';`
 - use const time = state.clock.getElapsedTime();  //state gives us .clock
-- use setNextKinematicRotation():
-  - expected value is a quarternion, not a euler (for euler, only need to provide a Euler with y value...):
-  STEPS: 
-    1. create a Three.js Euler *eulerRotation = use time on y-axis
-    2. create a Three.js Quaternion, *quarternionRotation 
-    3. apply euler using setFromEuler(eulerRotation)
-    4. send that Quaternion to setNextKinematicRotation()
-    5. call "setNextKinematicRotation" method on the "twister" reference and send it the "quaternionRotation"
 
-  ```js
-  const time = state.clock.getElapsedTime();
+#### use setNextKinematicRotation():
+- expected value is a quarternion, not a euler (for euler, only need to provide a Euler with y value...):
+STEPS: 
+1. create a Three.js Euler *eulerRotation = use time on y-axis
+2. create a Three.js Quaternion, *quarternionRotation 
+3. apply euler using setFromEuler(eulerRotation)
+4. send that Quaternion to setNextKinematicRotation()
+5. call "setNextKinematicRotation" method on the "twister" reference and send it the "quaternionRotation"
 
-  const eulerRotation = new THREE.Euler(0, time * 3, 0);
-  const quaternionRotation = new THREE.Quaternion();
-  quaternionRotation.setFromEuler(eulerRotation);
-  twister.current.setNextKinematicRotation(quaternionRotation);
+```js
+const time = state.clock.getElapsedTime();
 
-  ```
+const eulerRotation = new THREE.Euler(0, time * 3, 0);
+const quaternionRotation = new THREE.Quaternion();
+quaternionRotation.setFromEuler(eulerRotation);
+twister.current.setNextKinematicRotation(quaternionRotation);
 
-- use setNextKinematicTranslation();
+```
+#### use setNextKinematicTranslation();
+- we want the twister to follow a circular parth on the surface of the floor, this is classic trigonometry
+- to position something on a circle, we need trig. sin on x and cos on z
+
+```js
+const angle = time * 0.5;
+const x = Math.cos(angle) * 2;
+const z = Math.sin(angle) * 2;
+twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z });
+```
+
 
 ```js
 import { useMemo, useEffect, useState, useRef } from 'react';
@@ -240,7 +250,7 @@ useFrame((state) => {
   const angle = time * 0.5;
   const x = Math.cos(angle) * 2;
   const z = Math.sin(angle) * 2;
-  // twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z });
+  twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z });
 });
 
 return (

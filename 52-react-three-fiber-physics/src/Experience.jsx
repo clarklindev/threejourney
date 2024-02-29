@@ -27,7 +27,7 @@ export default function Experience() {
     const angle = time * 0.5;
     const x = Math.cos(angle) * 2;
     const z = Math.sin(angle) * 2;
-    // twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z });
+    twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z });
   });
 
   const cubeJump = () => {
