@@ -22,7 +22,7 @@ export default function Experience() {
     const eulerRotation = new THREE.Euler(0, time * 3, 0);
     const quaternionRotation = new THREE.Quaternion();
     quaternionRotation.setFromEuler(eulerRotation);
-    // twister.current.setNextKinematicRotation(quaternionRotation);
+    twister.current.setNextKinematicRotation(quaternionRotation);
 
     const angle = time * 0.5;
     const x = Math.cos(angle) * 2;
@@ -99,6 +99,10 @@ export default function Experience() {
           restitution={0} 
           friction={0.7} 
           colliders={false}
+           // onCollisionEnter={ collisionEnter }
+          // onCollisionExit={ () => { console.log('exit') } }
+          // onSleep={ () => { console.log('sleep') } }
+          // onWake={ () => { console.log('wake') } }
         >
           <mesh 
             castShadow 
@@ -140,38 +144,7 @@ export default function Experience() {
           </mesh>
         </RigidBody> */}
 
-      </Physics>
-
-      {/* 
-      
-      
-
-        <RigidBody
-          ref={cube}
-          position={[1.5, 2, 0]}
-          gravityScale={1}
-          restitution={0}
-          friction={0.7}
-          colliders={false}
-          // onCollisionEnter={ collisionEnter }
-          // onCollisionExit={ () => { console.log('exit') } }
-          // onSleep={ () => { console.log('sleep') } }
-          // onWake={ () => { console.log('wake') } }
-        >
-          <mesh castShadow onClick={cubeJump}>
-            <boxGeometry />
-            <meshStandardMaterial color="mediumpurple" />
-          </mesh>
-          <CuboidCollider mass={2} args={[0.5, 0.5, 0.5]} />
-        </RigidBody>
-
-        <RigidBody type="fixed" restitution={0} friction={0.7}>
-          <mesh receiveShadow position-y={-1.25}>
-            <boxGeometry args={[10, 0.5, 10]} />
-            <meshStandardMaterial color="greenyellow" />
-          </mesh>
-        </RigidBody>
-
+        {/* redbox */}
         <RigidBody
           ref={twister}
           position={[0, -0.8, 0]}
@@ -183,6 +156,9 @@ export default function Experience() {
             <meshStandardMaterial color="red" />
           </mesh>
         </RigidBody>
+
+        {/* 
+        
 
         <RigidBody colliders={false} position={[0, 4, 0]}>
           <primitive object={hamburger.scene} scale={0.25} />
@@ -207,6 +183,10 @@ export default function Experience() {
           </instancedMesh>
         </InstancedRigidBodies>
       */}
+
+      </Physics>
+
+      
     </>
   );
 }

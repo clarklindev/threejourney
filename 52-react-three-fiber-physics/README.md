@@ -171,14 +171,14 @@ return (
 - BUT for dynamic and fixed objects, you should NOT change those values at run-time
 - their purpose is INITIAL POSITION - only to set the original position and rotation before letting Rapier update the objects
 
-#### updating object position
+#### updating object position (74min)
 - if you need to move it, you should apply forces
 - OPTION 1 - if you need to reset position (eg. car game reset car position)
   - need to reset velocities,
 - OPTION 2 - if you need to move it in time. with fixed animation (always same speeds), use kinematic types.
   - used for games where you control the player. 
   
-#### there are 2 types of Kinematic:
+#### there are 2 types of Kinematic (75min 56sec):
 - kinematicPosition 
 - kinematicVelocity
 
@@ -186,9 +186,40 @@ return (
   - kinematicPosition -> we provide the next position (it should go there)
   - kinematicVelocity -> we provide the velocity (this is the speed you should go)
 
+#### Red twister (77min)
+- TODO: create a long red box, going in circles on the floor, while rotating on its own axis.
+- `<RigidBody type="kinematicPosition">`
+- need a reference to this box ref={twister}
+- change position and rotation on each frame - import useFrame: `import { useFrame } from '@react-three/fiber';`
+- use const time = state.clock.getElapsedTime();  //state gives us .clock
+- use setNextKinematicRotation():
+  - expected value is a quarternion, not a euler (for euler, only need to provide a Euler with y value...):
+  STEPS: 
+    1. create a Three.js Euler *eulerRotation = use time on y-axis
+    2. create a Three.js Quaternion, *quarternionRotation 
+    3. apply euler using setFromEuler(eulerRotation)
+    4. send that Quaternion to setNextKinematicRotation()
+    5. call "setNextKinematicRotation" method on the "twister" reference and send it the "quaternionRotation"
+
+  ```js
+  const time = state.clock.getElapsedTime();
+
+  const eulerRotation = new THREE.Euler(0, time * 3, 0);
+  const quaternionRotation = new THREE.Quaternion();
+  quaternionRotation.setFromEuler(eulerRotation);
+  twister.current.setNextKinematicRotation(quaternionRotation);
+
+  ```
+
+- use setNextKinematicTranslation();
 
 ```js
+import { useMemo, useEffect, useState, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+
 const cube = useRef();
+const twister = useRef();
 
 const cubeJump = ()=>{
   console.log('hello:', cube.current);
@@ -197,6 +228,20 @@ const cubeJump = ()=>{
   cube.current.applyImpulse({x:0, y:5 * mass, z:0});
   cube.current.applyTorqueImpulse({x: Math.random() - 0.5, y: Math.random() - 0.5, z: Math.random() - 0.5});
 };
+
+useFrame((state) => {
+  const time = state.clock.getElapsedTime();
+
+  const eulerRotation = new THREE.Euler(0, time * 3, 0);  
+  const quaternionRotation = new THREE.Quaternion();
+  quaternionRotation.setFromEuler(eulerRotation);
+  twister.current.setNextKinematicRotation(quaternionRotation);
+
+  const angle = time * 0.5;
+  const x = Math.cos(angle) * 2;
+  const z = Math.sin(angle) * 2;
+  // twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z });
+});
 
 return (
 <>
@@ -226,6 +271,21 @@ return (
         <meshStandardMaterial color="greenyellow" />
       </mesh>
     </RigidBody>
+
+    //red box
+    <RigidBody
+      ref={twister}
+      position={[0, -0.8, 0]}
+      friction={0}
+      type="kinematicPosition"
+    >
+      <mesh castShadow scale={[0.4, 0.4, 3]}>
+        <boxGeometry />
+        <meshStandardMaterial color="red" />
+      </mesh>
+    </RigidBody>
+
+
 
   </Physics>
 </>
