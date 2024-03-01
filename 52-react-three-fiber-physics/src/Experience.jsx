@@ -5,7 +5,11 @@ import {
 
 import { Perf } from "r3f-perf";
 
-import { InstancedRigidBodies, CylinderCollider, BallCollider, CuboidCollider, 
+import { 
+  InstancedRigidBodies, 
+  CylinderCollider, 
+  BallCollider, 
+  CuboidCollider, 
   RigidBody, 
   Physics 
 } from '@react-three/rapier';
@@ -36,7 +40,7 @@ export default function Experience() {
 
   const cubeJump = () => {
     const mass = cube.current.mass();
-    cube.current.applyImpulse({x:0, y:5 * mass, z:0}); 
+    cube.current.applyImpulse({x:0, y:5 * mass, z:0}, true); 
     //random
     cube.current.applyTorqueImpulse({
       x: Math.random() - 0.5,
@@ -53,48 +57,48 @@ export default function Experience() {
   };
 
   const hamburger = useGLTF("./hamburger.glb");
-  const cubesCount = 3;
+  const cubesCount = 100;
 
   //DOESNT WORK WITH `<InstancedRigidBodies>`
-  useEffect(()=>{
-    for (let i = 0; i < cubesCount; i++) {
-      const matrix = new THREE.Matrix4();
-      matrix.compose(
-        new THREE.Vector3(i * 2, 0, 0),
-        new THREE.Quaternion(),
-        new THREE.Vector3(1, 1, 1)
-      );
-      cubes.current.setMatrixAt(i, matrix);
-    }
-  }, []);
-
-  // const cubeTransforms = useMemo(()=>{
-  //   const positions = [];
-  //   const rotations = [];
-  //   const scales = [];
-   
+  // useEffect(()=>{
   //   for (let i = 0; i < cubesCount; i++) {
-      
-  //     //positions
-  //     positions.push([
-  //       (Math.random() - 0.5) * 8,  //x
-  //       6 + i * 0.2,                //y
-  //       (Math.random() - 0.5) * 8   //z
-  //     ]);
-      
-  //     //rotations
-  //     rotations.push([
-  //       Math.random(),
-  //       Math.random(),
-  //       Math.random(),
-  //     ]);
-
-  //     // scale
-  //     const scale = 0.2 + Math.random() * 0.8;
-  //     scales.push([scale,scale,scale]);
+  //     const matrix = new THREE.Matrix4();
+  //     matrix.compose(
+  //       new THREE.Vector3(i * 2, 0, 0),
+  //       new THREE.Quaternion(),
+  //       new THREE.Vector3(1, 1, 1)
+  //     );
+  //     cubes.current.setMatrixAt(i, matrix);
   //   }
-  //   return {positions, rotations, scales};
-  // },[]);
+  // }, []);
+
+  const instances = useMemo(()=>{
+    const instances=[];
+   
+  for (let i = 0; i < cubesCount; i++) {
+    instances.push({
+      key: "instance_" + i,
+      position: [
+        (Math.random() - 0.5) * 8,  //x
+        6 + i * 0.2,                //y
+        (Math.random() - 0.5) * 8   //z
+      ],
+      rotation:[
+        Math.random(),
+        Math.random(),
+        Math.random(),
+      ],
+      scale:[
+        0.2 + Math.random() * 0.8,
+        0.2 + Math.random() * 0.8,
+        0.2 + Math.random() * 0.8
+      ]
+    });
+
+  }
+    return instances;
+
+  },[]);
 
   return (
     <>
@@ -107,7 +111,7 @@ export default function Experience() {
 
       <Physics 
         // debug={true} 
-        gravity={[0, -9.08, 0]}
+        gravity={[0, -9.8, 0]}
       >
 
         {/* sphere */}
@@ -198,25 +202,12 @@ export default function Experience() {
           <CuboidCollider args={[0.5, 2, 5]} position={[-5.5, 1, 0]} />
         </RigidBody>
 
-        {/* InstancedMesh */}
-        <instancedMesh 
-            ref={cubes}
-            castShadow
-            receiveShadow 
-            args={[null, null, cubesCount]}
-          >
-          <boxGeometry />
-          <meshStandardMaterial color="tomato" />
-        </instancedMesh>
-
-        {/* <InstancedRigidBodies 
-          // instances={instances}
-          positions={cubeTransforms.positions}
-          rotations={cubeTransforms.rotations}
-          scales={cubeTransforms.scales}
-        >
+        {/* InstancedRigidBodies / InstancedMesh */}
+        <InstancedRigidBodies 
+          instances={instances}
+        > 
           <instancedMesh 
-            ref={cubes}
+            // ref={cubes}
             castShadow
             receiveShadow 
             args={[null, null, cubesCount]}
@@ -224,7 +215,7 @@ export default function Experience() {
             <boxGeometry />
             <meshStandardMaterial color="tomato" />
           </instancedMesh>
-        </InstancedRigidBodies> */}
+        </InstancedRigidBodies> 
       </Physics>
     </>
   );

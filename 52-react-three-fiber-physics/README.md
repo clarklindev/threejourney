@@ -310,13 +310,13 @@ twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z });
   - a scale (Vector3)
 - the "tomato cubes" are being rendered in one draw call and we could create hundreds of them at minimal performance cost.
 - The `<instanceMesh>` needs to be wrapped inside `<InstancedRigidBodies>`
-- at this point, our matrices arent being used as the base position and we need to provide the positions, rotations, and scales separately to the `<InstancedRigidBodies>` 
+- at this point, our matrices arent being used as the base position and we need to provide an object with the positions, rotations, and scales separately to the `<InstancedRigidBodies>` 
 - FIX: comment out useEffect()
 - FIX: 
-  - use useMemo() to create the positions, rotations, scales arrays only ONCE: useMemo(()=>{}, [])
+  - use useMemo() to create the instances array useMemo(()=>{}, [])
   - after cubesCount, call useMemo and assign the result to a cubeTransforms variable
-  - we need to generate 3 arrays (positions, rotations, scales) and return them as an object with corresponding properties
-  - use forloop, fill the arrays with positions, rotations, scales values.
+  - `<InstancedRigidBodies instances={}>` expects instances prop
+  - use forloop, fill an object with attributes: positions, rotations, scales values.
   - send the arrays to the corresponding attributes of `<InstancedRigidBodies>`
 
 ```js
@@ -355,17 +355,28 @@ const cubesCount = 3;
 // },[]);
 
 // fix: useMemo()
-const cubeTransforms = useMemo(()=>{
-  const positions = [];
-  const rotations = [];
-  const scales = [];
-
-  for (let i = 0; i < cubesCount; i++) {
-    positions.push([i * 2, 0, 0]);
-    rotations.push([0,0,0]);
-    scales.push([1,1,1]);
-  }
-  return {positions, rotations, scales};
+const instances = useMemo(()=>{
+for (let i = 0; i < cubesCount; i++) {
+  instances.push({
+    key: "instance_" + i,
+    position: [
+      (Math.random() - 0.5) * 8,  //x
+      6 + i * 0.2,                //y
+      (Math.random() - 0.5) * 8   //z
+    ],
+    rotation:[
+      Math.random(),
+      Math.random(),
+      Math.random(),
+    ],
+    scale:[
+      0.2 + Math.random() * 0.8,
+      0.2 + Math.random() * 0.8,
+      0.2 + Math.random() * 0.8
+    ]
+  });
+}
+  return instances;
 },[]);
 
 const cubeJump = ()=>{
@@ -471,13 +482,9 @@ return (
 
     {/* InstancedMesh - NOTE: "cubesCount" is how many instances we have of instancedMesh */}
     <InstancedRigidBodies 
-      // instances={instances}
-      positions={cubeTransforms.positions}
-      rotations={cubeTransforms.rotations}
-      scales={cubeTransforms.scales}
+      instances={instances}
     > 
       <instancedMesh 
-        ref={cubes}
         castShadow
         receiveShadow 
         args={[null, null, cubesCount]}
