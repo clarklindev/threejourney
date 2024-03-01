@@ -193,7 +193,7 @@ return (
 - change position and rotation on each frame - import useFrame: `import { useFrame } from '@react-three/fiber';`
 - use const time = state.clock.getElapsedTime();  //state gives us .clock
 
-#### use setNextKinematicRotation():
+#### use setNextKinematicRotation() (82min 33sec):
 - expected value is a quarternion, not a euler (for euler, only need to provide a Euler with y value...):
 STEPS: 
 1. create a Three.js Euler *eulerRotation = use time on y-axis
@@ -211,7 +211,7 @@ quaternionRotation.setFromEuler(eulerRotation);
 twister.current.setNextKinematicRotation(quaternionRotation);
 
 ```
-#### use setNextKinematicTranslation();
+#### use setNextKinematicTranslation(); (85min 31sec)
 - we want the twister to follow a circular parth on the surface of the floor, this is classic trigonometry
 - to position something on a circle, we need trig. sin on x and cos on z
 
@@ -220,23 +220,166 @@ const angle = time * 0.5;
 const x = Math.cos(angle) * 2;
 const z = Math.sin(angle) * 2;
 twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z });
+
 ```
 
+### Events (88min 41sec)
+- you can listen to events by adding attributes directly on `<RigidBody>`
+- 4 different events:
+1. onCollisionEnter - when RigidBody hit something
+2. onCollisionExit - when RigidBody separates from the object it just hit
+3. onSleep - when RigidBody starts sleeping
+4. onWake - when RigidBody stops sleeping
+
+#### Sound (90min)
+- Sound - instantiate sound only once with useState(()=>{//returns first instance}) 
+
+#### onSleep / onWake
+- when an object stops moving for a moment, Rapier will consider it as sleeping and wont update it unless it collides with something else or we call a function like "applyImpulse" on it.
+- This improves porformance since Rapier wont have to test objects that dont move
+- we can be informed of that sleeping state changing with onSleep and onWake
+
+### From a model / Handling models
+- how does Rapier handle loaded models?
+- load hamburger `const hamburger = useGLTF("./hamburger.glb");`
+- add to scene with `<primitive object={hamburger.scene}/>`
+- a CuboidCollider has been created for each part of the hamburger
+- those cuboids dont really match the shape of our hamburger - can create our own custom collider.
+- import CylinderCollider
+- add CylinderCollider to RigidBody
+- in most cases, you dont need the collider to match the geometry perfectly, and most users wont notice the difference
+
+#### create our own colliders (CylinderCollider)
+```js
+<RigidBody colliders={false} position={[0, 4, 0]}>
+  <primitive object={hamburger.scene} scale={0.25} />
+  <CylinderCollider args={[0.5, 1.25]} />   
+</RigidBody>
+```
+
+#### hull (102min 15sec)
+- can change the colliders attribute to hull 
+- ERROR??? BUGGY - the registration point is wrong (DO NOT USE UNTIL RAPIER HAS FIXED)
 
 ```js
+<RigidBody colliders="hull" position={[0, 4, 0]}>
+  <primitive object={hamburger.scene} scale={0.25} />
+  {/*<CylinderCollider args={[0.5, 1.25]} />*/}
+</RigidBody>
+```
+#### Trimesh (103min 11sec)
+- trimesh is good but may affect performance
+- do not use on DYNAMIC BODY
+- SOLUTION - use CylinderCollid
+
+---
+### Stress Test (104min 28sec)
+- stress testing Rapier with hundreds of cubes
+- adding invisible walls around the scene so objects dont fall out of bounds
+- create 4 `<CuboidColliders>` in one `<RigidBody>` with type set to "fixed"
+
+#### InstancedMesh (107min 18sec)
+- handling hundreds of cubes with `<InstancedMesh>`.
+- add an `<instancedMesh>` to our jsx
+  - provide 3 args to it
+    1. geometry
+    2. material
+    3. number of instances
+- instancedMesh expects 3 args - since we are going to create the geometry and the material in declarative way, we can set those to null.
+- create a cubesCount variable
+- create the geometry and material like we do for mesh
+
+### instanceMesh Matrix4
+- if you use instanceMesh you need to provide the matrices a Matrix4 for each instance and we do that through a reference
+- create a cubes reference: `const cubes = useRef();`
+- associate it with the `<instancedMesh>` using the ref attribute
+- only provide matrices on first render, use useEffect
+- call it in Experience with an empty array as dependencies
+- make forloop to loop cubesCount
+- create empty Matrix4() for each instance
+- instantiate the Matrix4 in the forloop
+- associate each one of the Matrix4 to the instances of the InstancedMesh with setMatrixAt()
+- there are 3 cubes, all positioned at the center since we provided empty Matrix4
+- Matrix4 is a combo of position, rotation, and scale.
+- Matrix4 are used to move the vertices according to the object transformation
+- when we change the position, rotation or scale of an obejct, Three.js will calculate the Matrix4 automatically before rendering it.
+- since we are using instancedMesh - we need to provide (position, rotation, scale) ourselves.
+- we can use compose() to create a Matrix4
+  - we need to send a position (Vector3)
+  - a rotation (Quaternion)
+  - a scale (Vector3)
+- the "tomato cubes" are being rendered in one draw call and we could create hundreds of them at minimal performance cost.
+- The `<instanceMesh>` needs to be wrapped inside `<InstancedRigidBodies>`
+- at this point, our matrices arent being used as the base position and we need to provide the positions, rotations, and scales separately to the `<InstancedRigidBodies>` 
+- FIX: comment out useEffect()
+- FIX: 
+  - use useMemo() to create the positions, rotations, scales arrays only ONCE: useMemo(()=>{}, [])
+  - after cubesCount, call useMemo and assign the result to a cubeTransforms variable
+  - we need to generate 3 arrays (positions, rotations, scales) and return them as an object with corresponding properties
+  - use forloop, fill the arrays with positions, rotations, scales values.
+  - send the arrays to the corresponding attributes of `<InstancedRigidBodies>`
+
+```js
+import {
+  useGLTF,
+  OrbitControls,
+} from "@react-three/drei";
+import { InstancedRigidBodies, CylinderCollider, BallCollider, CuboidCollider, 
+  RigidBody, 
+  Physics 
+} from '@react-three/rapier';
 import { useMemo, useEffect, useState, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
+const [hitSound] = useState(() => new Audio("./hit.mp3"));
+const hamburger = useGLTF("./hamburger.glb");
+
 const cube = useRef();
+const cubes = useRef();   //for instancedMesh
 const twister = useRef();
+
+const cubesCount = 3;
+
+// DOESNT WORK WITH `<InstancedRigidBodies>`
+// useEffect(()=>{
+//   for (let i = 0; i < cubesCount; i++) {
+//     const matrix = new THREE.Matrix4();
+//     matrix.compose(
+//       new THREE.Vector3(i * 2, 0, 0),
+//       new THREE.Quaternion(),
+//       new THREE.Vector3(1, 1, 1)
+//     );
+//     cubes.current.setMatrixAt(i, matrix);
+//   }
+// },[]);
+
+// fix: useMemo()
+const cubeTransforms = useMemo(()=>{
+  const positions = [];
+  const rotations = [];
+  const scales = [];
+
+  for (let i = 0; i < cubesCount; i++) {
+    positions.push([i * 2, 0, 0]);
+    rotations.push([0,0,0]);
+    scales.push([1,1,1]);
+  }
+  return {positions, rotations, scales};
+},[]);
 
 const cubeJump = ()=>{
   console.log('hello:', cube.current);
   const mass = cube.current.mass();
-
   cube.current.applyImpulse({x:0, y:5 * mass, z:0});
   cube.current.applyTorqueImpulse({x: Math.random() - 0.5, y: Math.random() - 0.5, z: Math.random() - 0.5});
+};
+
+const collisionEnter = () => {
+  // console.log("collision!");
+  // hitSound.currentTime = 0
+  // hitSound.volume = Math.random()
+  // hitSound.play()
 };
 
 useFrame((state) => {
@@ -265,6 +408,10 @@ return (
       restitution={1}
       friction={0.7}
       colliders={false}
+      onCollisionEnter={ collisionEnter }
+      onCollisionExit={()=>{console.log('exit')}}
+      onSleep={ () => { console.log('sleep') } }
+      onWake={ () => { console.log('wake') } }
     >
       <mesh onClick={cubeJump}></mesh>
       <CuboidCollider mass={0.5} args={[0.5, 0.5, 0.5]}/>
@@ -295,6 +442,50 @@ return (
       </mesh>
     </RigidBody>
 
+    {/* hamburger */}
+    // using CylinderCollider
+    <RigidBody colliders={false} position={[0, 4, 0]}>
+      <primitive object={hamburger.scene} scale={0.25} />
+      <CylinderCollider args={[0.5, 1.25]} />
+    </RigidBody>
+
+    //using hull
+    // <RigidBody colliders="hull" position={[0, 4, 0]}>
+    //   <primitive object={hamburger.scene} scale={0.25} />
+    //   <CylinderCollider args={[0.5, 1.25]} />
+    // </RigidBody>
+
+    //trimesh
+    // <RigidBody colliders="trimesh" position={[0, 4, 0]}>
+    //   <primitive object={hamburger.scene} scale={0.25} />
+    //   // <CylinderCollider args={[0.5, 1.25]} />
+    // </RigidBody>
+
+    //invisible wall
+    <RigidBody type="fixed">
+      <CuboidCollider args={[5, 2, 0.5]} position={[0, 1, 5.5]} />
+      <CuboidCollider args={[5, 2, 0.5]} position={[0, 1, -5.5]} />
+      <CuboidCollider args={[0.5, 2, 5]} position={[5.5, 1, 0]} />
+      <CuboidCollider args={[0.5, 2, 5]} position={[-5.5, 1, 0]} />
+    </RigidBody>
+
+    {/* InstancedMesh - NOTE: "cubesCount" is how many instances we have of instancedMesh */}
+    <InstancedRigidBodies 
+      // instances={instances}
+      positions={cubeTransforms.positions}
+      rotations={cubeTransforms.rotations}
+      scales={cubeTransforms.scales}
+    > 
+      <instancedMesh 
+        ref={cubes}
+        castShadow
+        receiveShadow 
+        args={[null, null, cubesCount]}
+      >
+        <boxGeometry />
+        <meshStandardMaterial color="tomato" />
+      </instancedMesh>
+    </InstancedRigidBodies> 
 
 
   </Physics>
