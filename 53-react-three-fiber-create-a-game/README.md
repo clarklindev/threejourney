@@ -84,3 +84,110 @@ useFrame((state)=>{
 ### Custom collider (CuboidCollider)
 - this is for the floor so the player wont fall through the floor
 - friction on CuboidCollider for floor is set to 1 (because player will have a friction of 0)
+
+### Ball (Player) (78min / 1hr 18min)
+- for the geometry of the player (geometry: icosahedronGeometry, material: meshStandardMaterial, color: mediumpurple)
+- icosahedronGeometry - made up of triangles of same size
+- flatShading - prop used to ensure the faces of the geometry are noticeable
+- import { useRapier, RigidBody } from "@react-three/rapier";
+- wrap mesh
+- RigidBody falls asleep after a few seconds of inaction - result in the sphere not moving even though the player presses the arrow keys. FIX: set the canSleep attribute to false on the `<RigidBody canSleep={false}>`
+
+### Keyboard Controls (1hr 25min)
+- index.js: drei has a helper KeyboardControls: 
+  `import { KeyboardControls } from "@react-three/drei";`
+- import and wrap every component that has to be aware of which keys are being pressed.
+- later, an interface outside of index.js `<Canvas>` will react to keyboard interaction.
+- to the map={[]} array, we need to provide: 
+    an object with a "name"
+    and an array of keys, each key that we want to observe
+- note "KeyW" - regardless of placement on physical keyboard it will always be equal to the W key
+- Player.jsx: we are going to apply forces whenever corresponding keys are pressed, need to do it in Player - useFrame().
+  `import { useFrame } from "@react-three/fiber";`
+  `import { useKeyboardControls } from "@react-three/drei";`
+- the KeyboardControls and useKeyboardControls are linked together
+- [] = useKeyboardControls(); //hook returns an array
+- the array from hook returns: 
+  1. a function to subscribe to key changes 
+  2. a function to get the current state of the keys (which keys are pressed)
+
+### forces
+- will apply a roll (torque / rotation) - applyTorqueImpulse()
+- and a force (incase in the air) - applyImpulse()
+- import useRef from react - to apply a force on a rigidBody, we need a reference to it.
+- apply the forces
+- use delta time to ensure consistent results across variations in framerates
+- on RigidBody, apply damping for translation and rotations to make object eventually stop moving/rotating
+  `linearDamping={0.5}`
+  `angularDamping={0.5}`
+
+```js
+//index.jsx
+import { KeyboardControls } from "@react-three/drei";
+
+return <> 
+  <KeyboardControls map={[
+    {name:"forward", keys:['ArrowUp', 'KeyW']},
+    {name:"backward", keys:['DownUp', 'KeyS']},
+    {name:"left", keys:['ArrowLeft', 'KeyA']},
+    {name:"right", keys:['ArrowRight', 'KeyD']},
+    {name:"jump", keys:['Space']},
+  ]}>
+    <Canvas/>
+  </KeyboardControls>
+</>
+```
+
+```js
+//Player.jsx
+
+import { useFrame } from "@react-three/fiber";
+import { useKeyboardControls } from "@react-three/drei";
+import {useRef} from 'react';
+
+const [subscribeKeys, getKeys ] = useKeyboardControls();
+const body = useRef();
+
+useFrame((state, delta)=>{
+  const {forward, backward, leftward, rightward} = getKeys();
+  //handle forces (impulse and torque)
+  const impulse = {x: 0, y: 0, z:0};
+  const torque = {x: 0, y: 0, z:0};
+
+  const impulseStrength = 0.6 * delta;
+  const torqueStrength = 0.2 * delta;
+
+  if(forward){
+    impulse.z -= impulseStrength;
+    torque.x -= torqueStrength;
+  }
+
+  if (rightward) {
+    impulse.x += impulseStrength;
+    torque.z -= torqueStrength;
+  }
+
+  if (backward) {
+    impulse.z += impulseStrength;
+    torque.x += torqueStrength;
+  }
+
+  if (leftward) {
+    impulse.x -= impulseStrength;
+    torque.z += torqueStrength;
+  }
+  
+  body.current.applyImpulse(impulse);
+  body.current.applyTorqueImpulse(torque);
+
+});
+
+return <RigidBody 
+  ref={body}
+  linearDamping={0.5}
+  angularDamping={0.5}
+>
+  //...
+</RigidBody>
+
+```
