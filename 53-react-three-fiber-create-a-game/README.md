@@ -75,3 +75,8 @@ useFrame((state)=>{
 
 ### Level generation
 - pass the traps and trapcount into Level() as props (give default values)
+
+### Bounds
+- be able to control the length of the Bounds from prop
+- length should be count + 2 (number of traps + start block + end block) 
+- 0.3 thick, 1.5 high walls
