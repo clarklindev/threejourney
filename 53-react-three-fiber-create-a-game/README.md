@@ -121,6 +121,31 @@ useFrame((state)=>{
   `linearDamping={0.5}`
   `angularDamping={0.5}`
 
+### jumping
+- player should jump when spacebar is pressed
+- the jump should not happen on useFrame() 
+- Player.jsx: use subscribeKeys() to register listening for keypressed
+  - to this, you pass 2 functions: 
+    1. (state) => state.jump - function is called "a selector": here you mention what you subscribing to
+    2. receives the value returned from first function, want to only handle if value is true...
+- FIX: ensure player cannot keep jumping before landed...
+  - use a ray, check if the distance to floor is too high, if higher than 0.2 then cannot jump again
+  - to set the origin of the ray, retrieve the body position with the translation function and move it down by 0.31 (radius of ball).
+  - to create ray, need to use Rapier library via useRapier hook from `@react-three/rapier`
+  - useRapier() -> gives access to many Rapier related elements like physics world, physics options, and Rapier.
+  - `import { useRapier, RigidBody } from "@react-three/rapier";`
+  - const {rapier, world} = useRapier();
+  - const ray = new rapier.Ray(origin, direction);
+  - cast the ray against something to test agaist...test against the world
+  - const hit = world.castRay(ray);
+  - hit is an object containing information about the ray collision. 
+  - there is a "toi" - time of impact (distance between ray we casted -> to what it hit) - if value is high, not against floor
+  - to fix the offset issue when casting ray, provide extra values to castRay hit = world.castRay(ray, 10, true); 
+  - 10 is the maximum distance for the ray
+  - true - makes the floor solid for the collision test
+- FIX: cleanup useEffect() -> bugfix for when you make a change and the component re-renders and on-re-render, subscribeKeys() is called twice because it hasnt unsubscribed to first call.
+- FIX: assign a variable to the function subscribeKeys, the function returns a function to unsubscribe for cleanup...which should be called in the return ()=>{}
+
 ```js
 //index.jsx
 import { KeyboardControls } from "@react-three/drei";
@@ -143,10 +168,43 @@ return <>
 
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@react-three/drei";
-import {useRef} from 'react';
+import {useRef, useEffect} from 'react';
+import { useRapier, RigidBody } from "@react-three/rapier";
 
 const [subscribeKeys, getKeys ] = useKeyboardControls();
 const body = useRef();
+const {rapier, world} = useRapier();
+
+const jump = ()=> {
+  const origin = body.current.translation();  //center RigidBody
+  origin.y -= 0.31;
+  const direction = {x: 0, y: -1, z:0};
+  const ray = new rapier.Ray(origin, direction);
+  const hit = world.castRay(ray, 10, true);
+
+  //only allow jump if close enough to floor
+  if(hit.toi < 0.15){
+    body.current.applyImpulse({x: 0 , y:0.5, z:0});
+  }
+}
+
+useEffect(()=>{
+  const unsubscribeJump = subscribeKeys(
+    // selector - you subscribe to something here...
+    (state) => state.jump,
+
+    //receives the value returned above as argument 
+    (value)=>{
+      //only if value is true...
+      if(value){
+        jump();
+      }
+    }
+  );
+  return ()=>{
+    unsubscribeJump();
+  }
+}, []);
 
 useFrame((state, delta)=>{
   const {forward, backward, leftward, rightward} = getKeys();

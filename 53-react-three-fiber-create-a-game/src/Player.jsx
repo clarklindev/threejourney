@@ -9,6 +9,35 @@ export const Player = ()=>{
 
   const [subscribeKeys, getKeys ] = useKeyboardControls();
   const body = useRef();
+  const {rapier, world} = useRapier();
+
+  const jump = ()=> {
+    const origin = body.current.translation();  //center RigidBody
+    origin.y -= 0.31;
+    const direction = {x: 0, y: -1, z:0};
+    const ray = new rapier.Ray(origin, direction);
+    const hit = world.castRay(ray, 10, true);
+
+    //only allow jump if close enough to floor
+    if(hit.toi < 0.15){
+      body.current.applyImpulse({x: 0 , y:0.5, z:0});
+    }
+  }
+
+  useEffect(()=>{
+    subscribeKeys(
+      // selector - you subscribe to something here...
+      (state) => state.jump,
+  
+      //receives the value returned above as argument 
+      (value)=>{
+        //only if value is true...
+        if(value){
+          jump();
+        }
+      }
+    );
+  }, []);
 
   useFrame((state, delta)=>{
     //find out which key pressed
