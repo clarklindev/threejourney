@@ -59,4 +59,11 @@ useFrame((state)=>{
 - repeated up and down movement with Math.sin() and time
 - same animation speed, but timeOffset will be different
 
-### BlockAxe (horizontal movement) - Pendulum 
+### BlockAxe (horizontal movement) - Pendulum (40:34)
+- moving on horizontal direction with 
+
+### BlockEnd (44:00)
+- end prize -> Hamburger model
+- useGLTF from drei
+- add it to group with primitive
+- hamburger scene only constains meshes, we can use a forEach on .scene.children and set castShadow to true
