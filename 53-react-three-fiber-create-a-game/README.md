@@ -52,3 +52,9 @@ useFrame((state)=>{
 });
 
 ```
+
+### Translate objects (32:21)
+- limbo trap block moves vertically
+- use setNextKinematicTranslation()
+- repeated up and down movement with Math.sin() and time
+- same animation speed, but timeOffset will be different

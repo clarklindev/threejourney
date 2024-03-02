@@ -73,10 +73,55 @@ const BlockSpinner = ({position=[0,0,0]}) =>{
   </group>
 }
 
+//BlockLimbo - as in "Limbo stick" (vertical movement)
+const BlockLimbo = ({position=[0,0,0]}) =>{
+  const obstacle = useRef();
+  const [timeOffset] = useState(()=> Math.random() * Math.PI * 2);  //Math.PI * 2 is how long it takes to repeat up down movement
+
+  //rotate RigidBody type="kinematicPosition"
+  useFrame((state)=>{
+    const time = state.clock.getElapsedTime();
+    const y = Math.sin(time + timeOffset) + 1.15; //-1 to 1
+
+    obstacle.current.setNextKinematicTranslation({x: position[0], y: position[1]+y, z:position[2]});
+  });
+
+  return <group position={position}>  
+
+  {/* floor */}
+  <mesh 
+    geometry={boxGeometry} 
+    material={floor2Material}
+    position={[0, -0.1, 0]} 
+    scale={[4, 0.2, 4]} 
+    receiveShadow
+  />
+
+  {/* obstacle */}
+    <RigidBody 
+      ref={obstacle}
+      type="kinematicPosition"
+      position={[0, 0.3, 0]}
+      restitution={0.2}
+      friction={0}
+    >
+      <mesh 
+        geometry={boxGeometry} 
+        material={obstacleMaterial} 
+        scale={[3.5, 0.3, 0.3]} 
+        castShadow 
+        receiveShadow
+      />
+    </RigidBody>
+  </group>
+}
+
 const Level = ()=>{
   return <>
-  <BlockStart position={[0,0,4]}/>
-  <BlockSpinner position={[0,0,0]}/>
+  <BlockStart position={[0,0,8]}/>
+  <BlockSpinner position={[0,0,4]}/>
+  <BlockLimbo position={[0,0,0]}/>
+  <BlockLimbo position={[0,0,-4]}/>
   </>
 }
 
