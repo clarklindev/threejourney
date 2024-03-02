@@ -58,3 +58,5 @@ useFrame((state)=>{
 - use setNextKinematicTranslation()
 - repeated up and down movement with Math.sin() and time
 - same animation speed, but timeOffset will be different
+
+### BlockAxe (horizontal movement) - Pendulum 

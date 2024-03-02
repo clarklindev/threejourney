@@ -116,14 +116,59 @@ const BlockLimbo = ({position=[0,0,0]}) =>{
   </group>
 }
 
+//BlockAxe - (horizontal movement) - Pendulum 
+const BlockAxe = ({position=[0,0,0]}) =>{
+  const obstacle = useRef();
+  const [timeOffset] = useState(()=> Math.random() * Math.PI * 2);  //Math.PI * 2 is how long it takes to repeat up down movement
+
+  //rotate RigidBody type="kinematicPosition"
+  useFrame((state)=>{
+    const time = state.clock.getElapsedTime();
+    const x = Math.cos(time + timeOffset) * 1.25; 
+    obstacle.current.setNextKinematicTranslation({x: position[0]+x, y: position[1] + 0.75, z:position[2]});
+  });
+
+  return <group position={position}>  
+
+  {/* floor */}
+  <mesh 
+    geometry={boxGeometry} 
+    material={floor2Material}
+    position={[0, -0.1, 0]} 
+    scale={[4, 0.2, 4]} 
+    receiveShadow
+  />
+
+  {/* obstacle */}
+    <RigidBody 
+      ref={obstacle}
+      type="kinematicPosition"
+      position={[0, 0.3, 0]}
+      restitution={0.2}
+      friction={0}
+    >
+      <mesh 
+        geometry={boxGeometry} 
+        material={obstacleMaterial} 
+        scale={[1.5, 1.5, 0.3]} 
+        castShadow 
+        receiveShadow
+      />
+    </RigidBody>
+  </group>
+}
+
+//Level
 const Level = ()=>{
   return <>
-  <BlockStart position={[0,0,8]}/>
-  <BlockSpinner position={[0,0,4]}/>
-  <BlockLimbo position={[0,0,0]}/>
-  <BlockLimbo position={[0,0,-4]}/>
+  <BlockStart position={[0,0,12]}/>
+  <BlockSpinner position={[0,0,8]}/>
+  <BlockLimbo position={[0,0,4]}/>
+  <BlockAxe position={[0,0,0]}/>
   </>
 }
+
+
 
 export default Level;
 
