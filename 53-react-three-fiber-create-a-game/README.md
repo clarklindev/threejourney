@@ -80,3 +80,7 @@ useFrame((state)=>{
 - be able to control the length of the Bounds from prop
 - length should be count + 2 (number of traps + start block + end block) 
 - 0.3 thick, 1.5 high walls
+
+### Custom collider (CuboidCollider)
+- this is for the floor so the player wont fall through the floor
+- friction on CuboidCollider for floor is set to 1 (because player will have a friction of 0)
