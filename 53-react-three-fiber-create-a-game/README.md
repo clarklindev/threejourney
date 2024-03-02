@@ -67,3 +67,11 @@ useFrame((state)=>{
 - useGLTF from drei
 - add it to group with primitive
 - hamburger scene only constains meshes, we can use a forEach on .scene.children and set castShadow to true
+
+### shuffle the blocks - trapblock generation (random pick)
+- random generation of trapblocks
+- `<BlockStart>` position set to start at 0
+- TrapBlocks -> create an array of trap types [BlockSpinner, BlockAxe, BlockLimbo]
+
+### Level generation
+- pass the traps and trapcount into Level() as props (give default values)

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { RigidBody } from '@react-three/rapier';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
-import {useRef, useState} from 'react';
+import {useRef, useState, useMemo} from 'react';
 
 
 //Reusable Geometry
@@ -15,7 +15,7 @@ const obstacleMaterial = new THREE.MeshStandardMaterial({ color: "orangered" });
 const wallMaterial = new THREE.MeshStandardMaterial({ color: "slategrey" });
 
 //BlockStart
-const BlockStart = ({position=[0,0,0]}) =>{
+export const BlockStart = ({position=[0,0,0]}) =>{
   
   return <group position={position}>  
     <mesh 
@@ -29,7 +29,7 @@ const BlockStart = ({position=[0,0,0]}) =>{
 }
 
 //BlockSpinner
-const BlockSpinner = ({position=[0,0,0]}) =>{
+export const BlockSpinner = ({position=[0,0,0]}) =>{
   const obstacle = useRef();
 
   //minimum speed of 0.2
@@ -75,7 +75,7 @@ const BlockSpinner = ({position=[0,0,0]}) =>{
 }
 
 //BlockLimbo - as in "Limbo stick" (vertical movement)
-const BlockLimbo = ({position=[0,0,0]}) =>{
+export const BlockLimbo = ({position=[0,0,0]}) =>{
   const obstacle = useRef();
   const [timeOffset] = useState(()=> Math.random() * Math.PI * 2);  //Math.PI * 2 is how long it takes to repeat up down movement
 
@@ -118,7 +118,7 @@ const BlockLimbo = ({position=[0,0,0]}) =>{
 }
 
 //BlockAxe - (horizontal movement) - Pendulum 
-const BlockAxe = ({position=[0,0,0]}) =>{
+export const BlockAxe = ({position=[0,0,0]}) =>{
   const obstacle = useRef();
   const [timeOffset] = useState(()=> Math.random() * Math.PI * 2);  //Math.PI * 2 is how long it takes to repeat up down movement
 
@@ -160,7 +160,7 @@ const BlockAxe = ({position=[0,0,0]}) =>{
 }
 
 //BlockEnd
-const BlockEnd = ({position=[0,0,0]}) =>{
+export const BlockEnd = ({position=[0,0,0]}) =>{
   const hamburger = useGLTF('./hamburger.glb');
   
   //shadow
@@ -189,19 +189,36 @@ const BlockEnd = ({position=[0,0,0]}) =>{
 }
 
 //Level
-const Level = ()=>{
+export const Level = ({count = 5, types=[BlockSpinner, BlockAxe, BlockLimbo] })=>{
+  const blocks = useMemo(()=>{
+    const blocks = [];
+
+    //randomly pick a type and push into blocks array
+    for(let i=0; i< count; i++){
+      const type = types[Math.floor(Math.random() * types.length)];
+      blocks.push(type);
+    }
+
+    return blocks;
+  }, [count, types]);
+
   return <>
   <BlockStart position={[0,0,16]}/>
+  {/* 
+  // hardcode
   <BlockSpinner position={[0,0,12]}/>
   <BlockLimbo position={[0,0,8]}/>
-  <BlockAxe position={[0,0,4]}/>
-  <BlockEnd position={[0,0,0]}/>
+  <BlockAxe position={[0,0,4]}/> */}
+
+  {/* random generate traps */}
+  {/* giving dynamic name "Block" representing the item inside "blocks" */}
+  {/* position on z and move traps away from start block +1 */}
+  {blocks.map((Block, index)=> <Block key={index} position={[0, 0, -(index + 1) * 4]}/>)}
+
+  <BlockEnd position={[0,0, - (count + 1) * 4 ]}/>
   </>
 }
 
-
-
-export default Level;
 
 // import * as THREE from "three";
 // import { CuboidCollider, RigidBody } from "@react-three/rapier";
