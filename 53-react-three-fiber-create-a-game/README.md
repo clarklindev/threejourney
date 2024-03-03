@@ -27,65 +27,76 @@
 - wallMaterial - walls ("slategray")
 
 ### Obstacle Physics (22:20)
+
 - RigidBody
 - wrap obstacle mesh with <RigidBody>
-- DO NOT wrap floor mesh with <RigidBody type="fixed"> 
+- DO NOT wrap floor mesh with <RigidBody type="fixed">
 - <RigidBody type="kinematicPosition"> - kinematicPosition - the obstacle needs to move at constant speed without being affected by outside forces
 - create ref to obstacle
 - use useFrame() to animate
 - in useFrame(state) get time from state `const time = state.clock.getElapsedTime();`
 
 ### Rotating objects (25:30 -> 32:36)
-- use time as angle to rotate. to rotate, use "setNextKinematicRotation()" 
+
+- use time as angle to rotate. to rotate, use "setNextKinematicRotation()"
 - expects a quaternion, create a quaternion from a Euler
 - randomize speed of rotation by multiplying time by random value (useState: speed)
-- fixate time to 2 values: if its below 0.5 -> speed * -1 , else change direction -> speed * 1
+- fixate time to 2 values: if its below 0.5 -> speed _ -1 , else change direction -> speed _ 1
 
 ```js
-const [speed] = useState(()=> Math.random() + 0.2 * Math.random() < 0.5 ? -1 : 1);
+const [speed] = useState(() =>
+  Math.random() + 0.2 * Math.random() < 0.5 ? -1 : 1
+);
 
-useFrame((state)=>{
+useFrame((state) => {
   const time = state.clock.getElapsedTime();
   const rotation = new THREE.Quarternion();
   rotation.setFromEuler(new THREE.Euler(0, time * speed, 0));
   obstacle.current.setNextKinematicRotation(rotation);
 });
-
 ```
 
 ### Translate objects (32:21)
+
 - limbo trap block moves vertically
 - use setNextKinematicTranslation()
 - repeated up and down movement with Math.sin() and time
 - same animation speed, but timeOffset will be different
 
 ### BlockAxe (horizontal movement) - Pendulum (40:34)
-- moving on horizontal direction with 
+
+- moving on horizontal direction with
 
 ### BlockEnd (44:00)
+
 - end prize -> Hamburger model
 - useGLTF from drei
 - add it to group with primitive
 - hamburger scene only constains meshes, we can use a forEach on .scene.children and set castShadow to true
 
 ### shuffle the blocks - trapblock generation (random pick)
+
 - random generation of trapblocks
 - `<BlockStart>` position set to start at 0
 - TrapBlocks -> create an array of trap types [BlockSpinner, BlockAxe, BlockLimbo]
 
 ### Level generation
+
 - pass the traps and trapcount into Level() as props (give default values)
 
 ### Bounds
+
 - be able to control the length of the Bounds from prop
-- length should be count + 2 (number of traps + start block + end block) 
+- length should be count + 2 (number of traps + start block + end block)
 - 0.3 thick, 1.5 high walls
 
 ### Custom collider (CuboidCollider)
+
 - this is for the floor so the player wont fall through the floor
 - friction on CuboidCollider for floor is set to 1 (because player will have a friction of 0)
 
 ### Ball (Player) (78min / 1hr 18min)
+
 - for the geometry of the player (geometry: icosahedronGeometry, material: meshStandardMaterial, color: mediumpurple)
 - icosahedronGeometry - made up of triangles of same size
 - flatShading - prop used to ensure the faces of the geometry are noticeable
@@ -94,24 +105,26 @@ useFrame((state)=>{
 - RigidBody falls asleep after a few seconds of inaction - result in the sphere not moving even though the player presses the arrow keys. FIX: set the canSleep attribute to false on the `<RigidBody canSleep={false}>`
 
 ### Keyboard Controls (1hr 25min)
-- index.js: drei has a helper KeyboardControls: 
+
+- index.js: drei has a helper KeyboardControls:
   `import { KeyboardControls } from "@react-three/drei";`
 - import and wrap every component that has to be aware of which keys are being pressed.
 - later, an interface outside of index.js `<Canvas>` will react to keyboard interaction.
-- to the map={[]} array, we need to provide: 
-    an object with a "name"
-    and an array of keys, each key that we want to observe
+- to the map={[]} array, we need to provide:
+  an object with a "name"
+  and an array of keys, each key that we want to observe
 - note "KeyW" - regardless of placement on physical keyboard it will always be equal to the W key
 - Player.jsx: we are going to apply forces whenever corresponding keys are pressed, need to do it in Player - useFrame().
   `import { useFrame } from "@react-three/fiber";`
   `import { useKeyboardControls } from "@react-three/drei";`
 - the KeyboardControls and useKeyboardControls are linked together
 - [] = useKeyboardControls(); //hook returns an array
-- the array from hook returns: 
-  1. a function to subscribe to key changes 
+- the array from hook returns:
+  1. a function to subscribe to key changes
   2. a function to get the current state of the keys (which keys are pressed)
 
-### forces
+### forces (1hr 35min 17sec)
+
 - will apply a roll (torque / rotation) - applyTorqueImpulse()
 - and a force (incase in the air) - applyImpulse()
 - import useRef from react - to apply a force on a rigidBody, we need a reference to it.
@@ -121,11 +134,12 @@ useFrame((state)=>{
   `linearDamping={0.5}`
   `angularDamping={0.5}`
 
-### jumping
+### jumping (1hr 49min)
+
 - player should jump when spacebar is pressed
-- the jump should not happen on useFrame() 
+- the jump should not happen on useFrame()
 - Player.jsx: use subscribeKeys() to register listening for keypressed
-  - to this, you pass 2 functions: 
+  - to this, you pass 2 functions:
     1. (state) => state.jump - function is called "a selector": here you mention what you subscribing to
     2. receives the value returned from first function, want to only handle if value is true...
 - FIX: ensure player cannot keep jumping before landed...
@@ -138,9 +152,9 @@ useFrame((state)=>{
   - const ray = new rapier.Ray(origin, direction);
   - cast the ray against something to test agaist...test against the world
   - const hit = world.castRay(ray);
-  - hit is an object containing information about the ray collision. 
+  - hit is an object containing information about the ray collision.
   - there is a "toi" - time of impact (distance between ray we casted -> to what it hit) - if value is high, not against floor
-  - to fix the offset issue when casting ray, provide extra values to castRay hit = world.castRay(ray, 10, true); 
+  - to fix the offset issue when casting ray, provide extra values to castRay hit = world.castRay(ray, 10, true);
   - 10 is the maximum distance for the ray
   - true - makes the floor solid for the collision test
 - FIX: cleanup useEffect() -> bugfix for when you make a change and the component re-renders and on-re-render, subscribeKeys() is called twice because it hasnt unsubscribed to first call.
@@ -150,17 +164,21 @@ useFrame((state)=>{
 //index.jsx
 import { KeyboardControls } from "@react-three/drei";
 
-return <> 
-  <KeyboardControls map={[
-    {name:"forward", keys:['ArrowUp', 'KeyW']},
-    {name:"backward", keys:['DownUp', 'KeyS']},
-    {name:"left", keys:['ArrowLeft', 'KeyA']},
-    {name:"right", keys:['ArrowRight', 'KeyD']},
-    {name:"jump", keys:['Space']},
-  ]}>
-    <Canvas/>
-  </KeyboardControls>
-</>
+return (
+  <>
+    <KeyboardControls
+      map={[
+        { name: "forward", keys: ["ArrowUp", "KeyW"] },
+        { name: "backward", keys: ["DownUp", "KeyS"] },
+        { name: "left", keys: ["ArrowLeft", "KeyA"] },
+        { name: "right", keys: ["ArrowRight", "KeyD"] },
+        { name: "jump", keys: ["Space"] },
+      ]}
+    >
+      <Canvas />
+    </KeyboardControls>
+  </>
+);
 ```
 
 ```js
@@ -168,54 +186,54 @@ return <>
 
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@react-three/drei";
-import {useRef, useEffect} from 'react';
+import { useRef, useEffect } from "react";
 import { useRapier, RigidBody } from "@react-three/rapier";
 
-const [subscribeKeys, getKeys ] = useKeyboardControls();
+const [subscribeKeys, getKeys] = useKeyboardControls();
 const body = useRef();
-const {rapier, world} = useRapier();
+const { rapier, world } = useRapier();
 
-const jump = ()=> {
-  const origin = body.current.translation();  //center RigidBody
+const jump = () => {
+  const origin = body.current.translation(); //center RigidBody
   origin.y -= 0.31;
-  const direction = {x: 0, y: -1, z:0};
+  const direction = { x: 0, y: -1, z: 0 };
   const ray = new rapier.Ray(origin, direction);
   const hit = world.castRay(ray, 10, true);
 
   //only allow jump if close enough to floor
-  if(hit.toi < 0.15){
-    body.current.applyImpulse({x: 0 , y:0.5, z:0});
+  if (hit.toi < 0.15) {
+    body.current.applyImpulse({ x: 0, y: 0.5, z: 0 });
   }
-}
+};
 
-useEffect(()=>{
+useEffect(() => {
   const unsubscribeJump = subscribeKeys(
     // selector - you subscribe to something here...
     (state) => state.jump,
 
-    //receives the value returned above as argument 
-    (value)=>{
+    //receives the value returned above as argument
+    (value) => {
       //only if value is true...
-      if(value){
+      if (value) {
         jump();
       }
     }
   );
-  return ()=>{
+  return () => {
     unsubscribeJump();
-  }
+  };
 }, []);
 
-useFrame((state, delta)=>{
-  const {forward, backward, leftward, rightward} = getKeys();
+useFrame((state, delta) => {
+  const { forward, backward, leftward, rightward } = getKeys();
   //handle forces (impulse and torque)
-  const impulse = {x: 0, y: 0, z:0};
-  const torque = {x: 0, y: 0, z:0};
+  const impulse = { x: 0, y: 0, z: 0 };
+  const torque = { x: 0, y: 0, z: 0 };
 
   const impulseStrength = 0.6 * delta;
   const torqueStrength = 0.2 * delta;
 
-  if(forward){
+  if (forward) {
     impulse.z -= impulseStrength;
     torque.x -= torqueStrength;
   }
@@ -234,18 +252,114 @@ useFrame((state, delta)=>{
     impulse.x -= impulseStrength;
     torque.z += torqueStrength;
   }
-  
+
   body.current.applyImpulse(impulse);
   body.current.applyTorqueImpulse(torque);
-
 });
 
-return <RigidBody 
-  ref={body}
-  linearDamping={0.5}
-  angularDamping={0.5}
->
-  //...
-</RigidBody>
+return (
+  <RigidBody ref={body} linearDamping={0.5} angularDamping={0.5}>
+    //...
+  </RigidBody>
+);
+```
 
+---
+
+### Camera animation (2h 12min)
+
+- animate camera instead of traversing scene with orbit controls
+- TODO: remove orbit controls
+- camera should follow ball (smooth animation)
+- this should happen inside Player.jsx useFrame()
+- retrieve the position of the body using translation
+- import THREE to use Vector3
+- copy() position from ball (body), to cameraPosition
+- position slightly behind ball
+- position slightly above ball
+
+### CameraTarget: Camera should follow ball
+
+- look slightly above ball
+
+```js
+const cameraTarget = new THREE.Vector3();
+cameraTarget.copy(bodyPosition);
+cameraTarget.y += 0.25;
+```
+
+### Camera position / lookAt()
+
+- get access to camera via state
+- copy cameraPosition to camera's position
+- get access to camera via state
+
+```js
+//this will later be updated to smoothCameraPosition and smoothCameraTarget
+state.camera.position.copy(cameraPosition);
+state.camera.lookAt(cameraTarget);
+```
+
+### Lerping (smooth camera) (2hrs 18min 20sec)
+
+- with lerping, at each frame -> you move the camera closer (eg half of remaining distance on each frame) to end target to create smooth effect
+- create 2 new vectors outside of useFrame(): representing camera target and camera position.
+- in useFrame(), use the lerp() to do lerping (linear interpolation) on Vector3.
+- to make renders consitent accross framerates, use delta in lerp()
+
+```js
+useFrame((state, delta) => {
+  //...
+
+  //lerp camera position first...
+  smoothCameraPosition.lerp(cameraPosition, 5 * delta); 
+  smoothCameraTarget.lerp(cameraPosition, 5 * delta); 
+
+  //update camera to use smoothCameraPosition and smoothCameraTarget
+  //get access to camera via state
+  state.camera.position.copy(smoothCameraPosition);
+  state.camera.lookAt(smoothCameraTarget);
+});
+```
+
+### initial camera position
+- camera initial position looks like it comes from the floor, set initial camera position to a far value to give a "birdview" effect
+```js
+const [smoothCameraPosition] = useState(() => new THREE.Vector3(10,10,10));
+const [smoothCameraTarget] = useState(() => new THREE.Vector3());
+
+```
+
+
+```js
+import * as THREE from "three";
+import { useState } from "react";
+
+const [smoothCameraPosition] = useState(() => new THREE.Vector3());
+const [smoothCameraTarget] = useState(() => new THREE.Vector3());
+
+useFrame((state, delta) => {
+  //Camera position
+  const bodyPosition = body.current.translation();
+  const cameraPosition = new THREE.Vector3();
+  cameraPosition.copy(bodyPosition);
+  cameraPosition.z += 2.25; //position slightly behind ball
+  cameraPosition.y += 0.65; //position slightly above ball
+
+  //make camera look at target (ball)
+  const cameraTarget = new THREE.Vector3();
+  cameraTarget.copy(bodyPosition);
+  cameraTarget.y += 0.25; //look slightly above ball
+
+  //lerp camera position first...
+  // smoothCameraPosition.lerp(cameraPosition, 0.1); //1/10th closer
+  // smoothCameraTarget.lerp(cameraTarget, 0.1); //1/10th closer
+
+  smoothCameraPosition.lerp(cameraPosition, 5 * delta); //using delta
+  smoothCameraTarget.lerp(cameraTarget, 5 * delta);  //using delta
+
+  //get access to camera via state
+  state.camera.position.copy(smoothCameraPosition);
+  state.camera.lookAt(smoothCameraTarget);
+});
 ```

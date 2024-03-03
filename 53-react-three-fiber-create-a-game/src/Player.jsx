@@ -10,6 +10,9 @@ export const Player = ()=>{
   const [subscribeKeys, getKeys ] = useKeyboardControls();
   const body = useRef();
   const {rapier, world} = useRapier();
+  
+  const [smoothedCameraPosition] = useState(() => new THREE.Vector3(10, 10, 10));
+  const [smoothedCameraTarget] = useState(()=> new THREE.Vector3());
 
   const jump = ()=> {
     const origin = body.current.translation();  //center RigidBody
@@ -40,6 +43,9 @@ export const Player = ()=>{
   }, []);
 
   useFrame((state, delta)=>{
+    
+    // CONTROLS:
+
     //find out which key pressed
     const {forward, backward, leftward, rightward} = getKeys();
 
@@ -72,6 +78,27 @@ export const Player = ()=>{
     body.current.applyImpulse(impulse);
     body.current.applyTorqueImpulse(torque);
 
+    // CAMERA:
+    //Camera position
+    const bodyPosition= body.current.translation();
+    const cameraPosition = new THREE.Vector3();
+    cameraPosition.copy(bodyPosition);
+    cameraPosition.z += 2.25; //position slightly behind ball
+    cameraPosition.y += 0.65; //position slightly above ball
+
+    //make camera look at target (ball)
+    const cameraTarget = new THREE.Vector3();
+    cameraTarget.copy(bodyPosition);
+    cameraTarget.y += 0.25; //look slightly above ball
+
+    //lerp camera position first... 
+    smoothedCameraPosition.lerp(cameraPosition, 5 * delta); //1/10th closer
+    smoothedCameraTarget.lerp(cameraTarget, 5 * delta); //1/10th closer
+
+    //get access to camera via state
+    state.camera.position.copy(smoothedCameraPosition);
+    state.camera.lookAt(smoothedCameraTarget);
+    
   });
 
   return (
@@ -94,29 +121,12 @@ export const Player = ()=>{
 }
 
 // export default function Player() {
-//   const body = useRef();
-//   const [subscribeKeys, getKeys] = useKeyboardControls();
-//   const { rapier, world } = useRapier();
-//   const [smoothedCameraPosition] = useState(
-//     () => new THREE.Vector3(10, 10, 10)
-//   );
-//   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
+
 //   const start = useGame((state) => state.start);
 //   const end = useGame((state) => state.end);
 //   const restart = useGame((state) => state.restart);
 //   const blocksCount = useGame((state) => state.blocksCount);
 
-//   const jump = () => {
-//     const origin = body.current.translation();
-//     origin.y -= 0.31;
-//     const direction = { x: 0, y: -1, z: 0 };
-//     const ray = new rapier.Ray(origin, direction);
-//     const hit = world.castRay(ray, 10, true);
-
-//     if (hit.toi < 0.15) {
-//       body.current.applyImpulse({ x: 0, y: 0.5, z: 0 });
-//     }
-//   };
 
 //   const reset = () => {
 //     body.current.setTranslation({ x: 0, y: 1, z: 0 });
@@ -129,13 +139,6 @@ export const Player = ()=>{
 //       (state) => state.phase,
 //       (value) => {
 //         if (value === "ready") reset();
-//       }
-//     );
-
-//     const unsubscribeJump = subscribeKeys(
-//       (state) => state.jump,
-//       (value) => {
-//         if (value) jump();
 //       }
 //     );
 
@@ -152,27 +155,6 @@ export const Player = ()=>{
 
 //   useFrame((state, delta) => {
 
-
-//     /**
-//      * Camera
-//      */
-//     const bodyPosition = body.current.translation();
-
-//     const cameraPosition = new THREE.Vector3();
-//     cameraPosition.copy(bodyPosition);
-//     cameraPosition.z += 2.25;
-//     cameraPosition.y += 0.65;
-
-//     const cameraTarget = new THREE.Vector3();
-//     cameraTarget.copy(bodyPosition);
-//     cameraTarget.y += 0.25;
-
-//     smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
-//     smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
-
-//     state.camera.position.copy(smoothedCameraPosition);
-//     state.camera.lookAt(smoothedCameraTarget);
-
 //     /**
 //      * Phases
 //      */
@@ -180,22 +162,4 @@ export const Player = ()=>{
 
 //     if (bodyPosition.y < -4) restart();
 //   });
-
-//   return (
-//     <RigidBody
-//       ref={body}
-//       canSleep={false}
-//       colliders="ball"
-//       restitution={0.2}
-//       friction={1}
-//       linearDamping={0.5}
-//       angularDamping={0.5}
-//       position={[0, 1, 0]}
-//     >
-//       <mesh castShadow>
-//         <icosahedronGeometry args={[0.3, 1]} />
-//         <meshStandardMaterial flatShading color="mediumpurple" />
-//       </mesh>
-//     </RigidBody>
-//   );
 // }

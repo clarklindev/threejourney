@@ -1,4 +1,4 @@
-import { OrbitControls } from "@react-three/drei";
+// import { OrbitControls } from "@react-three/drei";   //use camera
 import { Physics } from '@react-three/rapier';
 
 import Lights from "./Lights.jsx";
@@ -8,7 +8,7 @@ import {Level, BlockStart, BlockSpinner, BlockLimbo, BlockAxe, BlockEnd} from '.
 export default function Experience() {
   return (
     <>
-      <OrbitControls makeDefault />
+      {/* <OrbitControls makeDefault /> */}
       <Physics debug>
         <Lights />
         <Level/>
