@@ -363,3 +363,21 @@ useFrame((state, delta) => {
   state.camera.lookAt(smoothCameraTarget);
 });
 ```
+
+### Lighting
+- make the light follow the ball
+- animating shadow on each from requires useFrame from '@react-three/fiber';
+- use state from useFrame((state)=>{ //use state.camera})
+- update the light target .z to same position as camera.z 
+- (target matrix isnt being updated...) - ThreeJs only updates object matrices when their transformation coordinates (rotation, position and scale) change,
+but they need to be in the scene. the light is in the scene but not the target.
+- FIX: update the matrix
+- most of the shadow is behind us as the light follows the camera. FIX: move light forward.
+
+```js
+useFrame((state)=>{
+  light.current.position.x = state.camera.position.z + 1 - 4;
+  light.current.target.position.z = state.camera.z - 4;
+  light.current.target.updateMatrixWorld();
+});
+```
