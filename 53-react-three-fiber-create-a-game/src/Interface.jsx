@@ -6,6 +6,7 @@ import { addEffect } from "@react-three/fiber";
 export default function Interface() {
   const time = useRef();
   const restart = useGame((state) => state.restart);
+  const phase = useGame((state) => state.phase);
   
   //RECOMMENDED: DO NOT DO THIS...
   // const controls = useKeyboardControls((state)=> state);
@@ -17,6 +18,30 @@ export default function Interface() {
   const rightward = useKeyboardControls((state) => state.rightward);
   const jump = useKeyboardControls((state) => state.jump);
 
+  useEffect(()=>{
+    const unsubscribeEffect = addEffect(() =>
+    {
+      const state = useGame.getState(); //get snap of current state (via non-reactive way)
+      console.log(state.phase);
+
+      let elapsedTime = 0;
+      if(state.phase === 'playing')
+        elapsedTime = Date.now() - state.startTime;
+      else if(state.phase === 'ended')
+        elapsedTime = state.endTime - state.startTime;
+      elapsedTime /= 1000;
+      elapsedTime = elapsedTime.toFixed(2);
+      
+      if(time.current)
+        time.current.textContent = elapsedTime;
+    })
+    return () =>
+    {
+      unsubscribeEffect();
+    }
+
+  },[]);
+
   return (
     <div className="interface">
 
@@ -24,9 +49,9 @@ export default function Interface() {
       <div ref={ time } className="time">0.00</div>
 
       {/* Restart Button */}
-      <div className="restart"
+      {phase === "ended" && <div className="restart"
         onClick={ restart }
-      >Restart</div>
+      >Restart</div>}
 
       {/* Controls */}
       <div className="controls">
@@ -45,28 +70,7 @@ export default function Interface() {
     </div>
   );
 }
-  //
-  // const phase = useGame((state) => state.phase)
 
-  // useEffect(() =>
-  // {
-  //     const unsubscribeEffect = addEffect(() =>
-  //     {
-  //         const state = useGame.getState()
-  //         let elapsedTime = 0
-  //         if(state.phase === 'playing')
-  //             elapsedTime = Date.now() - state.startTime
-  //         else if(state.phase === 'ended')
-  //             elapsedTime = state.endTime - state.startTime
-  //         elapsedTime /= 1000
-  //         elapsedTime = elapsedTime.toFixed(2)
-  //         if(time.current)
-  //             time.current.textContent = elapsedTime
-  //     })
-  //     return () =>
-  //     {
-  //         unsubscribeEffect()
-  //     }
-  // }, [])
+
 
 

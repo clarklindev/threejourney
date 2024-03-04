@@ -600,6 +600,8 @@ useFrame(()=>{
 - retrieve the restart method
 - in Player.jsx useFrame() we can test if user fell ie. bodyPosition.y is < -4
 - Player.jsx: reset function -> call this when phase changes to 'ready'
+- the restart button should only show when at the end of the level, we need to know current phase: `const phase = useGame((state) => state.phase)`
+- modify the dom to only show when phase === "ended"
 
 #### Subscribing to phase changes (3hr 23min)
 - we need to subscribe to changes to our store
@@ -620,6 +622,22 @@ useFrame(()=>{
 - provide 'restart' function to the button onClick
 - calling restart() function will set the phase in the store to "ready"
 - when phase is 'ready', Player.jsx which is subscribing to phase and checking if its "ready" -> calls its own reset()
+
+### Timer 
+- we want timer to start as soon as player interacts with keys ie when phase ==="playing"
+- stop when marble reaches the end of the level phase="ended"
+- reset timer to 0.00 when user restarts level
+- NOTE: DO NOT SAVE ELAPSED TIME IN STORE, AS STATE UPDATES (on each frame) TRIGGER UNECESSARY RE-RENDERS
+- FIX: when phase==='playing', save the start time; when phase==='ended', save the end time, calculate total time
+- add startTime and endTime to global store
+- in start() and end() can track time with Date.now()
+- in Interface() do the calculation BUT Interface is not R3F, its react.
+- create a ref for Time element
+- R3F gives us addEffect hook that can be used outside of `<Canvas>` (synchronous with useFrame())
+- Interface.jsx: `import { addEffect } from "@react-three/fiber";`
+- only want to call AddEffect once, so use useEffect() and call addEffect() with a cleanup function.
+- get access to the state - dont have access to updated values from above eg. restart and phase, as its at the time of creation useEffect() is using and called only once at start
+- in addEffect() we need to access the store state, but not in the usual reactive way - can call getState on useGame(): `const state = useGame.getState()`
 
 ```js
 // player
@@ -646,6 +664,12 @@ import {subscribeWithSelector} from 'zustand/middleware';
 export default create(subscribeWithSelector((set)=>{
   return {
     blocksCount:3,
+
+    // TIME
+    startTime: 0,
+    endTime: 0,
+
+    // PHASES
     phase: 'ready',
 
     // start:()=>{
@@ -774,8 +798,36 @@ import useGame from './stores/useGame.jsx';
 ```js
 //Interface
 import useGame from './stores/useGame.js';
+import { addEffect } from "@react-three/fiber";
+import {useEffect} from 'react';
 
-const restart = useGame((state)=> state.restart);
+export default function Interface(){
+  
+  const restart = useGame((state)=> state.restart);
+  const phase = useGame((state) => state.phase);
 
+  useEffect(()=>{
+    const unsubscribeEffect = addEffect(() =>
+    {
+      //get access to the state - dont have access to updated values from above eg. restart and phase, as its at the time of creation useEffect() is using and called only once at start.
+
+      const state = useGame.getState();// (via non-reactive way)
+      let elapsedTime = 0;
+      if(state.phase === 'playing')
+        elapsedTime = Date.now() - state.startTime;
+      else if(state.phase === 'ended')
+        elapsedTime = state.endTime - state.startTime;
+      elapsedTime /= 1000;
+      elapsedTime = elapsedTime.toFixed(2);
+      if(time.current)
+        time.current.textContent = elapsedTime;
+    })
+    return () =>
+    {
+      unsubscribeEffect();
+    }
+
+  },[]);
+}
 
 ```
