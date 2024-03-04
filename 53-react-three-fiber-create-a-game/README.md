@@ -383,7 +383,7 @@ useFrame((state)=>{
 ```
 
 ---
-### The Interface
+### The Interface (2hr 33min)
 - The interface will be 3 elements
   1. Timer
   2. Restart button
@@ -531,5 +531,251 @@ return <>
 .controls .key.active {
   background: #ffffff99;
 }
+
+```
+---
+
+### Game Mechanics (2hr 52min)
+- restart button (clickable) -> visible only when level finished
+- timer display accurate information
+- reset the marble if it falls out of the map
+
+#### Global state with Zustand (PMNDERS)
+- information needs to be accessed/shared from multiple components
+- add to dependencies: 
+
+```cmd
+npm i zustand
+```
+- create a global state store "useGame" - src/stores/useGame
+- we will use it like a hook
+- in useGame.js create store - import { create } from 'zustand'
+- we need to send a function that will return our store data as an object
+- in Experience.js, import useGame 
+- note: we target "state.blocksCount" so component only re-renders if blocksCount updates, else if its just "state", Component will update when any state changes.
+- use blocksCount on the count property of Level
+- game state: "ready", "playing", "ended"
+- to update store state, use methods directly added to the store, use the function passed in as a prop "set" (name whatever you want) to create() 
+- to set() function you also given state 
+- so if we need to update the store "phase", call the set() method from the store update function 
+- to set(()=>{}) we send a function that returns the new state -> which is an object containing the properties that need to change.
+- we need to call start(), restart(), end() whenever phase has changed.
+- overhaul the useGame store start(), restart(), end() function to only call the code if the the phase is the same as name of function
+
+#### START phase
+- Player.jsx is where we update phase because thats where we listen for keyboard presses.
+- subscribe to all key presses by not specifying a selector for subscribeKeys(()=>{})
+- dont forget cleanup function in useEffect()
+- to set phase from Player.jsx, import useGame from Player.jsx
+- const start = useGame((state)=> state.start);
+- call start(); when any key is pressed
+- do the same for when end of game reached.
+```js
+const unsubscribeAny = subscribeKeys(()=>{
+  start();
+});
+```
+
+#### END phase
+- to verify the player has reached the end, we need to know the length of the level.
+- retrieve the blocksCount from the store.
+- at each frame we test if we are at the end.
+- at the end of the useFrame, test if the bodyPosition is at the end of the level.
+
+```js
+const end = useGame((state) => state.end);
+const blocksCount = useGame((state) => state.blocksCount);
+useFrame(()=>{
+  //...
+
+  // Phases
+  if(bodyPosition.z < (blocksCount * 4 + 2)){
+    end();
+  }
+});
+```
+
+#### RESTART phase
+- when ball falls off platform
+- retrieve the restart method
+- in Player.jsx useFrame() we can test if user fell ie. bodyPosition.y is < -4
+- Player.jsx: reset function -> call this when phase changes to 'ready'
+
+#### Subscribing to phase changes (3hr 23min)
+- we need to subscribe to changes to our store
+- in the store, in the create() function, pass subscribeWithSelector() which wraps the set() function.
+- this makes our store available to subscriptions, 
+- in Player.jsx, subscribe to phase changes by calling useGame.subscribe(1. selector, 2.function to call when property changes): do it in useEffect
+
+### the reset
+- Player.jsx reset() should be called:
+  - setTranslation() - put it back at the origin
+  - setLinvel() - remove any translation forces
+  - setAngvel() - remove any angular force
+
+### reset button
+- the reset button is part of the interface
+- import the global state
+- access restart method from the state: `const restart = useGame((state)=> state.restart);`
+- provide 'restart' function to the button onClick
+- calling restart() function will set the phase in the store to "ready"
+- when phase is 'ready', Player.jsx which is subscribing to phase and checking if its "ready" -> calls its own reset()
+
+```js
+// player
+const reset = ()=>{
+  console.log('reset');
+  body.current.setTranslation({ x: 0, y: 1, z: 0 });
+  body.current.setLinvel({ x: 0, y: 0, z: 0 });
+  body.current.setAngvel({ x: 0, y: 0, z: 0 });
+}
+```
+
+```js
+//in the store
+//src/stores/useGame.jsx
+import {subscribeWithSelector} from 'zustand/middleware';
+export default create(subscribeWithSelector((set)=>{}));
+```
+
+#### FULL EXAMPLE
+```js
+//src/stores/useGame.jsx
+import {subscribeWithSelector} from 'zustand/middleware';
+
+export default create(subscribeWithSelector((set)=>{
+  return {
+    blocksCount:3,
+    phase: 'ready',
+
+    // start:()=>{
+    //   set(()=>{
+    //     return {phase: 'playing'}
+    //   })
+    // },
+    start: () => {
+      set((state) => {
+        if (state.phase === "ready")
+          return { phase: "playing", startTime: Date.now() };
+
+        return {};
+      });
+    },
+
+    // restart:()=>{
+    //   set(()=>{
+    //     return {phase: 'ready'}
+    //   })
+    // },
+    restart: () => {
+      set((state) => {
+        if (state.phase === "playing" || state.phase === "ended")
+          return { phase: "ready", blocksSeed: Math.random() };
+
+        return {};
+      });
+    },
+
+
+    // end:()=>{
+    //   set(()=>{
+    //     return {phase: 'ended'}
+    //   })
+    // },
+    end: () => {
+      set((state) => {
+        if (state.phase === "playing")
+          return { phase: "ended", endTime: Date.now() };
+
+        return {};
+      });
+    },
+
+  }
+}));
+
+```
+
+```js
+//Experience.js
+import useGame from './stores/useGame.jsx';
+export default function Experience() {
+  const blocksCount = useGame((state)=> state.blocksCount); 
+  return <>
+    <Level count={blocksCount}/>
+  </>
+}
+```
+
+```js
+//Player.jsx
+import useGame from './stores/useGame.jsx';
+
+  const start = useGame((state)=> state.start);
+  const end = useGame((state) => state.end);
+  const blocksCount = useGame((state) => state.blocksCount);
+
+  const reset = ()=>{
+    console.log('reset');
+    body.current.setTranslation({ x: 0, y: 1, z: 0 });
+    body.current.setLinvel({ x: 0, y: 0, z: 0 });
+    body.current.setAngvel({ x: 0, y: 0, z: 0 });
+  }
+
+  const jump = ()=>{}
+
+  useEffect(()=>{
+    //...
+    const unsubscribeAny = subscribeKeys(()=>{
+      start();
+    });
+    return ()=>{
+      //...
+      unsubscribeAny();
+    }
+
+    const unsubscribeReset = useGame.subscribe(
+      (state)=> state.phase,  
+      (value)=>{
+        console.log('phase changed: ', value);
+        //phase
+        if(value === 'ready'){
+          reset();
+        }
+      }
+    );
+
+    return () => {
+      unsubscribeReset();
+      unsubscribeJump();
+      unsubscribeAny();
+    };
+
+  });
+
+  useFrame(()=>{
+    //...
+
+    // PHASES
+     
+    //end
+    if(bodyPosition.z < (blocksCount * 4 + 2)){
+      end();
+    }
+
+    //restart - when fell below platform
+    if (bodyPosition.y < -4) {
+      restart();
+    }
+
+  });
+```
+
+```js
+//Interface
+import useGame from './stores/useGame.js';
+
+const restart = useGame((state)=> state.restart);
+
 
 ```

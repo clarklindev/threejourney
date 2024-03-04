@@ -1,10 +1,11 @@
 import { useKeyboardControls } from "@react-three/drei";
-import useGame from "./stores/useGame.jsx";
+import useGame from "./stores/useGame.js";
 import { useEffect, useRef } from "react";
 import { addEffect } from "@react-three/fiber";
 
 export default function Interface() {
   const time = useRef();
+  const restart = useGame((state) => state.restart);
   
   //RECOMMENDED: DO NOT DO THIS...
   // const controls = useKeyboardControls((state)=> state);
@@ -24,7 +25,7 @@ export default function Interface() {
 
       {/* Restart Button */}
       <div className="restart"
-        // onClick={ restart }
+        onClick={ restart }
       >Restart</div>
 
       {/* Controls */}
@@ -44,7 +45,7 @@ export default function Interface() {
     </div>
   );
 }
-  // const restart = useGame((state) => state.restart)
+  //
   // const phase = useGame((state) => state.phase)
 
   // useEffect(() =>

@@ -268,10 +268,6 @@ export const Level = ({count = 5, types=[BlockSpinner, BlockAxe, BlockLimbo] })=
 
 
 
-// import * as THREE from "three";
-// import { CuboidCollider, RigidBody } from "@react-three/rapier";
-// import { useMemo, useState, useRef } from "react";
-// import { useFrame } from "@react-three/fiber";
 // import { Float, Text, useGLTF } from "@react-three/drei";
 
 // export function BlockStart({ position = [0, 0, 0] }) {

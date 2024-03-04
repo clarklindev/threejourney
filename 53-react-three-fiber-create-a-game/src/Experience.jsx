@@ -5,13 +5,18 @@ import Lights from "./Lights.jsx";
 import { Player } from './Player.jsx';
 import {Level, BlockStart, BlockSpinner, BlockLimbo, BlockAxe, BlockEnd} from './Level.jsx';
 
+import useGame from './stores/useGame.js';
+
 export default function Experience() {
+
+  const blocksCount = useGame((state)=> state.blocksCount);
+
   return (
     <>
       {/* <OrbitControls makeDefault /> */}
-      <Physics debug>
+      <Physics debug> 
         <Lights />
-        <Level/>
+        <Level count={blocksCount}/>
         <Player/>
       </Physics>
     </>
