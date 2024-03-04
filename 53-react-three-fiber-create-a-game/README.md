@@ -393,6 +393,7 @@ useFrame((state)=>{
 - give it a className="interface"
 - in css, target interface and fill the screen area
 - restrict clickin on things not meant to be interacted with "pointer-events: none;"
+
 ```css
 .interface {
   position: fixed;
@@ -615,6 +616,16 @@ useFrame(()=>{
   - setLinvel() - remove any translation forces
   - setAngvel() - remove any angular force
 
+```js
+// player
+const reset = ()=>{
+  console.log('reset');
+  body.current.setTranslation({ x: 0, y: 1, z: 0 });
+  body.current.setLinvel({ x: 0, y: 0, z: 0 });
+  body.current.setAngvel({ x: 0, y: 0, z: 0 });
+}
+```
+
 ### reset button
 - the reset button is part of the interface
 - import the global state
@@ -639,15 +650,14 @@ useFrame(()=>{
 - get access to the state - dont have access to updated values from above eg. restart and phase, as its at the time of creation useEffect() is using and called only once at start
 - in addEffect() we need to access the store state, but not in the usual reactive way - can call getState on useGame(): `const state = useGame.getState()`
 
-```js
-// player
-const reset = ()=>{
-  console.log('reset');
-  body.current.setTranslation({ x: 0, y: 1, z: 0 });
-  body.current.setLinvel({ x: 0, y: 0, z: 0 });
-  body.current.setAngvel({ x: 0, y: 0, z: 0 });
-}
-```
+### Randomizing level generation
+- Level.jsx
+- need to add a random seed value
+- to global state, add "blocksSeed"
+- in Level, add seed prop
+- in Experience, provide seed to Level: `const blocksSeed = useGame((state)=> state.blocksSeed);`
+- `<Level count={blocksCount} seed={blocksSeed}/>`
+- in store, in restart(), set the blocksSeed with a random value
 
 ```js
 //in the store
@@ -655,6 +665,73 @@ const reset = ()=>{
 import {subscribeWithSelector} from 'zustand/middleware';
 export default create(subscribeWithSelector((set)=>{}));
 ```
+
+### FINISHING TOUCHES - background color
+- add to Experience `<color args={['#abcdef']} attach="background"/>`
+
+### FINISHING TOUCHES - Text, Float 
+- make text float `<Float floatIntensity={0.25} rotationIntensity={0.25}>`
+- text too dark - we are using MeshStandardMaterial (there is tone mapping being applied)
+- inside `<Text>` change to MeshBasicMaterial with toneMapped={false} by just adding: `<meshBasicMaterial toneMapped={false}/>`
+
+```js
+//Level.jsx
+
+//BlockStart
+return <group position={position}>  
+  <Float floatIntensity={0.25} rotationIntensity={0.25}>
+    <Text 
+      scale={0.5}
+      font="./bebas-neue-v9-latin-regular.woff"
+      maxWidth={0.25}
+      lineHeight={0.75}
+      textAlign='right'
+      position={[0.75, 0.65, 0]}
+      rotation-y={-0.25}
+    >My balls
+    <meshBasicMaterial toneMapped={false}/>
+    </Text>
+  </Float>
+
+  <mesh 
+    geometry={boxGeometry} 
+    material={floor1Material}
+    position={[0, -0.1, 0]} 
+    scale={[4, 0.2, 4]} 
+    receiveShadow
+  />
+</group>
+
+```
+### FINISHING TOUCHES - Finish line title
+- do this on Level 'BlockEnd'
+- in BlockEnd, add a <Title> same as the start
+```js
+//BlockEnd
+<Text 
+  scale={1}
+  font="./bebas-neue-v9-latin-regular.woff"
+  position={[0, 2.25, 2]}
+>
+  Finish
+  <meshBasicMaterial toneMapped={false}/>
+</Text>
+```
+
+### Going further
+- make the axe obstacle look like an actual pendulum axe
+- more trap variations
+- control trap size
+- better scenary
+- booster key
+- add booster bonuses
+- different difficulty
+- sounds
+- particles
+- marble customization
+- lasers (instant death)
+
+---
 
 #### FULL EXAMPLE
 ```js
@@ -725,8 +802,10 @@ export default create(subscribeWithSelector((set)=>{
 import useGame from './stores/useGame.jsx';
 export default function Experience() {
   const blocksCount = useGame((state)=> state.blocksCount); 
+  const blocksSeed = useGame((state)=> state.blocksSeed);
+
   return <>
-    <Level count={blocksCount}/>
+    <Level count={blocksCount} seed={blocksSeed}/>
   </>
 }
 ```
@@ -830,4 +909,13 @@ export default function Interface(){
   },[]);
 }
 
+```
+
+```js
+//Level.jsx
+export const Level = ({count = 5, types=[BlockSpinner, BlockAxe, BlockLimbo], seed=0 })=>{
+  const blocks = useMemo(()=>{
+    
+  }, [count, types, seed]);
+};
 ```
