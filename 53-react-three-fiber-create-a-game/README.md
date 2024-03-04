@@ -381,3 +381,155 @@ useFrame((state)=>{
   light.current.target.updateMatrixWorld();
 });
 ```
+
+---
+### The Interface
+- The interface will be 3 elements
+  1. Timer
+  2. Restart button
+  3. keyboard interface showing ASDW keys and spacebar
+- the interface will be done in html (easier)
+- the interface should be outside the `<Canvas>` but within `<KeyboardControls>`
+- give it a className="interface"
+- in css, target interface and fill the screen area
+- restrict clickin on things not meant to be interacted with "pointer-events: none;"
+```css
+.interface {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  font-family: "Bebas Neue", cursive;
+}
+```
+- link in head of index.html: Bebas Neue 
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+```
+
+### Timer
+```js
+<div className="time">0.00</div>
+```
+
+```css
+/**
+ * Time
+ */
+.time {
+  position: absolute;
+  top: 15%;
+  left: 0;
+  width: 100%;
+  color: #ffffff;
+  font-size: 6vh;
+  background: #00000033;
+  padding-top: 5px;
+  text-align: center;
+}
+```
+
+### Restart Button
+- once player finishes level, a restart button shows up in middle of screen
+- click on it will reset the marble and the timer
+- pointer-events: auto; //this overwrites the pointer-events set on .interface
+
+```css
+/**
+ * Restart
+ */
+.restart {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 40%;
+  left: 0;
+  width: 100%;
+  color: #ffffff;
+  font-size: 80px;
+  background: #00000033;
+  padding-top: 10px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+```
+
+### Keyboard buttons
+- display the WASD keys for user and 'spacebar'
+- because Interface is inside KeyboardControls, we can see which keys are being pressed
+- retrieve the inputs via useKeyboardControls((state)=> state) 
+- "controls" returns an object containing all inputs: {forward:boolean, backward:boolean, leftward:boolean, rightward:boolean, jump:boolean}
+  `const controls = useKeyboardControls((state)=> state);` // NOTE: RECOMMENDED NOT TO DO THIS... SHOULD REGISTER LISTENERS INDIVIDUALLY
+- with separated specific selectors, we can also later have combo keys
+- add "active" class if corresponding key pressed
+
+```jsx
+// Interface.jsx
+
+//DONT DO THIS
+// const controls = useKeyboardControls((state)=> state);
+
+//SEPARATE LISTENERS
+const forward = useKeyboardControls((state) => state.forward);
+const backward = useKeyboardControls((state) => state.backward);
+const leftward = useKeyboardControls((state) => state.leftward);
+const rightward = useKeyboardControls((state) => state.rightward);
+const jump = useKeyboardControls((state) => state.jump);
+
+return <>
+{/* Controls */}
+<div className="controls">
+  <div className="raw">
+    <div className={ `key ${ forward ? 'active' : '' }` }></div>
+  </div>
+  <div className="raw">
+    <div className={ `key ${ leftward ? 'active' : '' }` }></div>
+    <div className={ `key ${ backward ? 'active' : '' }` }></div>
+    <div className={ `key ${ rightward ? 'active' : '' }` }></div>
+  </div>
+  <div className="raw">
+    <div className={ `key large ${ jump ? 'active' : '' }` }></div>
+  </div>
+</div>
+</>
+```
+
+```css
+/**
+ * Controls
+ */
+.controls {
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  width: 100%;
+}
+
+.controls .raw {
+  display: flex;
+  justify-content: center;
+}
+
+.controls .key {
+  width: 40px;
+  height: 40px;
+  margin: 4px;
+  border: 2px solid #ffffff;
+  background: #ffffff44;
+}
+
+.controls .key.large {
+  width: 144px;
+}
+
+.controls .key.active {
+  background: #ffffff99;
+}
+
+```
