@@ -10,7 +10,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // const gui = new dat.GUI();
 
 // Canvas
-const canvas: HTMLElement = document.querySelector("canvas.webgl")!;
+const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
@@ -122,15 +122,13 @@ const clock = new THREE.Clock();
 const tick = () => {
 	const elapsedTime = clock.getElapsedTime();
 
-	// Update Particles
-	particles.rotation.y = elapsedTime * 0.2;
 
-
+	
 	for (let i = 0; i < count; i++) {
 		const i3 = i * 3;
 
 		const x = particlesGeometry.attributes.position.array[i3];
-	// 	// @ts-ignore
+		
 		particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(
 			elapsedTime + x
 		);
