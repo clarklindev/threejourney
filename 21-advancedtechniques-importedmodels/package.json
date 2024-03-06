@@ -1,5 +1,5 @@
 {
-	"name": "transform-objects",
+	"name": "threejs-journey-advanced-techniques-imported-models",
 	"private": false,
 	"version": "0.1.0",
 	"type": "module",
@@ -9,6 +9,7 @@
 		"preview": "vite preview"
 	},
 	"devDependencies": {
+		"@types/dat.gui": "^0.7.12",
 		"@types/three": "^0.160.0",
 		"typescript": "^5.3.3",
 		"vite": "^5.0.10"

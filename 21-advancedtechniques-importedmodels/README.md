@@ -1,4 +1,4 @@
-# 23 - Imported Models
+# 21 - Imported Models
 
 - importing models into THREEjs
 - use 3d software for complex modeling
