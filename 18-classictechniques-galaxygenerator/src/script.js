@@ -10,7 +10,7 @@ import * as dat from 'dat.gui'
 const gui = new dat.GUI();
 
 // Canvas
-const canvas:HTMLElement = document.querySelector('canvas.webgl')!;
+const canvas = document.querySelector('canvas.webgl');
 
 // Scene
 const scene = new THREE.Scene();
@@ -29,9 +29,9 @@ const parameters = {
   outsideColor: '#1b3984'
 }
 
-let geometry: THREE.BufferGeometry | null;
-let material: THREE.PointsMaterial | null;
-let points: THREE.Points | null;
+let geometry;
+let material;
+let points;
 
 const generateGalaxy = () => {
   // destroy old galaxy
