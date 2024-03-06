@@ -10,7 +10,7 @@ import * as dat from "dat.gui";
 const gui = new dat.GUI();
 
 // Canvas
-const canvas: HTMLElement = document.querySelector("canvas.webgl")!;
+const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
@@ -25,6 +25,8 @@ scene.fog = fog;
 const textureLoader = new THREE.TextureLoader();
 
 const doorColorTexture = textureLoader.load("/textures/door/color.jpg");
+doorColorTexture.colorSpace = THREE.SRGBColorSpace;
+
 const doorAlphaTexture = textureLoader.load("/textures/door/alpha.jpg");
 const doorAmbientOcclusionTexture = textureLoader.load(
 	"/textures/door/ambientOcclusion.jpg"
@@ -35,6 +37,8 @@ const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
 const doorRoughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
 
 const bricksColorTexture = textureLoader.load("/textures/bricks/color.jpg");
+bricksColorTexture.colorSpace = THREE.SRGBColorSpace;
+
 const bricksAmbientOcclusionTexture = textureLoader.load(
 	"/textures/bricks/ambientOcclusion.jpg"
 );
@@ -44,6 +48,8 @@ const bricksRoughnessTexture = textureLoader.load(
 );
 
 const grassColorTexture = textureLoader.load("/textures/grass/color.jpg");
+grassColorTexture.colorSpace = THREE.SRGBColorSpace;
+
 const grassAmbientOcclusionTexture = textureLoader.load(
 	"/textures/grass/ambientOcclusion.jpg"
 );
@@ -302,6 +308,10 @@ bush3.castShadow = true;
 bush4.castShadow = true;
 
 floor.receiveShadow = true;
+
+moonLight.shadow.mapSize.width = 256
+moonLight.shadow.mapSize.height = 256
+moonLight.shadow.camera.far = 15
 
 doorLight.shadow.mapSize.width = 256;
 doorLight.shadow.mapSize.height = 256;
