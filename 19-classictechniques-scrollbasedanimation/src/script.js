@@ -21,7 +21,7 @@ gui.addColor(parameters, "materialColor").onChange(() => {
  * Base
  */
 // Canvas
-const canvas: HTMLElement = document.querySelector("canvas.webgl")!;
+const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
