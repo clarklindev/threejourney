@@ -1,0 +1,22 @@
+{
+  "name": "threejs-journey-exercise",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build-monorepo-linux": "cp -r dist/* ../../public/46-extra-performance-tips",
+		"build-monorepo-win": "xcopy /E /I dist\\* ..\\..\\public\\46-extra-performance-tips",
+		"preview": "vite preview",
+		"deploy": "vercel --prod"
+  },
+  "devDependencies": {
+    "vite": "^4.5.0"
+  },
+  "dependencies": {
+    "lil-gui": "^0.19.0",
+    "stats.js": "^0.17.0",
+    "three": "^0.158.0"
+  }
+}

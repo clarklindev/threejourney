@@ -1,0 +1,24 @@
+{
+	"name": "threejs-journey-advanced-techniques-imported-models",
+	"private": false,
+	"version": "0.1.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"build-monorepo-linux": "cp -r dist/* ../../public/21-advancedtechniques-importedmodels",
+		"build-monorepo-win": "xcopy /E /I dist\\* ..\\..\\public\\21-advancedtechniques-importedmodels",
+		"preview": "vite preview",
+		"deploy": "vercel --prod"
+	},
+	"devDependencies": {
+		"@types/dat.gui": "^0.7.12",
+		"@types/three": "^0.160.0",
+		"typescript": "^5.3.3",
+		"vite": "^5.0.10"
+	},
+	"dependencies": {
+		"dat.gui": "^0.7.9",
+		"three": "^0.160.0"
+	}
+}

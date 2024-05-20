@@ -1,0 +1,22 @@
+{
+	"name": "transform-objects",
+	"private": false,
+	"version": "0.1.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"build-monorepo-linux": "cp -r dist/* ../../public/17-classictechniques-particles",
+		"build-monorepo-win": "xcopy /E /I dist\\* ..\\..\\public\\17-classictechniques-particles",
+		"preview": "vite preview",
+		"deploy": "vercel --prod"
+	},
+	"devDependencies": {
+		"@types/three": "^0.160.0",
+		"typescript": "^5.3.3",
+		"vite": "^5.0.10"
+	},
+	"dependencies": {
+		"three": "^0.160.0"
+	}
+}

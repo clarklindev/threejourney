@@ -1,0 +1,27 @@
+{
+  "name": "threejs-journey",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build-monorepo-linux": "cp -r dist/* ../../public/10-basics-textures",
+    "build-monorepo-win": "xcopy /E /I dist\\* ..\\..\\public\\10-basics-textures",
+    "preview": "vite preview",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dat.gui": "^0.7.9",
+    "gsap": "^3.12.4",
+    "lil-gui": "^0.19.1",
+    "three": "^0.159.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.10"
+  }
+}

@@ -88,3 +88,37 @@ my github: https://github.com/clarklindev/threejourney/tree/master
 64	[Fun and Simple Portfolio](https://github.com/clarklindev/threejourney/tree/master/51-react-three-fiber-fun-simple-portfolio)	51mn  
 65	[Physics](https://github.com/clarklindev/threejourney/tree/master/52-react-three-fiber-physics)	2h 11mn  
 66	[Create a game](https://github.com/clarklindev/threejourney/tree/master/53-react-three-fiber-create-a-game)	4h 01mn  
+
+
+## under the hood
+- browser related: make sure under system -> Use graphics acceleration when available -> is turned on (performance improves drastically)
+- using pnpm (similar to npm and yarn) but shares node module libraries
+- vite: your lesson folders cant be in root, because then vite will try compile them as part of build - put them in src folder
+- vite uses 'public' folder, if you put things in here it will then get optimised when published and put in 'dist' folder and can be accessed directly as if the things in public/ folder were directly in root folder.
+- url's should use relative path: "./" should be used as it is more specific than '/' pathing (absolute path) because if folders where not in root but a subfolder of root the loading will break..
+
+```cmd
+
+pnpm i  
+
+pnpm run build  
+
+pnpm run build-monorepo-win  (this can only be called after "build" step)
+
+```
+
+- monorepo parent repository with multiple node.js projects (they have their own package.json but all fall under single parent repo)
+- the build directory setup is in vite.config.js (build -> outDir) which defaults to "../dist" (relative to the index.html)
+- in package.json
+    "build": "vite build",
+    "build-monorepo-linux": "cp -r dist/* ../../public/lesson-folder",
+    "build-monorepo-win": "xcopy /E /I dist\\* ..\\..\\public\\lesson-folder",
+- build -> builds project into default folder (dist/)
+- lesson folder .gitignore should ignore the dist/ and node_modules folder (as usual)
+
+OPTIONAL
+- the build command needs to be called for these to work as it is merely copying the dist/ folder
+- (OPTIONAL) build-monorepo-linux: for when on mac/linux to build for a parent monorepo 
+- (OPTIONAL) build-monorepo-win: for when on windows to build for a parent monorepo
+- NOTE: public/lesson-folder should be changed for each lesson
+
